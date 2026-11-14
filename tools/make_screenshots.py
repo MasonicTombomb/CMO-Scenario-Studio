@@ -64,6 +64,16 @@ def main():
             page.list.setCurrentRow(1)
         pump(app, 0.4)
         w.grab().save(str(OUT / f"{name}.png"))
+    w.open_loadout_viewer(6645, 30249)          # Su-35S, R-77-1 / R-73M loadout
+    v = w._loadout_viewer
+    v.resize(1680, 900)
+    v.ac_search.setText("Su-35S")
+    v._search_aircraft()
+    v.navigate(v.place)
+    v.wp_table.selectRow(1)
+    pump(app, 0.4)
+    v.grab().save(str(OUT / "loadout_viewer.png"))
+    v.close()
     w.tabs.setCurrentWidget(w.export_page)
     pump(app, 0.3)
     w.export_page._dry()

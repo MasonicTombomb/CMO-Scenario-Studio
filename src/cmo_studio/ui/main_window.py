@@ -82,10 +82,13 @@ class MainWindow(QMainWindow):
         self.db_browser.applyRequested.connect(self._apply_db)
         self.db_browser.loadoutRequested.connect(self._loadout_from_db)
         self.db_browser.addToBaseRequested.connect(self._add_to_base)
+        self.db_browser.loadoutViewRequested.connect(self.open_loadout_viewer)
+        self._loadout_viewer = None
         self.issues.jumpTo.connect(self._jump)
         for form in (self.map_page.unit_form, self.units_page.form):
             form.showInBrowser.connect(self._show_in_browser)
             form.centerRequested.connect(self.show_on_map)
+            form.loadoutViewRequested.connect(self.open_loadout_viewer)
 
         # ------------------------------------------------ status bar
         self.cursor_label = QLabel("")
@@ -176,6 +179,7 @@ class MainWindow(QMainWindow):
         self._action(t, "Validate project", lambda: self.run_validation(True), "F7")
         self._action(t, "Dry-run build (CMO Lua)", lambda: (self.tabs.setCurrentWidget(self.export_page),
                                                             self.export_page._dry()), "F5")
+        self._action(t, "Loadout viewer...", lambda: self.open_loadout_viewer(), "Ctrl+L")
         self._action(t, "Fit map to scenario", lambda: (self.tabs.setCurrentWidget(self.map_page),
                                                         self.map_page.map.fit_project()))
         self._action(t, "Open the CMO folder", self._open_cmo)
@@ -408,6 +412,29 @@ class MainWindow(QMainWindow):
         with self.doc.modify("Name squadron", "units"):
             u.name = name.strip() or e.name
         self.doc.select(u.id)
+
+    def open_loadout_viewer(self, aircraft_id: int = 0, loadout_id: int = 0):
+        """Open (or bring forward) the Loadout Viewer; defaults to the selected aircraft."""
+        from .loadout_viewer import LoadoutViewer
+        if not self.dbm.db:
+            QMessageBox.information(self, "Loadout viewer", "Open a database first (File > Settings).")
+            return
+        if self._loadout_viewer is None:
+            self._loadout_viewer = LoadoutViewer(self.ctx, self)
+            self._loadout_viewer.loadoutChosen.connect(self._loadout_from_db)
+            self._loadout_viewer.unitActivated.connect(
+                lambda uid: (self.doc.select(uid), self.tabs.setCurrentWidget(self.units_page), self.raise_()))
+        if not aircraft_id:
+            u = self._selected_unit()
+            if u and u.type == "Aircraft":
+                aircraft_id, loadout_id = int(u.dbid), int(u.loadout or 0)
+        if aircraft_id:
+            self._loadout_viewer.show_aircraft(aircraft_id, loadout_id)
+        elif loadout_id:
+            self._loadout_viewer.show_loadout(loadout_id)
+        else:
+            self._loadout_viewer.show()
+            self._loadout_viewer.raise_()
 
     def _show_in_browser(self, utype: str, dbid: int):
         self.db_dock.show()

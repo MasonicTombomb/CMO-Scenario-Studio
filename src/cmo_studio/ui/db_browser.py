@@ -59,6 +59,7 @@ class DBBrowser(QWidget):
     applyRequested = pyqtSignal(object)         # DBEntry -> selected unit
     loadoutRequested = pyqtSignal(int, int)     # aircraft dbid, loadout id
     addToBaseRequested = pyqtSignal(object)     # DBEntry (aircraft) -> selected base
+    loadoutViewRequested = pyqtSignal(int, int)  # aircraft dbid, loadout id (0 = none)
 
     def __init__(self, manager: DBManager, year_fn=lambda: 2030, parent=None):
         super().__init__(parent)
@@ -159,7 +160,10 @@ class DBBrowser(QWidget):
         self.apply_btn = QPushButton("Use for selected unit")
         self.apply_btn.setToolTip("Change the selected unit's database entry to this one")
         self.apply_btn.clicked.connect(lambda: self.current and self.applyRequested.emit(self.current))
-        for b in (self.place_btn, self.base_btn, self.apply_btn):
+        self.lv_btn = QPushButton("Loadout viewer")
+        self.lv_btn.setToolTip("Open this aircraft's loadouts with full weapon details")
+        self.lv_btn.clicked.connect(self._open_viewer)
+        for b in (self.place_btn, self.base_btn, self.apply_btn, self.lv_btn):
             btns.addWidget(b)
         btns.addStretch()
         dl.addLayout(btns)
@@ -168,7 +172,8 @@ class DBBrowser(QWidget):
         self.sensors = QListWidget()
         self.weapons = QListWidget()
         self.loadouts = QListWidget()
-        self.loadouts.setToolTip("Double-click to use this loadout for the selected aircraft")
+        self.loadouts.setToolTip("Double-click to use this loadout for the selected aircraft; "
+                                 "'Loadout viewer' shows every detail")
         self.loadouts.itemDoubleClicked.connect(self._loadout_chosen)
         self.loadouts.currentItemChanged.connect(self._loadout_preview)
         self.hosting = QListWidget()
@@ -259,6 +264,7 @@ class DBBrowser(QWidget):
         self.place_btn.setEnabled(placeable)
         self.apply_btn.setEnabled(placeable)
         self.base_btn.setEnabled(utype == "Aircraft")
+        self.lv_btn.setEnabled(utype == "Aircraft")
 
     def _selected(self):
         rows = self.table.selectionModel().selectedRows()
@@ -315,6 +321,11 @@ class DBBrowser(QWidget):
     def _loadout_chosen(self, item: QListWidgetItem):
         if self.current and self.current.type == "Aircraft":
             self.loadoutRequested.emit(self.current.id, item.data(Qt.ItemDataRole.UserRole))
+
+    def _open_viewer(self):
+        if self.current and self.current.type == "Aircraft":
+            it = self.loadouts.currentItem()
+            self.loadoutViewRequested.emit(self.current.id, it.data(Qt.ItemDataRole.UserRole) if it else 0)
 
     def _place(self):
         if self.current and self.current.type in UNIT_TYPES:

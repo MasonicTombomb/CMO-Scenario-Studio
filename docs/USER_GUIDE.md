@@ -9,6 +9,7 @@ files that live happily in git.
 - [Typical workflow](#typical-workflow)
 - [Tabs](#tabs)
 - [Database browser](#database-browser)
+- [Loadout Viewer](#loadout-viewer)
 - [Events in depth](#events-in-depth)
 - [Variants](#variants)
 - [Validation and dry-run](#validation-and-dry-run)
@@ -138,6 +139,27 @@ will be written.
 - Tabs show sensors, weapons with default loads, aircraft loadouts (hover for the weapons, double-click to give the
   selected aircraft that loadout), hangars/docks and the DB description.
 - **Use for selected unit** swaps the selected unit to the browsed entry (type changes are confirmed).
+
+## Loadout Viewer
+
+Open it with **Tools > Loadout viewer** (Ctrl+L), the **Loadout viewer** button in the Database dock (aircraft), or
+**View loadouts...** in an aircraft's inspector. It opens on the selected aircraft and its current loadout.
+
+- **Left:** search aircraft, then filter its loadouts by role group (air-to-air, strike/SEAD/CAS, support, ASW,
+  recon/transport, tanker), by text (names *and* carried weapons, e.g. `JASSM`), and optionally show ferry/reserve or
+  deprecated loadouts. Columns sort; radius is in nm and time on station in minutes.
+- **Middle:** the loadout: role, day/night and weather, combat radius, time on station, ready time (and sustained),
+  quick turnaround (ready time, sorties, airborne time), default mission profile, Winchester/Shotgun rule and drag
+  modifier, then each store with quantity, maximum, type, air/surface/land/subsurface range, weight and whether it is
+  internal or optional. *Carried by* lists every aircraft variant that has this loadout; *In this project* lists
+  your units using it (double-click to select one).
+- **Right:** the weapon you click: image, ranges, PoK, CEP, weight, flight limits, plus tabs for targets, warheads
+  (type, damage points, explosive weight), seekers, capabilities (e.g. LOAL, dogfight, sea-skimmer capable), every
+  other loadout that carries it, and the DB description.
+
+Double-click entries in *Carried by* or *Also in loadouts* to follow the link; **Back/Forward** retrace your path.
+**Use for selected aircraft** (or double-clicking a loadout) gives the loadout to the aircraft selected in the
+project — it must be the same aircraft type, since loadouts belong to specific DBIDs.
 
 ## Events in depth
 

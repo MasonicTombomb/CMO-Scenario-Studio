@@ -41,6 +41,7 @@ class UnitForm(_Scroll):
     showInBrowser = pyqtSignal(str, int)     # type, dbid
     centerRequested = pyqtSignal(float, float)
     deleted = pyqtSignal()
+    loadoutViewRequested = pyqtSignal(int, int)   # aircraft dbid, loadout id
 
     def __init__(self, ctx: AppContext, parent=None):
         super().__init__(ctx, parent)
@@ -125,6 +126,10 @@ class UnitForm(_Scroll):
         f.addRow("Loadout:", self.loadout)
         self.loadout_info = hint_label("")
         f.addRow("", self.loadout_info)
+        view = QPushButton("View loadouts...")
+        view.setToolTip("Open the Loadout Viewer for this aircraft type")
+        view.clicked.connect(self._view_loadouts)
+        f.addRow("", view)
         lay.addWidget(self.air)
 
         g = QGroupBox("Behaviour")
@@ -288,6 +293,11 @@ class UnitForm(_Scroll):
         if u and u.extra != data:
             with self.edit("Edit extra fields", "units", merge=f"extra.{u.id}"):
                 u.extra = data
+
+    def _view_loadouts(self):
+        u = self.project.unit(self.uid)
+        if u and u.type == "Aircraft":
+            self.loadoutViewRequested.emit(int(u.dbid), int(u.loadout or 0))
 
     def _show_db(self):
         u = self.project.unit(self.uid)

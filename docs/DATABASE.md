@@ -13,6 +13,8 @@ The studio opens them with SQLite's `mode=ro` URI, so it cannot modify them and 
 | Aircraft loadouts | `DataAircraftLoadouts` (aircraft → loadout), `DataLoadout`, `DataLoadoutWeapons` → `DataWeaponRecord` → `DataWeapon` |
 | Sensors | `Data<Type>Sensors` → `DataSensor` |
 | Weapons | `Data<Type>Mounts` → `DataMountWeapons` → `DataWeaponRecord` → `DataWeapon`, and the same via `Data<Type>Magazines` / `DataMagazineWeapons` |
+| Loadout details | `DataLoadout` + `EnumLoadoutTimeOfDay`, `EnumLoadoutWeather`, `EnumLoadoutMissionProfile`, `EnumLoadoutWinchesterShotgun` |
+| Weapon details | `DataWeaponTargets` → `EnumWeaponTarget`, `DataWeaponWarheads` → `DataWarhead`, `DataWeaponSensors` → `DataSensor`, `DataWeaponCodes` → `EnumWeaponCode` |
 | Hosting | `Data<Type>AircraftFacilities` → `DataAircraftFacility`, `Data<Type>DockingFacilities` → `DataDockingFacility` |
 
 Note that mount, magazine and loadout links point at **weapon records** (`DataWeaponRecord`, which carry the default

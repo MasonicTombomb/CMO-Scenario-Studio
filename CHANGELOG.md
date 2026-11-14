@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **Loadout Viewer** (Tools > Loadout viewer, Ctrl+L; also from the Database dock and the aircraft inspector):
+  loadout parameters, stores with quantities and ranges, per-weapon ranges/PoK/warheads/seekers/targets/capabilities,
+  which aircraft carry a loadout, which loadouts carry a weapon, project units using it, back/forward navigation and
+  one-click "use for selected aircraft".
+
 ## 1.0.0 — 2026-11-14
 
 First release ("Version 1"), including a Windows exe (`CMO-Scenario-Studio-1.0.0-win64.zip`).

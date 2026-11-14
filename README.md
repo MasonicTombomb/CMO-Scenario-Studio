@@ -15,6 +15,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
   sensors, weapons, aircraft loadouts (with their weapons), hangar/dock facilities and the DB description text.
 - **Map editor** — slippy map (Esri, OpenStreetMap, OpenTopoMap or offline grid) to place units, build airbases
   with squadrons, draw patrol/trigger areas, drop reference points and measure ranges and bearings.
+- **Loadout Viewer** (Ctrl+L) — every loadout of an aircraft with role, radius, time on station, ready and
+  quick-turnaround times, mission profile and Winchester/Shotgun rule; the weapons it carries with quantities and
+  ranges; each weapon's ranges, PoK, warheads, seekers, targets and capabilities; and links to every other aircraft
+  and loadout that carries the same loadout or weapon. Apply a loadout to the selected squadron in one click.
 - **Order of battle** — sortable unit table, hosted aircraft and boats, counts (`Sqn #1..#n`), loadouts,
   radar/sonar EMCON, hold position, proficiency, reinforcements spawned later by events, extra `ScenEdit_SetUnit` fields.
 - **Sides** — awareness, proficiency, computer-only, starting score, doctrine and a full posture matrix.
@@ -42,6 +46,8 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 | ![Events](docs/images/events.png) | ![Missions](docs/images/missions.png) |
 | **Briefings with live preview** | **Build & Export with dry-run** |
 | ![Briefings](docs/images/briefings.png) | ![Export](docs/images/export.png) |
+
+![Loadout Viewer](docs/images/loadout_viewer.png)
 
 ## Download
 

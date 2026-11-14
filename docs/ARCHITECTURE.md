@@ -11,6 +11,7 @@ src/cmo_studio/
     validation.py        project checks (optionally against the database)
   db/
     database.py          read-only DB3000/CWDB access: search, details, loadouts, media
+    loadouts.py          loadout and weapon detail queries for the Loadout Viewer
   export/
     compiler.py          project -> build data `D` and per-event Lua
     lua_writer.py        Python value -> Lua literal
@@ -29,6 +30,7 @@ src/cmo_studio/
     main_window.py       menus, tabs, docks, file handling
     document.py          ProjectDocument: undo/redo snapshots, dirty flag, selection
     db_browser.py        DBManager + DB browser dock
+    loadout_viewer.py    Loadout Viewer window (linked loadout / weapon browsing with history)
     forms.py             UnitForm, RPForm, ZoneForm (shared by map and pages)
     widgets.py           code editor, highlighters, pickers, key/value table...
     dialogs.py           settings, new project, about, issues panel
