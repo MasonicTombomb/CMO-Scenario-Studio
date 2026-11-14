@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.5.0 — 2026-11-14
 
 - **Unit templates**: 80 pre-grouped sites (670 units) from generic DB3000 facilities - single-unit airfields of
   every size; tactical, main-operating, bomber, mountain, helicopter, road, expeditionary and civil air bases; FARPs;
