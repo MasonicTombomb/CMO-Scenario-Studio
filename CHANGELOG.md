@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.2.0 — 2026-11-14
+
+Includes the Loadout Viewer from 1.1.0, whose release build never published.
 
 - **Formations**: a Formations tab and a "Create units in formation" creator with 40 layouts across naval, air and
   ground (columns, line abreast, echelons, wedges, diamond, box, convoy, circular and double screens, ASW bent-line,
@@ -12,7 +14,7 @@
 - Fixed the release tests hanging on GitHub Actions (first-run prompt on a headless display); the release job and its
   test step now have timeouts.
 
-## 1.1.0 — 2026-11-14
+## 1.1.0 — 2026-11-14 (tagged, not published; shipped in 1.2.0)
 
 - **Loadout Viewer** (Tools > Loadout viewer, Ctrl+L; also from the Database dock and the aircraft inspector):
   loadout parameters, stores with quantities and ranges, per-weapon ranges/PoK/warheads/seekers/targets/capabilities,
