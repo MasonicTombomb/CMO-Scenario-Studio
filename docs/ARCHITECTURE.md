@@ -11,6 +11,7 @@ src/cmo_studio/
     formations.py        formation presets, station geometry, apply/move helpers
     timeline.py          events and missions on the scenario clock, timing problems
     callsigns.py         callsign library (JSON), role detection, flight allocation
+    templates.py         unit templates (JSON): DB resolution, placement, save-as-template
     validation.py        project checks (optionally against the database)
   db/
     database.py          read-only DB3000/CWDB access: search, details, loadouts, media
@@ -26,6 +27,7 @@ src/cmo_studio/
       Studio_Mock.lua    strict ScenEdit mock for dry-runs (never exported)
   data/
     callsigns.json       the default callsign library
+    templates.json       the default unit templates
   importers/
     lua_table.py         tolerant Lua table literal reader
     legacy_lua.py        If Russia Wins-style Build_Scenario.lua -> project
@@ -40,6 +42,7 @@ src/cmo_studio/
     search.py            Ctrl+K search over objects, script lines and commands
     bulk_edit.py         edit fields on many units at once
     callsigns_ui.py      assign-callsigns dialog and callsign library editor
+    templates_ui.py      template placer, preview and template library editor
     forms.py             UnitForm, RPForm, ZoneForm (shared by map and pages)
     widgets.py           code editor, highlighters, pickers, key/value table...
     dialogs.py           settings, new project, about, issues panel

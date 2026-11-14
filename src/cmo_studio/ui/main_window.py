@@ -190,6 +190,8 @@ class MainWindow(QMainWindow):
         self._action(t, "Dry-run build (CMO Lua)", lambda: (self.tabs.setCurrentWidget(self.export_page),
                                                             self.export_page._dry()), "F5")
         self._action(t, "Loadout viewer...", lambda: self.open_loadout_viewer(), "Ctrl+L")
+        self._action(t, "Place unit template...", lambda: self.place_template(), "Ctrl+T")
+        self._action(t, "Template library...", self.open_template_library)
         self._action(t, "Assign callsigns to aircraft...", self.assign_callsigns, "Ctrl+Shift+C")
         self._action(t, "Callsign library...", self.open_callsign_library)
         self._action(t, "Create units in formation...",
@@ -472,6 +474,8 @@ class MainWindow(QMainWindow):
              lambda: (self.tabs.setCurrentWidget(self.formations_page), self.formations_page.open_creator())),
             ("Edit selected units", "Ctrl+Shift+E", self.bulk_edit_selected),
             ("Assign callsigns", "Ctrl+Shift+C", self.assign_callsigns),
+            ("Place unit template", "Ctrl+T", lambda: self.place_template()),
+            ("Template library", "Tools menu", self.open_template_library),
             ("Callsign library", "Tools menu", self.open_callsign_library),
             ("Fit map to scenario", "Map", lambda: (self.tabs.setCurrentWidget(self.map_page),
                                                     self.map_page.map.fit_project())),
@@ -513,6 +517,27 @@ class MainWindow(QMainWindow):
                 self.statusBar().showMessage("There are no aircraft in the project yet.", 5000)
                 return
         CallsignAssignDialog(self.ctx, ids, self).exec()
+
+    def place_template(self, lat: Optional[float] = None, lon: Optional[float] = None) -> None:
+        from .templates_ui import TemplatePlacerDialog
+        if not self.doc.project.sides:
+            self.statusBar().showMessage("Add a side first (Sides tab).", 5000)
+            return
+        dlg = TemplatePlacerDialog(self.ctx, lat, lon, self)
+        if dlg.exec() and dlg.placed_ids:
+            self.tabs.setCurrentWidget(self.map_page)
+            first = self.doc.project.unit(dlg.placed_ids[0])
+            if first:
+                self.map_page.map.center_on(first.lat, first.lon, max(self.map_page.map.zoom, 12))
+                self.doc.select(first.id, None)
+
+    def open_template_library(self) -> None:
+        from .templates_ui import TemplateLibraryDialog
+        TemplateLibraryDialog(self.ctx, self).exec()
+
+    def save_units_as_template(self, ids: list) -> None:
+        from .templates_ui import save_units_as_template
+        save_units_as_template(self.ctx, ids, self)
 
     def open_callsign_library(self) -> None:
         from .callsigns_ui import CallsignLibraryDialog

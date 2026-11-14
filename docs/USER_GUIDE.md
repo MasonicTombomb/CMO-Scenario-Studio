@@ -13,6 +13,7 @@ files that live happily in git.
 - [Event timeline](#event-timeline)
 - [Search everything](#search-everything)
 - [Editing many units at once](#editing-many-units-at-once)
+- [Unit templates](#unit-templates)
 - [Callsigns](#callsigns)
 - [Loadout Viewer](#loadout-viewer)
 - [Events in depth](#events-in-depth)
@@ -285,6 +286,22 @@ lot.
 - **Loadout**, when all selected units are the same aircraft type.
 - An **extra ScenEdit_SetUnit field** to set or remove (e.g. `fuel` = `50`).
 
+## Unit templates
+
+**Tools > Place unit template** (Ctrl+T), the map's **Templates...** button or right-click > **Place unit template
+here...** drops a pre-grouped site: 80 built-in templates across airfields (single-unit airfields of every runway
+length; detailed tactical, main-operating, bomber, mountain, helicopter, road, expeditionary and civil bases; FARPs),
+command and control, communications and EW, radar and air defence, garrisons and bases, logistics, naval bases,
+missile and drone sites, ground force positions and civil infrastructure.
+
+Give the site a name, side, position and orientation; units are named `<site> <part>` (*Amari Control Tower*) and
+grouped, so dragging any part moves the whole site and the Formations tab rotates it. Parts marked *host* (airfields,
+shelters, hangars, helipads, piers) take aircraft or boats. Swap generic parts for national systems with *Use for
+selected unit*. **Save as unit template...** on the Units tab makes your own templates from placed units.
+
+**Tools > Template library** edits the library, saved as your own `templates.json` - see [TEMPLATES.md](TEMPLATES.md)
+for the format and the full catalogue.
+
 ## Callsigns
 
 **Assign callsigns** (Units tab *Callsigns...*, right-click, Tools menu or **Ctrl+Shift+C**) names the selected
@@ -400,6 +417,7 @@ reinforcements, areas and missions. Events and runtime scripts are not imported.
 | Ctrl+K | Search everything |
 | Ctrl+Shift+E | Edit selected units |
 | Ctrl+Shift+C | Assign callsigns |
+| Ctrl+T | Place unit template |
 | Ctrl+Shift+F | Create units in formation |
 | Ctrl+L | Loadout viewer |
 | F5 | Dry-run build |

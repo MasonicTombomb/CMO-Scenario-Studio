@@ -275,6 +275,7 @@ class Formation:
     set_heading: bool = True            # give every unit the formation heading
     keep_on_station: bool = True        # re-position members when the lead or the settings change
     group_in_cmo: bool = True           # build a CMO group with formation stations
+    set_stations: bool = True           # False: group only (sites from templates), no formation stations
     station_type: str = "Rotating"      # Rotating (relative to group course) or Fixed (true bearing)
     sprint_drift: bool = False
     notes: str = ""

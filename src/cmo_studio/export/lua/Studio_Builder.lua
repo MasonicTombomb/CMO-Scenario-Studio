@@ -253,7 +253,9 @@ local function buildFormations()
       local placed = 0
       for _, m in ipairs(f.members) do
         local g = B.guids[m.id] and B.guids[m.id][1]
-        if g and setGroup(g, f.name) then
+        if g and setGroup(g, f.name) and f.nostations then
+          placed = placed + 1     -- a site: grouped, no formation station
+        elseif g and setGroup(g, f.name) then
           local full = { bearing = m.bearing, distance = m.dist, type = f.stype, sprint = f.sprint }
           if try(ScenEdit_SetUnit, { guid = g, formation = full })
              or try(ScenEdit_SetUnit, { guid = g, formation = { bearing = m.bearing, distance = m.dist } }) then

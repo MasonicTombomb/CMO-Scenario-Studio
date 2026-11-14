@@ -25,6 +25,11 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Search everything** (Ctrl+K) — jump to any unit, mission, event, area, formation, script line or command.
 - **Edit many units at once** — tick the fields to change across a selection: rename patterns (`Escort {nn}`),
   side, group, proficiency, EMCON, hold, heading, speed, altitude, base, loadout and more, in one undo step.
+- **Unit templates** — 80 pre-grouped sites (670 units in all) dropped in one go: airfields of every size,
+  hardened and dispersed air bases, FARPs, command posts and C3 bunkers, communications, SIGINT and EW sites, radar
+  and SAM sites, barracks, FOBs, depots, ports and naval bases, missile sites and civil infrastructure. Name it,
+  orient it, place it; it stays together as a CMO group. Editable JSON library, and any selection can be saved as a
+  new template.
 - **Callsigns** — name aircraft from an editable JSON library of 38 air arms (NATO and beyond), ~365 squadrons
   and 1,100+ callsign words, by detected country and role (fighter, strike, SEAD, AEW, tanker, MPA, helicopters...),
   in flights: `TARTAN 11–14`, `SOKOL-21`... Rename, add or share entries in the built-in library editor.
@@ -69,6 +74,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 | Search everything (Ctrl+K) | Edit many units at once |
 | --- | --- |
 | ![Search](docs/images/search.png) | ![Bulk edit](docs/images/bulk_edit.png) |
+
+| Place a unit template | Placed on the map |
+| --- | --- |
+| ![Place template](docs/images/templates_place.png) | ![Template on map](docs/images/templates_map.png) |
 
 | Assign callsigns | Callsign library |
 | --- | --- |
@@ -142,6 +151,7 @@ See [`examples/output`](examples/output) for a real export.
 - [User guide](docs/USER_GUIDE.md) — every tab, workflows and tips
 - [Export format and Lua runtime](docs/EXPORT_FORMAT.md) — what each file does, the `Studio*` Lua API
 - [Project file format](docs/PROJECT_FORMAT.md) — the `.cmoproj` JSON schema
+- [Unit templates](docs/TEMPLATES.md) — format and catalogue
 - [Callsign library](docs/CALLSIGNS.md) — the JSON format, roles and allocation rules
 - [Database access](docs/DATABASE.md) — which DB3000 tables are read and how
 - [Architecture](docs/ARCHITECTURE.md) — code layout for contributors

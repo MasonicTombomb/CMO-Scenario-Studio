@@ -292,6 +292,8 @@ class MapWidget(QWidget):
             lead = self.project.unit(f.lead)
             if lead is None or lead.host or not self._visible(lead.side):
                 continue
+            if not f.set_stations and f.lead != self.selected and f.id != self.selected:
+                continue          # placed sites: only show their links while selected
             col = QColor(self._side_color(lead.side))
             col.setAlpha(150 if f.id == self.selected or f.lead == self.selected else 90)
             pen = QPen(col, 1.2, Qt.PenStyle.DashLine)

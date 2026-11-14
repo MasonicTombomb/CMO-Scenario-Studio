@@ -108,6 +108,28 @@ def main():
     ld.grab().save(str(OUT / "callsigns_library.png"))
     ld.dirty = False
     ld.close()
+    from cmo_studio.ui.templates_ui import TemplateLibraryDialog, TemplatePlacerDialog
+    pd = TemplatePlacerDialog(w.ctx, 59.411, 24.832, w)
+    pd.filter.setText("tactical fighter base")
+    pd.site.setText("Tallinn")
+    pd.heading.setValue(84)
+    pd.show()
+    pump(app, 0.3)
+    pd.grab().save(str(OUT / "templates_place.png"))
+    pd._place()
+    w.tabs.setCurrentWidget(w.map_page)
+    w.map_page.map.center_on(59.411, 24.845, 13)
+    pump(app, 6)
+    w.grab().save(str(OUT / "templates_map.png"))
+    w.doc.undo()
+    ld2 = TemplateLibraryDialog(w.ctx, w)
+    ld2.tid = "nav_major_base"
+    ld2._fill()
+    ld2.show()
+    pump(app, 0.3)
+    ld2.grab().save(str(OUT / "templates_library.png"))
+    ld2.dirty = False
+    ld2.close()
     w.tabs.setCurrentWidget(w.formations_page)
     w.formations_page.select_formation(w.doc.project.formations[0].id)
     pump(app, 0.4)

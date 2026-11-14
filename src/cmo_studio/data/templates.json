@@ -1,0 +1,6870 @@
+{
+  "format": "cmo-studio-templates",
+  "version": 1,
+  "about": "Unit templates for CMO Scenario Studio: pre-grouped sites (airfields, command posts, barracks, communications centres...) placed in one go. Positions are metres: x to the right of the site's orientation, y ahead of it. Each component names a database entry; 'dbid' is a hint used when it still matches the name, 'search' (words) a fallback. Use 'at' for several copies of a component. 'host' marks units that can hold aircraft or boats, 'radar' starts the radar active, 'hold' tells mobile units to hold position. Edit, add or remove anything; the studio uses your own copy of this file when it exists.",
+  "categories": [
+    "Airfields (single unit)",
+    "Airfields (multi unit)",
+    "Command and control",
+    "Communications and EW",
+    "Radar and air defence",
+    "Garrisons and bases",
+    "Logistics",
+    "Naval",
+    "Missiles and drones",
+    "Ground forces",
+    "Infrastructure"
+  ],
+  "templates": [
+    {
+      "id": "af_heliport",
+      "name": "Heliport",
+      "category": "Airfields (single unit)",
+      "description": "Helicopters only. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (Heliport)",
+            "dbid": 1957
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Fuel Bladder",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Bladder (40k Liter Tank)",
+            "dbid": 1828
+          },
+          "x": 150.0,
+          "y": -100.0
+        },
+        {
+          "label": "Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "x": 200.0,
+          "y": 100.0
+        }
+      ]
+    },
+    {
+      "id": "af_strip_900",
+      "name": "Airstrip (451-900 m)",
+      "category": "Airfields (single unit)",
+      "description": "Bush strip for light transports and STOL aircraft. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (1x 451-900m Runway)",
+            "dbid": 1595
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Fuel Bladder",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Bladder (40k Liter Tank)",
+            "dbid": 1828
+          },
+          "x": 150.0,
+          "y": -100.0
+        },
+        {
+          "label": "Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "x": 200.0,
+          "y": 100.0
+        }
+      ]
+    },
+    {
+      "id": "af_1400",
+      "name": "Small airfield (901-1,400 m)",
+      "category": "Airfields (single unit)",
+      "description": "Light aircraft, turboprops, helicopters. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (1x 901-1400m Runway)",
+            "dbid": 1594
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_2000",
+      "name": "Airfield (1,401-2,000 m)",
+      "category": "Airfields (single unit)",
+      "description": "Tactical transports and most fighters in good conditions. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (1x 1401-2000m Runway)",
+            "dbid": 1593
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_2600",
+      "name": "Airfield (2,001-2,600 m)",
+      "category": "Airfields (single unit)",
+      "description": "Typical tactical fighter base runway. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (1x 2001-2600m Runway)",
+            "dbid": 1712
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_3200",
+      "name": "Air base (2,601-3,200 m)",
+      "category": "Airfields (single unit)",
+      "description": "Fighters, tankers and large transports. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (1x 2600-3200m, Runway)",
+            "dbid": 1877
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_4000",
+      "name": "Major air base (3,201-4,000 m)",
+      "category": "Airfields (single unit)",
+      "description": "Heavy aircraft: bombers, AEW, strategic airlift. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (1x 3201-4000m Runway)",
+            "dbid": 1592
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_4000plus",
+      "name": "Strategic air base (4,000 m+)",
+      "category": "Airfields (single unit)",
+      "description": "The longest runways: strategic bombers and the heaviest transports. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (1x 4000m+ Runway)",
+            "dbid": 1995
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_2x2600",
+      "name": "Twin-runway airfield (2x 2,001-2,600 m)",
+      "category": "Airfields (single unit)",
+      "description": "Two parallel runways: survives a single runway cut. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (2x 2001-2600m Runways)",
+            "dbid": 1713
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_2x3200",
+      "name": "Twin-runway air base (2x 2,601-3,200 m)",
+      "category": "Airfields (single unit)",
+      "description": "Two runways for a busy main operating base. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (2x 2601-3200m Runways)",
+            "dbid": 1714
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_2x4000",
+      "name": "Twin-runway major air base (2x 3,201-4,000 m)",
+      "category": "Airfields (single unit)",
+      "description": "Two long runways. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (2x 3201-4000m Runways)",
+            "dbid": 430
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "af_3x4000",
+      "name": "Hub airfield (3x 3,201-4,000 m)",
+      "category": "Airfields (single unit)",
+      "description": "Three long runways: major international hub or strategic base. One airfield facility (runways, hangars and parking built in) plus support buildings as separate targets. Put aircraft on the 'Airfield' unit.",
+      "tags": [
+        "airbase",
+        "airfield"
+      ],
+      "components": [
+        {
+          "label": "Airfield",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (3x 3201-4000m Runways)",
+            "dbid": 2415
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (400k Liter Tank)",
+            "dbid": 453
+          },
+          "x": 800.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1100.0,
+              -500.0
+            ],
+            [
+              1100.0,
+              500.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 900.0,
+          "y": 500.0
+        }
+      ]
+    },
+    {
+      "id": "ab_tactical_has",
+      "name": "Tactical fighter base (1x 2,600 m, 12 HAS)",
+      "category": "Airfields (multi unit)",
+      "description": "A NATO-style hardened tactical air base built from separate facilities: runway, parallel taxiway, access points, two dispersals of hardened aircraft shelters, tower, radar, fuel, munitions, accommodation and point defence. Put aircraft in the shelters.",
+      "tags": [
+        "airbase",
+        "hardened"
+      ],
+      "components": [
+        {
+          "label": "Runway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway (2600m)",
+            "dbid": 55
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Taxiway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway-Grade Taxiway (2600m)",
+            "dbid": 1423
+          },
+          "x": 180.0,
+          "y": 0.0
+        },
+        {
+          "label": "Runway Access Point",
+          "db": {
+            "type": "Facility",
+            "name": "Runway Access Point (Medium Aircraft)",
+            "dbid": 307
+          },
+          "at": [
+            [
+              90.0,
+              -1300.0
+            ],
+            [
+              90.0,
+              -650.0
+            ],
+            [
+              90.0,
+              650.0
+            ],
+            [
+              90.0,
+              1300.0
+            ]
+          ]
+        },
+        {
+          "label": "HAS",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Hardened Aircraft Shelter (1x Medium Aircraft)",
+            "dbid": 4
+          },
+          "at": [
+            [
+              650.0,
+              700.0
+            ],
+            [
+              650.0,
+              820.0
+            ],
+            [
+              650.0,
+              940.0
+            ],
+            [
+              650.0,
+              1060.0
+            ],
+            [
+              650.0,
+              1180.0
+            ],
+            [
+              650.0,
+              1300.0
+            ],
+            [
+              650.0,
+              -1300.0
+            ],
+            [
+              650.0,
+              -1180.0
+            ],
+            [
+              650.0,
+              -1060.0
+            ],
+            [
+              650.0,
+              -940.0
+            ],
+            [
+              650.0,
+              -820.0
+            ],
+            [
+              650.0,
+              -700.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Squadron Ops",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Medium C3M)",
+            "dbid": 100
+          },
+          "x": 1000.0,
+          "y": 0.0
+        },
+        {
+          "label": "Fuel Farm",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Tank Farm (10 x 75k Liter Tank)",
+            "dbid": 1509
+          },
+          "x": 1100.0,
+          "y": -500.0
+        },
+        {
+          "label": "Munitions Store",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              1500.0,
+              900.0
+            ],
+            [
+              1600.0,
+              900.0
+            ],
+            [
+              1500.0,
+              1000.0
+            ],
+            [
+              1600.0,
+              1000.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "at": [
+            [
+              1200.0,
+              400.0
+            ],
+            [
+              1300.0,
+              400.0
+            ]
+          ]
+        },
+        {
+          "label": "Comms Hub",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Communication Hub)",
+            "dbid": 615
+          },
+          "x": 1050.0,
+          "y": 200.0
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": 1050.0,
+          "y": -150.0
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "at": [
+            [
+              -500.0,
+              1400.0
+            ],
+            [
+              -500.0,
+              -1400.0
+            ],
+            [
+              1400.0,
+              0.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "SAM Site",
+          "db": {
+            "type": "Facility",
+            "name": "SAM Site",
+            "dbid": 2988
+          },
+          "x": -900.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              1700.0,
+              600.0
+            ],
+            [
+              1700.0,
+              -600.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_main_operating",
+      "name": "Main operating base (2x 3,200 m)",
+      "category": "Airfields (multi unit)",
+      "description": "A large main operating base with two parallel runways, large hangars and very-large-aircraft aprons for tankers, AEW and transports, shelters for fighters, a base HQ bunker and full support.",
+      "tags": [
+        "airbase"
+      ],
+      "components": [
+        {
+          "label": "Runway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway (3200m)",
+            "dbid": 35
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Taxiway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway-Grade Taxiway (3200m)",
+            "dbid": 1422
+          },
+          "x": 180.0,
+          "y": 0.0
+        },
+        {
+          "label": "Runway Access Point",
+          "db": {
+            "type": "Facility",
+            "name": "Runway Access Point (Large Aircraft)",
+            "dbid": 306
+          },
+          "at": [
+            [
+              90.0,
+              -1600.0
+            ],
+            [
+              90.0,
+              -800.0
+            ],
+            [
+              90.0,
+              800.0
+            ],
+            [
+              90.0,
+              1600.0
+            ]
+          ]
+        },
+        {
+          "label": "Runway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway (3200m)",
+            "dbid": 35
+          },
+          "x": -1500.0,
+          "y": 0.0
+        },
+        {
+          "label": "Taxiway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway-Grade Taxiway (3200m)",
+            "dbid": 1422
+          },
+          "x": -1320.0,
+          "y": 0.0
+        },
+        {
+          "label": "Runway Access Point",
+          "db": {
+            "type": "Facility",
+            "name": "Runway Access Point (Large Aircraft)",
+            "dbid": 306
+          },
+          "at": [
+            [
+              -1410.0,
+              -1600.0
+            ],
+            [
+              -1410.0,
+              -800.0
+            ],
+            [
+              -1410.0,
+              800.0
+            ],
+            [
+              -1410.0,
+              1600.0
+            ]
+          ]
+        },
+        {
+          "label": "Heavy Apron",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Tarmac Space (4x Very Large Aircraft)",
+            "dbid": 103
+          },
+          "at": [
+            [
+              700.0,
+              600.0
+            ],
+            [
+              700.0,
+              -600.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Large Hangar",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Hangar (4x Large Aircraft)",
+            "dbid": 9
+          },
+          "at": [
+            [
+              900.0,
+              1300.0
+            ],
+            [
+              900.0,
+              -1300.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "HAS",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Hardened Aircraft Shelter (1x Large Aircraft)",
+            "dbid": 27
+          },
+          "at": [
+            [
+              1300.0,
+              -700.0
+            ],
+            [
+              1300.0,
+              -500.0
+            ],
+            [
+              1300.0,
+              -300.0
+            ],
+            [
+              1300.0,
+              -100.0
+            ],
+            [
+              1300.0,
+              100.0
+            ],
+            [
+              1300.0,
+              300.0
+            ],
+            [
+              1300.0,
+              500.0
+            ],
+            [
+              1300.0,
+              700.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 450.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 800.0,
+          "y": 200.0,
+          "radar": true
+        },
+        {
+          "label": "Air Search Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic 2D Air Search Radar [Long-Range])",
+            "dbid": 937
+          },
+          "x": 2400.0,
+          "y": 0.0,
+          "radar": true
+        },
+        {
+          "label": "Base HQ",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Medium C3M)",
+            "dbid": 100
+          },
+          "x": 1700.0,
+          "y": 300.0
+        },
+        {
+          "label": "Fuel Farm",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Tank Farm (20 x 150k Liter Tank)",
+            "dbid": 1824
+          },
+          "x": 1800.0,
+          "y": -1200.0
+        },
+        {
+          "label": "Munitions Store",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Underground)",
+            "dbid": 325
+          },
+          "at": [
+            [
+              2300.0,
+              900.0
+            ],
+            [
+              2420.0,
+              900.0
+            ],
+            [
+              2540.0,
+              900.0
+            ],
+            [
+              2660.0,
+              900.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "at": [
+            [
+              1900.0,
+              1200.0
+            ],
+            [
+              2010.0,
+              1200.0
+            ],
+            [
+              2120.0,
+              1200.0
+            ]
+          ]
+        },
+        {
+          "label": "Hospital",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Hospital)",
+            "dbid": 318
+          },
+          "x": 2100.0,
+          "y": 1400.0
+        },
+        {
+          "label": "Comm Center",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Comm Center)",
+            "dbid": 4609
+          },
+          "x": 1900.0,
+          "y": 700.0
+        },
+        {
+          "label": "Power Substation",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Electric Sub Station)",
+            "dbid": 164
+          },
+          "x": 1900.0,
+          "y": -700.0
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "at": [
+            [
+              -800.0,
+              2000.0
+            ],
+            [
+              -800.0,
+              -2000.0
+            ],
+            [
+              2000.0,
+              0.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "SAM Site",
+          "db": {
+            "type": "Facility",
+            "name": "SAM Site (Reveted)",
+            "dbid": 3404
+          },
+          "at": [
+            [
+              -2200.0,
+              0.0
+            ],
+            [
+              2600.0,
+              1500.0
+            ]
+          ]
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              2500.0,
+              1000.0
+            ],
+            [
+              2500.0,
+              -1000.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_bomber",
+      "name": "Strategic bomber base (4,000 m)",
+      "category": "Airfields (multi unit)",
+      "description": "Long runway with very-large-aircraft hangars and aprons, deep fuel storage and underground weapons storage for heavy bombers and tankers.",
+      "tags": [
+        "airbase",
+        "bomber"
+      ],
+      "components": [
+        {
+          "label": "Runway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway (4000m)",
+            "dbid": 757
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Taxiway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway-Grade Taxiway (4000m)",
+            "dbid": 1421
+          },
+          "x": 180.0,
+          "y": 0.0
+        },
+        {
+          "label": "Runway Access Point",
+          "db": {
+            "type": "Facility",
+            "name": "Runway Access Point (Very Large Aircraft)",
+            "dbid": 353
+          },
+          "at": [
+            [
+              90.0,
+              -2000.0
+            ],
+            [
+              90.0,
+              -1000.0
+            ],
+            [
+              90.0,
+              1000.0
+            ],
+            [
+              90.0,
+              2000.0
+            ]
+          ]
+        },
+        {
+          "label": "Bomber Apron",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Tarmac Space (4x Very Large Aircraft)",
+            "dbid": 103
+          },
+          "at": [
+            [
+              800.0,
+              900.0
+            ],
+            [
+              800.0,
+              -900.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Bomber Hangar",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Hangar (2x Very Large Aircraft)",
+            "dbid": 92
+          },
+          "at": [
+            [
+              1100.0,
+              0.0
+            ],
+            [
+              1100.0,
+              400.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 500.0,
+          "y": 0.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 600.0,
+          "y": 150.0,
+          "radar": true
+        },
+        {
+          "label": "Wing HQ",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Large C3M)",
+            "dbid": 5
+          },
+          "x": 2000.0,
+          "y": 0.0
+        },
+        {
+          "label": "Fuel Storage",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (3000k Liter Underground Tank)",
+            "dbid": 1292
+          },
+          "x": 1900.0,
+          "y": -1400.0
+        },
+        {
+          "label": "Weapons Storage",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Underground)",
+            "dbid": 325
+          },
+          "at": [
+            [
+              2600.0,
+              1200.0
+            ],
+            [
+              2750.0,
+              1200.0
+            ],
+            [
+              2900.0,
+              1200.0
+            ],
+            [
+              3050.0,
+              1200.0
+            ]
+          ]
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "at": [
+            [
+              2100.0,
+              1500.0
+            ],
+            [
+              2210.0,
+              1500.0
+            ],
+            [
+              2320.0,
+              1500.0
+            ]
+          ]
+        },
+        {
+          "label": "SAM Site",
+          "db": {
+            "type": "Facility",
+            "name": "SAM Site (Reveted)",
+            "dbid": 3404
+          },
+          "at": [
+            [
+              -1500.0,
+              1800.0
+            ],
+            [
+              -1500.0,
+              -1800.0
+            ]
+          ]
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              2800.0,
+              900.0
+            ],
+            [
+              2800.0,
+              -900.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_underground",
+      "name": "Hardened mountain air base",
+      "category": "Airfields (multi unit)",
+      "description": "Aircraft live in an underground shelter cut into a hillside (Swedish, Swiss, Yugoslav, Chinese and North Korean practice), with a single runway and protected fuel and munitions.",
+      "tags": [
+        "airbase",
+        "hardened"
+      ],
+      "components": [
+        {
+          "label": "Runway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway (2600m)",
+            "dbid": 55
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Taxiway",
+          "db": {
+            "type": "Facility",
+            "name": "Runway-Grade Taxiway (2600m)",
+            "dbid": 1423
+          },
+          "x": 180.0,
+          "y": 0.0
+        },
+        {
+          "label": "Runway Access Point",
+          "db": {
+            "type": "Facility",
+            "name": "Runway Access Point (Medium Aircraft)",
+            "dbid": 307
+          },
+          "at": [
+            [
+              90.0,
+              -1300.0
+            ],
+            [
+              90.0,
+              -650.0
+            ],
+            [
+              90.0,
+              650.0
+            ],
+            [
+              90.0,
+              1300.0
+            ]
+          ]
+        },
+        {
+          "label": "Underground Shelter",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Underground Aircraft Shelter (12x Medium Aircraft)",
+            "dbid": 28
+          },
+          "x": 900.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Shelter Entrance",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Underground Aircraft Shelter Entrance (Blast Doors)",
+            "dbid": 915
+          },
+          "at": [
+            [
+              650.0,
+              200.0
+            ],
+            [
+              650.0,
+              -200.0
+            ]
+          ]
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "Underground Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (750k Liter Underground Tank)",
+            "dbid": 942
+          },
+          "x": 1200.0,
+          "y": -300.0
+        },
+        {
+          "label": "Mountain Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Mountain)",
+            "dbid": 1731
+          },
+          "x": 1200.0,
+          "y": 300.0
+        },
+        {
+          "label": "Command Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Underground Hardened Bunker",
+            "dbid": 2926
+          },
+          "x": 1400.0,
+          "y": 0.0
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "at": [
+            [
+              -500.0,
+              1200.0
+            ],
+            [
+              -500.0,
+              -1200.0
+            ]
+          ],
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "ab_helicopter",
+      "name": "Helicopter base",
+      "category": "Airfields (multi unit)",
+      "description": "Army or naval air station for helicopters: helipads, hangars, fuel and accommodation.",
+      "tags": [
+        "airbase",
+        "helicopter"
+      ],
+      "components": [
+        {
+          "label": "Helipad",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Helipad (1x Medium Helicopter)",
+            "dbid": 2120
+          },
+          "at": [
+            [
+              0.0,
+              -250.0
+            ],
+            [
+              0.0,
+              -150.0
+            ],
+            [
+              0.0,
+              -50.0
+            ],
+            [
+              0.0,
+              50.0
+            ],
+            [
+              0.0,
+              150.0
+            ],
+            [
+              0.0,
+              250.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Heavy Helipad",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Helipad (1x Large Helicopter)",
+            "dbid": 2119
+          },
+          "at": [
+            [
+              150.0,
+              -250.0
+            ],
+            [
+              150.0,
+              250.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Hangar",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Hangar (4x Small Aircraft)",
+            "dbid": 26
+          },
+          "at": [
+            [
+              350.0,
+              -150.0
+            ],
+            [
+              350.0,
+              150.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 300.0,
+          "y": 400.0
+        },
+        {
+          "label": "Fuel",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (150k Liter Tank)",
+            "dbid": 84
+          },
+          "x": 550.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Shelter",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Shelter (Reveted)",
+            "dbid": 4105
+          },
+          "x": 600.0,
+          "y": 350.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 600.0,
+          "y": 0.0
+        }
+      ]
+    },
+    {
+      "id": "ab_road_base",
+      "name": "Road base / dispersed strip",
+      "category": "Airfields (multi unit)",
+      "description": "A highway strip with camouflaged revetments and mobile fuel and munitions (Swedish Bas 90, Finnish, Swiss, Polish and Taiwanese practice). Hard to find, hard to close.",
+      "tags": [
+        "airbase",
+        "dispersal"
+      ],
+      "components": [
+        {
+          "label": "Road Runway",
+          "db": {
+            "type": "Facility",
+            "name": "Road Runway (2000m)",
+            "dbid": 4057
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Camouflaged Revetment",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Camouflaged Revetment (1x Medium Aircraft)",
+            "dbid": 1417
+          },
+          "at": [
+            [
+              120.0,
+              -900.0
+            ],
+            [
+              -120.0,
+              -500.0
+            ],
+            [
+              130.0,
+              -100.0
+            ],
+            [
+              -130.0,
+              300.0
+            ],
+            [
+              120.0,
+              700.0
+            ],
+            [
+              -120.0,
+              1000.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Fuel Bowsers",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Fuel Bowser x 4)",
+            "dbid": 3397
+          },
+          "x": 250.0,
+          "y": -300.0,
+          "hold": true
+        },
+        {
+          "label": "Ammo Trucks",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Ammo Truck x 4)",
+            "dbid": 2086
+          },
+          "x": 250.0,
+          "y": 300.0,
+          "hold": true
+        },
+        {
+          "label": "Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "x": 400.0,
+          "y": 0.0
+        },
+        {
+          "label": "Inf Plt (Security)",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (Generic)",
+            "dbid": 2272
+          },
+          "x": -300.0,
+          "y": 0.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "ab_expeditionary",
+      "name": "Expeditionary airfield (short tactical strip)",
+      "category": "Airfields (multi unit)",
+      "description": "Austere strip for tactical transports and STOVL jets, with bladder fuel and tented support.",
+      "tags": [
+        "airbase",
+        "expeditionary"
+      ],
+      "components": [
+        {
+          "label": "Tactical Strip",
+          "db": {
+            "type": "Facility",
+            "name": "Short Airfield for Tactical Support",
+            "dbid": 3871
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Parking",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Open Parking Spot (1x Medium Aircraft)",
+            "dbid": 1389
+          },
+          "at": [
+            [
+              200.0,
+              -300.0
+            ],
+            [
+              200.0,
+              -100.0
+            ],
+            [
+              200.0,
+              100.0
+            ],
+            [
+              200.0,
+              300.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Fuel Bladder",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Bladder (120k Liter Tank)",
+            "dbid": 1827
+          },
+          "at": [
+            [
+              400.0,
+              -200.0
+            ],
+            [
+              400.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Ammo Pad",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Pad",
+            "dbid": 1496
+          },
+          "x": 500.0,
+          "y": 300.0
+        },
+        {
+          "label": "Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "at": [
+            [
+              600.0,
+              -100.0
+            ],
+            [
+              600.0,
+              100.0
+            ]
+          ]
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 300.0,
+          "y": 500.0,
+          "radar": true
+        }
+      ]
+    },
+    {
+      "id": "ab_farp",
+      "name": "Forward arming and refuelling point (FARP)",
+      "category": "Airfields (multi unit)",
+      "description": "A temporary site where attack helicopters rearm and refuel close to the front.",
+      "tags": [
+        "helicopter",
+        "forward"
+      ],
+      "components": [
+        {
+          "label": "Landing Zone",
+          "db": {
+            "type": "Facility",
+            "name": "Landing Zone",
+            "dbid": 91
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Helipad",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Helipad (1x Medium Helicopter)",
+            "dbid": 2120
+          },
+          "at": [
+            [
+              -150.0,
+              100.0
+            ],
+            [
+              -50.0,
+              100.0
+            ],
+            [
+              50.0,
+              100.0
+            ],
+            [
+              150.0,
+              100.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Refuelling System",
+          "db": {
+            "type": "Facility",
+            "name": "Support Plt (Helicopter Expeditionary Refueling System)",
+            "dbid": 248
+          },
+          "x": 0.0,
+          "y": -100.0,
+          "hold": true
+        },
+        {
+          "label": "Fuel Bladder",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Bladder (40k Liter Tank)",
+            "dbid": 1828
+          },
+          "x": 150.0,
+          "y": -150.0
+        },
+        {
+          "label": "Ammo Pad",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Pad",
+            "dbid": 1496
+          },
+          "x": -150.0,
+          "y": -150.0
+        },
+        {
+          "label": "Security Section",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (Generic)",
+            "dbid": 2272
+          },
+          "x": 0.0,
+          "y": 300.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "ab_civil_airport",
+      "name": "Civil airport",
+      "category": "Airfields (multi unit)",
+      "description": "International airport: long runway, terminal, tower, radar and fuel - a dual-use target or reinforcement hub.",
+      "tags": [
+        "airport",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Airport",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Airfield (1x 3201-4000m Runway)",
+            "dbid": 1592
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Terminal",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Airport Terminal)",
+            "dbid": 427
+          },
+          "x": 600.0,
+          "y": 0.0
+        },
+        {
+          "label": "Control Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Control Tower)",
+            "dbid": 3
+          },
+          "x": 450.0,
+          "y": 300.0
+        },
+        {
+          "label": "ATC Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Air Traffic Control)",
+            "dbid": 892
+          },
+          "x": 700.0,
+          "y": 600.0,
+          "radar": true
+        },
+        {
+          "label": "Fuel Farm",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Tank Farm (10 x 150k Liter Tank)",
+            "dbid": 1821
+          },
+          "x": 900.0,
+          "y": -600.0
+        },
+        {
+          "label": "Car Park",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Car Park, 40x Vehicles)",
+            "dbid": 676
+          },
+          "x": 900.0,
+          "y": 200.0
+        },
+        {
+          "label": "Hotel",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Hotel)",
+            "dbid": 454
+          },
+          "x": 1100.0,
+          "y": 0.0
+        }
+      ]
+    },
+    {
+      "id": "c2_field_cp",
+      "name": "Field command post (battalion)",
+      "category": "Command and control",
+      "description": "Tactical command post: C2 trailer, vehicles, generator and a security platoon.",
+      "tags": [
+        "hq",
+        "c2"
+      ],
+      "components": [
+        {
+          "label": "Command Post",
+          "db": {
+            "type": "Facility",
+            "name": "Command Post",
+            "dbid": 3730
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "C2 Trailer",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (C2/C3 Trailer)",
+            "dbid": 3162
+          },
+          "x": 40.0,
+          "y": 30.0,
+          "hold": true
+        },
+        {
+          "label": "Vehicles",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Truck x 4)",
+            "dbid": 624
+          },
+          "x": -60.0,
+          "y": -40.0,
+          "hold": true
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": 60.0,
+          "y": -30.0
+        },
+        {
+          "label": "Security Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (Generic)",
+            "dbid": 2272
+          },
+          "x": 0.0,
+          "y": 150.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "c2_brigade_hq",
+      "name": "Brigade headquarters (field)",
+      "category": "Command and control",
+      "description": "Mobile brigade HQ with C2 vehicles, UAV ground control, an EW company, air defence and a guard company.",
+      "tags": [
+        "hq",
+        "c2"
+      ],
+      "components": [
+        {
+          "label": "Brigade HQ",
+          "db": {
+            "type": "Facility",
+            "name": "HQ",
+            "dbid": 4142
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "C2 Trailer",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (C2/C3 Trailer)",
+            "dbid": 3162
+          },
+          "at": [
+            [
+              80.0,
+              40.0
+            ],
+            [
+              -80.0,
+              40.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "UAV Ground Control",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (UAV Ground Control)",
+            "dbid": 3164
+          },
+          "x": 120.0,
+          "y": -60.0,
+          "hold": true
+        },
+        {
+          "label": "EW Company",
+          "db": {
+            "type": "Facility",
+            "name": "EW Coy",
+            "dbid": 3351
+          },
+          "x": -400.0,
+          "y": -300.0,
+          "hold": true
+        },
+        {
+          "label": "Guard Company",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Coy (Generic)",
+            "dbid": 2273
+          },
+          "x": 0.0,
+          "y": 400.0,
+          "hold": true
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "x": 300.0,
+          "y": 300.0,
+          "hold": true
+        },
+        {
+          "label": "Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "at": [
+            [
+              -100.0,
+              -100.0
+            ],
+            [
+              100.0,
+              -100.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c2_bunker",
+      "name": "Hardened command bunker (strategic)",
+      "category": "Command and control",
+      "description": "Deep C3 bunker with communications, accommodation, perimeter guard and local air defence.",
+      "tags": [
+        "hq",
+        "c2",
+        "hardened"
+      ],
+      "components": [
+        {
+          "label": "Command Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Large C3M)",
+            "dbid": 5
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Comm Center Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Comm Center)",
+            "dbid": 6
+          },
+          "x": 250.0,
+          "y": 0.0
+        },
+        {
+          "label": "HF Antenna",
+          "db": {
+            "type": "Facility",
+            "name": "Antenna Tower - HF Broadcast",
+            "dbid": 3312
+          },
+          "x": 500.0,
+          "y": 200.0
+        },
+        {
+          "label": "Uplink",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Uplink Relay Station)",
+            "dbid": 105
+          },
+          "x": 450.0,
+          "y": -200.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "at": [
+            [
+              -300.0,
+              200.0
+            ],
+            [
+              -300.0,
+              -200.0
+            ]
+          ]
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": -150.0,
+          "y": 0.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              600.0
+            ],
+            [
+              0.0,
+              -600.0
+            ],
+            [
+              600.0,
+              0.0
+            ],
+            [
+              -600.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "SAM Site",
+          "db": {
+            "type": "Facility",
+            "name": "SAM Site (Reveted)",
+            "dbid": 3404
+          },
+          "x": 0.0,
+          "y": 1200.0
+        }
+      ]
+    },
+    {
+      "id": "c2_soc",
+      "name": "Air defence sector operations centre",
+      "category": "Command and control",
+      "description": "Sector control bunker fed by a long-range search radar, with communications and accommodation.",
+      "tags": [
+        "c2",
+        "air defence"
+      ],
+      "components": [
+        {
+          "label": "Sector Control",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Sector Control Station)",
+            "dbid": 177
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Air Search Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic 2D Air Search Radar [Long-Range])",
+            "dbid": 937
+          },
+          "x": 800.0,
+          "y": 0.0,
+          "radar": true
+        },
+        {
+          "label": "Radome",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Radome)",
+            "dbid": 3818
+          },
+          "x": 850.0,
+          "y": 150.0
+        },
+        {
+          "label": "Comm Center",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Comm Center)",
+            "dbid": 4609
+          },
+          "x": 250.0,
+          "y": 200.0
+        },
+        {
+          "label": "Uplink",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Uplink Relay Station)",
+            "dbid": 105
+          },
+          "x": 300.0,
+          "y": -200.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": -300.0,
+          "y": 0.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              500.0
+            ],
+            [
+              0.0,
+              -500.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c2_mobile_sector",
+      "name": "Mobile air defence control post",
+      "category": "Command and control",
+      "description": "Mobile sector control with an air-search radar and protection, for a deployed air defence group.",
+      "tags": [
+        "c2",
+        "air defence",
+        "mobile"
+      ],
+      "components": [
+        {
+          "label": "Sector Control Vehicle",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Mobile Sector Control)",
+            "dbid": 3163
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Short-Range Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic 2D Air Search Radar [Short-Range])",
+            "dbid": 938
+          },
+          "x": 300.0,
+          "y": 0.0,
+          "radar": true
+        },
+        {
+          "label": "C2 Trailer",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (C2/C3 Trailer)",
+            "dbid": 3162
+          },
+          "x": -60.0,
+          "y": 40.0,
+          "hold": true
+        },
+        {
+          "label": "Security Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (Generic)",
+            "dbid": 2272
+          },
+          "x": 0.0,
+          "y": 250.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "c2_icbm",
+      "name": "ICBM launch control complex",
+      "category": "Command and control",
+      "description": "Launch control facility and missile alert facility with security.",
+      "tags": [
+        "strategic",
+        "c2"
+      ],
+      "components": [
+        {
+          "label": "Launch Control Facility",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Launch Control Facility (LCF))",
+            "dbid": 1565
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Missile Alert Facility",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Missile Alert Facility (MAF))",
+            "dbid": 1566
+          },
+          "x": 200.0,
+          "y": 0.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": -200.0,
+          "y": 0.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              300.0
+            ],
+            [
+              0.0,
+              -300.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "comms_centre",
+      "name": "Military communications centre",
+      "category": "Communications and EW",
+      "description": "Communications centre with HF antenna farm, satellite uplink, relay hub and power.",
+      "tags": [
+        "communications"
+      ],
+      "components": [
+        {
+          "label": "Comm Center",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Comm Center)",
+            "dbid": 4609
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Communication Hub",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Communication Hub)",
+            "dbid": 615
+          },
+          "x": 150.0,
+          "y": 0.0
+        },
+        {
+          "label": "HF Antenna",
+          "db": {
+            "type": "Facility",
+            "name": "Antenna Tower - HF Broadcast",
+            "dbid": 3312
+          },
+          "at": [
+            [
+              400.0,
+              300.0
+            ],
+            [
+              400.0,
+              -300.0
+            ],
+            [
+              600.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Satellite Uplink",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Uplink Relay Station)",
+            "dbid": 105
+          },
+          "x": -200.0,
+          "y": 200.0
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": -150.0,
+          "y": -150.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": -350.0,
+          "y": 0.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              700.0
+            ],
+            [
+              0.0,
+              -700.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "comms_bunker",
+      "name": "Hardened communications bunker",
+      "category": "Communications and EW",
+      "description": "Underground communications node with an exposed antenna field.",
+      "tags": [
+        "communications",
+        "hardened"
+      ],
+      "components": [
+        {
+          "label": "Comm Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Comm Center)",
+            "dbid": 6
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "HF Antenna",
+          "db": {
+            "type": "Facility",
+            "name": "Antenna Tower - HF Broadcast",
+            "dbid": 3312
+          },
+          "at": [
+            [
+              300.0,
+              200.0
+            ],
+            [
+              300.0,
+              -200.0
+            ]
+          ]
+        },
+        {
+          "label": "Mast",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Mast)",
+            "dbid": 168
+          },
+          "x": -200.0,
+          "y": 0.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              400.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "comms_broadcast",
+      "name": "Radio and TV broadcast station",
+      "category": "Communications and EW",
+      "description": "Civil broadcaster: studio, TV mast and FM/TV transmitter towers. A classic first-night target.",
+      "tags": [
+        "communications",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Radio/TV Station",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Radio/TV Station)",
+            "dbid": 238
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "TV Mast",
+          "db": {
+            "type": "Facility",
+            "name": "Building (TV Mast)",
+            "dbid": 239
+          },
+          "x": 300.0,
+          "y": 0.0
+        },
+        {
+          "label": "FM Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Antenna Tower - VHF FM Digital Broadcast",
+            "dbid": 3316
+          },
+          "x": 500.0,
+          "y": 200.0
+        },
+        {
+          "label": "TV Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Antenna Tower - UHF TV Digital Broadcast",
+            "dbid": 3315
+          },
+          "x": 500.0,
+          "y": -200.0
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": -100.0,
+          "y": -100.0
+        }
+      ]
+    },
+    {
+      "id": "comms_cellular",
+      "name": "Cellular network cluster",
+      "category": "Communications and EW",
+      "description": "A handful of mobile-phone towers covering a town.",
+      "tags": [
+        "communications",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Cell Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Antenna Tower - Cellular Network",
+            "dbid": 3291
+          },
+          "at": [
+            [
+              0.0,
+              1500.0
+            ],
+            [
+              1500.0,
+              0.0
+            ],
+            [
+              0.0,
+              -1500.0
+            ],
+            [
+              -1500.0,
+              0.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "intel_sigint",
+      "name": "Signals intelligence station",
+      "category": "Communications and EW",
+      "description": "SIGINT and ELINT station with radomes, HF direction finding and accommodation.",
+      "tags": [
+        "intelligence"
+      ],
+      "components": [
+        {
+          "label": "SIGINT Station",
+          "db": {
+            "type": "Facility",
+            "name": "Building (SIGINT Station)",
+            "dbid": 4611
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "ELINT Station",
+          "db": {
+            "type": "Facility",
+            "name": "Building (ELINT Station)",
+            "dbid": 4610
+          },
+          "x": 200.0,
+          "y": 0.0
+        },
+        {
+          "label": "Radome",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Radome)",
+            "dbid": 3818
+          },
+          "at": [
+            [
+              150.0,
+              250.0
+            ],
+            [
+              300.0,
+              250.0
+            ],
+            [
+              450.0,
+              250.0
+            ]
+          ]
+        },
+        {
+          "label": "HF/DF",
+          "db": {
+            "type": "Facility",
+            "name": "Generic HF/DF",
+            "dbid": 4310
+          },
+          "x": -300.0,
+          "y": 300.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": -250.0,
+          "y": -150.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              600.0
+            ],
+            [
+              0.0,
+              -500.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "intel_bunkered",
+      "name": "Hardened intelligence complex",
+      "category": "Communications and EW",
+      "description": "Bunkered SIGINT, ELINT and COMINT stations.",
+      "tags": [
+        "intelligence",
+        "hardened"
+      ],
+      "components": [
+        {
+          "label": "SIGINT Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (SIGINT Station)",
+            "dbid": 153
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "ELINT Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (ELINT Station)",
+            "dbid": 946
+          },
+          "x": 250.0,
+          "y": 0.0
+        },
+        {
+          "label": "COMINT Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (COMINT Station)",
+            "dbid": 947
+          },
+          "x": -250.0,
+          "y": 0.0
+        },
+        {
+          "label": "Radome",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Radome)",
+            "dbid": 3818
+          },
+          "at": [
+            [
+              0.0,
+              300.0
+            ],
+            [
+              200.0,
+              300.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "intel_sosus",
+      "name": "SOSUS / acoustic shore station",
+      "category": "Communications and EW",
+      "description": "Shore terminal of an underwater acoustic array.",
+      "tags": [
+        "intelligence",
+        "naval"
+      ],
+      "components": [
+        {
+          "label": "ACINT SOSUS Station",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (ACINT SOSUS Station)",
+            "dbid": 948
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Comm Center",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Comm Center)",
+            "dbid": 4609
+          },
+          "x": 200.0,
+          "y": 0.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              300.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ew_jamming_site",
+      "name": "Electronic warfare site",
+      "category": "Communications and EW",
+      "description": "Fixed comms and radar jamming stations with mobile jammers.",
+      "tags": [
+        "electronic warfare"
+      ],
+      "components": [
+        {
+          "label": "Comms Jammer",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Comms Jammer Station)",
+            "dbid": 3133
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "OECM Station",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (OECM Station)",
+            "dbid": 3134
+          },
+          "x": 300.0,
+          "y": 0.0
+        },
+        {
+          "label": "Mobile Jammer",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Mobile Jammer [Average])",
+            "dbid": 764
+          },
+          "at": [
+            [
+              -400.0,
+              300.0
+            ],
+            [
+              -400.0,
+              -300.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "GNSS Jammer",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Generic GNSS Jammer)",
+            "dbid": 4582
+          },
+          "x": 600.0,
+          "y": 300.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "ew_mobile_elint",
+      "name": "Mobile ELINT detachment",
+      "category": "Communications and EW",
+      "description": "Deployable ELINT vehicles with a passive coherent location receiver.",
+      "tags": [
+        "electronic warfare",
+        "mobile"
+      ],
+      "components": [
+        {
+          "label": "ELINT Vehicle",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (ELINT [Advanced])",
+            "dbid": 2552
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "PCL Receiver",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (PCLS Receiver)",
+            "dbid": 3290
+          },
+          "x": 200.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Security Section",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (Generic)",
+            "dbid": 2272
+          },
+          "x": 0.0,
+          "y": 200.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "nav_vor_ndb",
+      "name": "Navigation aids (VOR + NDB)",
+      "category": "Communications and EW",
+      "description": "Radio navigation beacons near an airfield.",
+      "tags": [
+        "navigation"
+      ],
+      "components": [
+        {
+          "label": "VOR",
+          "db": {
+            "type": "Facility",
+            "name": "Antenna Tower - VOR NavAid",
+            "dbid": 3306
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "NDB",
+          "db": {
+            "type": "Facility",
+            "name": "Antenna Tower - NDB NavAid",
+            "dbid": 3303
+          },
+          "x": 0.0,
+          "y": 3000.0
+        }
+      ]
+    },
+    {
+      "id": "radar_ew_site",
+      "name": "Early-warning radar site",
+      "category": "Radar and air defence",
+      "description": "Long-range air search radar with radome, power, accommodation and point defence.",
+      "tags": [
+        "radar",
+        "air defence"
+      ],
+      "components": [
+        {
+          "label": "Air Search Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic 2D Air Search Radar [Long-Range])",
+            "dbid": 937
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "radar": true
+        },
+        {
+          "label": "Radome",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Radome)",
+            "dbid": 3818
+          },
+          "x": 100.0,
+          "y": 100.0
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": -150.0,
+          "y": 0.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": -300.0,
+          "y": -150.0
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "x": 300.0,
+          "y": -300.0,
+          "hold": true
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              400.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "radar_coastal",
+      "name": "Coastal surveillance station",
+      "category": "Radar and air defence",
+      "description": "Surface-search radar and an observation post overlooking the sea lanes.",
+      "tags": [
+        "radar",
+        "coastal"
+      ],
+      "components": [
+        {
+          "label": "Surface Search Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Surface Search Radar)",
+            "dbid": 939
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "radar": true
+        },
+        {
+          "label": "Observation Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Small with Observer)",
+            "dbid": 3241
+          },
+          "x": 100.0,
+          "y": 50.0
+        },
+        {
+          "label": "Lighthouse",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Lighthouse)",
+            "dbid": 3601
+          },
+          "x": -300.0,
+          "y": 200.0
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": -100.0,
+          "y": -100.0
+        }
+      ]
+    },
+    {
+      "id": "ad_sam_site",
+      "name": "SAM site (generic, reveted)",
+      "category": "Radar and air defence",
+      "description": "Fixed SAM site with search radar and point defence. Swap the SAM for a national system with 'Use for selected unit' in the Database panel.",
+      "tags": [
+        "air defence",
+        "sam"
+      ],
+      "components": [
+        {
+          "label": "SAM Site",
+          "db": {
+            "type": "Facility",
+            "name": "SAM Site (Reveted)",
+            "dbid": 3404
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "radar": true
+        },
+        {
+          "label": "Search Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic 2D Air Search Radar [Short-Range])",
+            "dbid": 938
+          },
+          "x": 300.0,
+          "y": 0.0,
+          "radar": true
+        },
+        {
+          "label": "Revetment",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Revetment)",
+            "dbid": 195
+          },
+          "at": [
+            [
+              141.0,
+              141.0
+            ],
+            [
+              141.0,
+              -141.0
+            ],
+            [
+              -141.0,
+              -141.0
+            ],
+            [
+              -141.0,
+              141.0
+            ]
+          ]
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "x": -300.0,
+          "y": 300.0,
+          "hold": true
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": -200.0,
+          "y": -200.0
+        }
+      ]
+    },
+    {
+      "id": "ad_battalion",
+      "name": "Air defence battalion (field)",
+      "category": "Radar and air defence",
+      "description": "Deployed AD battalion with a mobile control post, search radar and dispersed batteries.",
+      "tags": [
+        "air defence",
+        "mobile"
+      ],
+      "components": [
+        {
+          "label": "AD Battalion",
+          "db": {
+            "type": "Facility",
+            "name": "AD Bn",
+            "dbid": 3331
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Sector Control Vehicle",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Mobile Sector Control)",
+            "dbid": 3163
+          },
+          "x": 200.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Search Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic 2D Air Search Radar [Short-Range])",
+            "dbid": 938
+          },
+          "x": 400.0,
+          "y": 200.0,
+          "radar": true
+        },
+        {
+          "label": "SAM Site",
+          "db": {
+            "type": "Facility",
+            "name": "SAM Site",
+            "dbid": 2988
+          },
+          "at": [
+            [
+              0.0,
+              2500.0
+            ],
+            [
+              2165.0,
+              -1250.0
+            ],
+            [
+              -2165.0,
+              -1250.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "at": [
+            [
+              1039.0,
+              600.0
+            ],
+            [
+              0.0,
+              -1200.0
+            ],
+            [
+              -1039.0,
+              600.0
+            ]
+          ],
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "ad_aaa_position",
+      "name": "AAA position",
+      "category": "Radar and air defence",
+      "description": "Three anti-aircraft gun positions around a point, with a short-range radar.",
+      "tags": [
+        "air defence"
+      ],
+      "components": [
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "at": [
+            [
+              0.0,
+              300.0
+            ],
+            [
+              260.0,
+              -150.0
+            ],
+            [
+              -260.0,
+              -150.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "Fire Control Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic 2D Air Search Radar [Short-Range])",
+            "dbid": 938
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "radar": true
+        }
+      ]
+    },
+    {
+      "id": "ad_aerostat",
+      "name": "Aerostat radar site",
+      "category": "Radar and air defence",
+      "description": "Tethered aerostat with mooring, power and accommodation.",
+      "tags": [
+        "radar",
+        "air defence"
+      ],
+      "components": [
+        {
+          "label": "Aerostat",
+          "db": {
+            "type": "Facility",
+            "name": "Generic Aerostat",
+            "dbid": 1748
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": 150.0,
+          "y": 0.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": -200.0,
+          "y": 0.0
+        }
+      ]
+    },
+    {
+      "id": "gar_barracks_coy",
+      "name": "Barracks (company garrison)",
+      "category": "Garrisons and bases",
+      "description": "A company barracks with accommodation, admin, vehicles and a guard.",
+      "tags": [
+        "garrison",
+        "barracks"
+      ],
+      "components": [
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "at": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              80.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Company HQ",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Medium)",
+            "dbid": 452
+          },
+          "x": 40.0,
+          "y": 100.0
+        },
+        {
+          "label": "Vehicle Depot",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle Depot",
+            "dbid": 3731
+          },
+          "x": 200.0,
+          "y": -100.0
+        },
+        {
+          "label": "Rifle Company",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Coy (Generic)",
+            "dbid": 2273
+          },
+          "x": -150.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              250.0
+            ],
+            [
+              0.0,
+              -250.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gar_battalion_base",
+      "name": "Battalion garrison (military base)",
+      "category": "Garrisons and bases",
+      "description": "A permanent military base: barracks blocks, HQ, vehicle and truck parks, fuel, ammunition, perimeter towers.",
+      "tags": [
+        "garrison",
+        "base"
+      ],
+      "components": [
+        {
+          "label": "Military Base",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Military Base)",
+            "dbid": 2419
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "at": [
+            [
+              -200.0,
+              200.0
+            ],
+            [
+              -90.0,
+              200.0
+            ],
+            [
+              20.0,
+              200.0
+            ],
+            [
+              130.0,
+              200.0
+            ]
+          ]
+        },
+        {
+          "label": "Battalion HQ",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Large)",
+            "dbid": 115
+          },
+          "x": 200.0,
+          "y": 0.0
+        },
+        {
+          "label": "Vehicle Depot",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle Depot",
+            "dbid": 3731
+          },
+          "x": -300.0,
+          "y": -200.0
+        },
+        {
+          "label": "Truck Depot",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Truck Depot, 40x Vehicles)",
+            "dbid": 677
+          },
+          "x": 0.0,
+          "y": -300.0
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              500.0,
+              -400.0
+            ],
+            [
+              600.0,
+              -400.0
+            ]
+          ]
+        },
+        {
+          "label": "Diesel Tank",
+          "db": {
+            "type": "Facility",
+            "name": "Diesel (150k Liter Tank)",
+            "dbid": 75
+          },
+          "x": 400.0,
+          "y": -200.0
+        },
+        {
+          "label": "Watch Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Watch Tower)",
+            "dbid": 457
+          },
+          "at": [
+            [
+              -500.0,
+              500.0
+            ],
+            [
+              500.0,
+              500.0
+            ],
+            [
+              -500.0,
+              -500.0
+            ],
+            [
+              500.0,
+              -500.0
+            ]
+          ]
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              550.0
+            ],
+            [
+              0.0,
+              -550.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gar_fob",
+      "name": "Forward operating base (FOB)",
+      "category": "Garrisons and bases",
+      "description": "Fortified FOB: walls, towers, tents, helipads, fuel, ammunition, mortars and an infantry company.",
+      "tags": [
+        "garrison",
+        "forward"
+      ],
+      "components": [
+        {
+          "label": "FOB",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Forward Operating Base)",
+            "dbid": 2418
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "at": [
+            [
+              -60.0,
+              60.0
+            ],
+            [
+              60.0,
+              60.0
+            ],
+            [
+              -60.0,
+              -60.0
+            ],
+            [
+              60.0,
+              -60.0
+            ]
+          ]
+        },
+        {
+          "label": "Watch Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Watch Tower)",
+            "dbid": 457
+          },
+          "at": [
+            [
+              -200.0,
+              200.0
+            ],
+            [
+              200.0,
+              200.0
+            ],
+            [
+              -200.0,
+              -200.0
+            ],
+            [
+              200.0,
+              -200.0
+            ]
+          ]
+        },
+        {
+          "label": "Helipad",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Helipad (1x Medium Helicopter)",
+            "dbid": 2120
+          },
+          "at": [
+            [
+              300.0,
+              0.0
+            ],
+            [
+              380.0,
+              0.0
+            ]
+          ],
+          "host": true
+        },
+        {
+          "label": "Fuel Bladder",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Bladder (40k Liter Tank)",
+            "dbid": 1828
+          },
+          "x": -150.0,
+          "y": 0.0
+        },
+        {
+          "label": "Ammo Pad",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Pad",
+            "dbid": 1496
+          },
+          "x": 150.0,
+          "y": -150.0
+        },
+        {
+          "label": "Mortar Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Mortar Plt (120mm Mortar)",
+            "dbid": 2739
+          },
+          "x": 0.0,
+          "y": -120.0,
+          "hold": true
+        },
+        {
+          "label": "Infantry Company",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Coy (Generic)",
+            "dbid": 2273
+          },
+          "x": 0.0,
+          "y": 120.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "gar_cop",
+      "name": "Combat outpost (COP)",
+      "category": "Garrisons and bases",
+      "description": "Small fortified outpost with a platoon, heavy machine guns and mortars.",
+      "tags": [
+        "garrison",
+        "forward"
+      ],
+      "components": [
+        {
+          "label": "Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "at": [
+            [
+              -30.0,
+              0.0
+            ],
+            [
+              30.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Watch Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Watch Tower)",
+            "dbid": 457
+          },
+          "at": [
+            [
+              -80.0,
+              80.0
+            ],
+            [
+              80.0,
+              -80.0
+            ]
+          ]
+        },
+        {
+          "label": "Infantry Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (Generic)",
+            "dbid": 2272
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Heavy MG Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (12.7mm MG)",
+            "dbid": 3678
+          },
+          "x": 60.0,
+          "y": 60.0,
+          "hold": true
+        },
+        {
+          "label": "Mortar Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Mortar Plt (81mm Mortar)",
+            "dbid": 3422
+          },
+          "x": -60.0,
+          "y": -60.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "gar_observation_post",
+      "name": "Observation post",
+      "category": "Garrisons and bases",
+      "description": "A two-position observation post with a forward air controller.",
+      "tags": [
+        "recon",
+        "forward"
+      ],
+      "components": [
+        {
+          "label": "Observation Post",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Sec (Observation Post)",
+            "dbid": 364
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Forward Air Controller",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Sec (Forward Air Controller [Laser Designator])",
+            "dbid": 2051
+          },
+          "x": 150.0,
+          "y": 50.0,
+          "hold": true
+        },
+        {
+          "label": "Observer",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Small with Observer)",
+            "dbid": 3241
+          },
+          "x": -100.0,
+          "y": 0.0
+        }
+      ]
+    },
+    {
+      "id": "gar_desert_fort",
+      "name": "Desert fort",
+      "category": "Garrisons and bases",
+      "description": "A walled desert fort with towers and a garrison.",
+      "tags": [
+        "garrison"
+      ],
+      "components": [
+        {
+          "label": "Desert Fort",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Desert Fort)",
+            "dbid": 1780
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Watch Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Watch Tower)",
+            "dbid": 457
+          },
+          "at": [
+            [
+              85.0,
+              85.0
+            ],
+            [
+              85.0,
+              -85.0
+            ],
+            [
+              -85.0,
+              -85.0
+            ],
+            [
+              -85.0,
+              85.0
+            ]
+          ]
+        },
+        {
+          "label": "Garrison",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Coy (Generic)",
+            "dbid": 2273
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Technicals",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Truck, Armed Technical [12.7mm] x 1)",
+            "dbid": 1981
+          },
+          "at": [
+            [
+              200.0,
+              0.0
+            ],
+            [
+              220.0,
+              30.0
+            ]
+          ],
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "gar_un_checkpoint",
+      "name": "Peacekeeping checkpoint",
+      "category": "Garrisons and bases",
+      "description": "UN-style checkpoint on a road.",
+      "tags": [
+        "peacekeeping"
+      ],
+      "components": [
+        {
+          "label": "UN Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (UN Forces)",
+            "dbid": 1783
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              -30.0,
+              0.0
+            ],
+            [
+              30.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Vehicles",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Car x 4)",
+            "dbid": 622
+          },
+          "x": 0.0,
+          "y": -60.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "log_ammo_depot",
+      "name": "Ammunition depot",
+      "category": "Logistics",
+      "description": "Dispersed ammunition storage: bunkers, revetments, pads, transport and a guard.",
+      "tags": [
+        "logistics",
+        "ammunition"
+      ],
+      "components": [
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              -300.0,
+              -150.0
+            ],
+            [
+              -300.0,
+              150.0
+            ],
+            [
+              -100.0,
+              -150.0
+            ],
+            [
+              -100.0,
+              150.0
+            ],
+            [
+              100.0,
+              -150.0
+            ],
+            [
+              100.0,
+              150.0
+            ],
+            [
+              300.0,
+              -150.0
+            ],
+            [
+              300.0,
+              150.0
+            ]
+          ]
+        },
+        {
+          "label": "Ammo Revetment",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Revetment",
+            "dbid": 320
+          },
+          "at": [
+            [
+              -300.0,
+              400.0
+            ],
+            [
+              -100.0,
+              400.0
+            ],
+            [
+              100.0,
+              400.0
+            ],
+            [
+              300.0,
+              400.0
+            ]
+          ]
+        },
+        {
+          "label": "Ammo Pad",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Pad",
+            "dbid": 1496
+          },
+          "at": [
+            [
+              -300.0,
+              -450.0
+            ],
+            [
+              300.0,
+              -450.0
+            ]
+          ]
+        },
+        {
+          "label": "Ammo Trucks",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Ammo Truck x 4)",
+            "dbid": 2086
+          },
+          "x": 500.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Watch Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Watch Tower)",
+            "dbid": 457
+          },
+          "at": [
+            [
+              460.0,
+              460.0
+            ],
+            [
+              460.0,
+              -460.0
+            ],
+            [
+              -460.0,
+              -460.0
+            ],
+            [
+              -460.0,
+              460.0
+            ]
+          ]
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              700.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "log_fuel_depot",
+      "name": "Fuel depot (tank farm)",
+      "category": "Logistics",
+      "description": "Bulk diesel storage with pump house, pipeline, truck depot and bowsers.",
+      "tags": [
+        "logistics",
+        "fuel"
+      ],
+      "components": [
+        {
+          "label": "Diesel Tank",
+          "db": {
+            "type": "Facility",
+            "name": "Diesel (750k Liter Tank)",
+            "dbid": 76
+          },
+          "at": [
+            [
+              -150.0,
+              -150.0
+            ],
+            [
+              -150.0,
+              150.0
+            ],
+            [
+              150.0,
+              -150.0
+            ],
+            [
+              150.0,
+              150.0
+            ]
+          ]
+        },
+        {
+          "label": "Pump House",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Pump House)",
+            "dbid": 17
+          },
+          "x": 350.0,
+          "y": 0.0
+        },
+        {
+          "label": "Pipeline",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Pipeline - Surface)",
+            "dbid": 603
+          },
+          "x": 600.0,
+          "y": 0.0
+        },
+        {
+          "label": "Truck Depot",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Truck Depot, 40x Vehicles)",
+            "dbid": 677
+          },
+          "x": -400.0,
+          "y": 0.0
+        },
+        {
+          "label": "Fuel Bowsers",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Fuel Bowser x 4)",
+            "dbid": 3397
+          },
+          "x": -400.0,
+          "y": 200.0,
+          "hold": true
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              400.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "log_aviation_fuel",
+      "name": "Aviation fuel storage (hardened)",
+      "category": "Logistics",
+      "description": "Bunkered and buried jet fuel for an air base complex.",
+      "tags": [
+        "logistics",
+        "fuel",
+        "hardened"
+      ],
+      "components": [
+        {
+          "label": "AvGas Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas Bunker (750k Liter Tank)",
+            "dbid": 940
+          },
+          "at": [
+            [
+              -200.0,
+              0.0
+            ],
+            [
+              200.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Underground Tank",
+          "db": {
+            "type": "Facility",
+            "name": "AvGas (1500k Liter Underground Tank)",
+            "dbid": 1293
+          },
+          "x": 0.0,
+          "y": 300.0
+        },
+        {
+          "label": "Pump House",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Pump House)",
+            "dbid": 17
+          },
+          "x": 0.0,
+          "y": -200.0
+        }
+      ]
+    },
+    {
+      "id": "log_supply_hub",
+      "name": "Logistics hub / supply point",
+      "category": "Logistics",
+      "description": "Brigade support area: logistics company, containers, trucks, fuel and ammunition vehicles.",
+      "tags": [
+        "logistics"
+      ],
+      "components": [
+        {
+          "label": "Logistics Company",
+          "db": {
+            "type": "Facility",
+            "name": "Logistics Coy",
+            "dbid": 4178
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Container Park",
+          "db": {
+            "type": "Facility",
+            "name": "Container Storage Park",
+            "dbid": 3098
+          },
+          "x": 300.0,
+          "y": 0.0
+        },
+        {
+          "label": "Truck Depot",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Truck Depot, 40x Vehicles)",
+            "dbid": 677
+          },
+          "x": -300.0,
+          "y": 0.0
+        },
+        {
+          "label": "Trucks",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Truck x 4)",
+            "dbid": 624
+          },
+          "at": [
+            [
+              0.0,
+              200.0
+            ],
+            [
+              100.0,
+              200.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "Fuel Bowsers",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Fuel Bowser x 4)",
+            "dbid": 3397
+          },
+          "x": -150.0,
+          "y": -200.0,
+          "hold": true
+        },
+        {
+          "label": "Ammo Trucks",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Ammo Truck x 4)",
+            "dbid": 2086
+          },
+          "x": 150.0,
+          "y": -200.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "log_rail_yard",
+      "name": "Railway yard",
+      "category": "Logistics",
+      "description": "Marshalling yard with a station, warehouses and trains.",
+      "tags": [
+        "logistics",
+        "rail"
+      ],
+      "components": [
+        {
+          "label": "Railway Yard",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Railway Yard)",
+            "dbid": 108
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Railway Station",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Railway Station)",
+            "dbid": 101
+          },
+          "x": 300.0,
+          "y": 0.0
+        },
+        {
+          "label": "Warehouse",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Large)",
+            "dbid": 115
+          },
+          "at": [
+            [
+              -250.0,
+              150.0
+            ],
+            [
+              -250.0,
+              -150.0
+            ]
+          ]
+        },
+        {
+          "label": "Train",
+          "db": {
+            "type": "Facility",
+            "name": "Train (Engine + 3 Train Cars)",
+            "dbid": 2981
+          },
+          "at": [
+            [
+              0.0,
+              100.0
+            ],
+            [
+              0.0,
+              -100.0
+            ]
+          ],
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "log_field_hospital",
+      "name": "Field hospital",
+      "category": "Logistics",
+      "description": "Tented field hospital with a helicopter landing zone.",
+      "tags": [
+        "logistics",
+        "medical"
+      ],
+      "components": [
+        {
+          "label": "Hospital Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "at": [
+            [
+              -60.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              60.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Landing Zone",
+          "db": {
+            "type": "Facility",
+            "name": "Landing Zone",
+            "dbid": 91
+          },
+          "x": 0.0,
+          "y": 200.0
+        },
+        {
+          "label": "Helipad",
+          "db": {
+            "type": "Facility",
+            "name": "A/C Helipad (1x Medium Helicopter)",
+            "dbid": 2120
+          },
+          "x": 60.0,
+          "y": 200.0,
+          "host": true
+        },
+        {
+          "label": "Generator",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Generator)",
+            "dbid": 119
+          },
+          "x": -120.0,
+          "y": -60.0
+        }
+      ]
+    },
+    {
+      "id": "log_bridge_site",
+      "name": "Defended bridge crossing",
+      "category": "Logistics",
+      "description": "A road bridge with infantry, AAA and checkpoints at both ends.",
+      "tags": [
+        "infrastructure",
+        "bridge"
+      ],
+      "components": [
+        {
+          "label": "Bridge",
+          "db": {
+            "type": "Facility",
+            "name": "Bridge (Two-Lane, 60 Tons)",
+            "dbid": 162
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Infantry Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (Generic)",
+            "dbid": 2272
+          },
+          "at": [
+            [
+              0.0,
+              300.0
+            ],
+            [
+              0.0,
+              -300.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "x": 250.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              30.0,
+              200.0
+            ],
+            [
+              30.0,
+              -200.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "log_pontoon_crossing",
+      "name": "Pontoon river crossing",
+      "category": "Logistics",
+      "description": "Engineer pontoon bridge with spare bridging and a bridgelayer.",
+      "tags": [
+        "engineering",
+        "bridge"
+      ],
+      "components": [
+        {
+          "label": "Pontoon Bridge",
+          "db": {
+            "type": "Facility",
+            "name": "Bridge (Pontoon, 60 Tons)",
+            "dbid": 2424
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Pontoon Carriers",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Pontoon Bridge Carriers x 4)",
+            "dbid": 2215
+          },
+          "x": 150.0,
+          "y": -250.0,
+          "hold": true
+        },
+        {
+          "label": "Bridgelayer",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (Tank, Armoured Vehicle Launched Bridge x 1)",
+            "dbid": 2214
+          },
+          "x": -150.0,
+          "y": -250.0,
+          "hold": true
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "x": 300.0,
+          "y": -100.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "nav_small_base",
+      "name": "Naval base (small)",
+      "category": "Naval",
+      "description": "Patrol-craft and corvette base: port, two piers, dock, fuel, HQ and barracks.",
+      "tags": [
+        "naval",
+        "port"
+      ],
+      "components": [
+        {
+          "label": "Port",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Port",
+            "dbid": 2980
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Pier",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Pier [Medium (17.1-25m) x 2])",
+            "dbid": 4237
+          },
+          "at": [
+            [
+              -150.0,
+              250.0
+            ],
+            [
+              150.0,
+              250.0
+            ]
+          ]
+        },
+        {
+          "label": "Naval Dock",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Naval Dock)",
+            "dbid": 210
+          },
+          "x": 0.0,
+          "y": 150.0
+        },
+        {
+          "label": "Diesel Tank",
+          "db": {
+            "type": "Facility",
+            "name": "Diesel (400k Liter Tank)",
+            "dbid": 11
+          },
+          "at": [
+            [
+              -300.0,
+              -100.0
+            ],
+            [
+              -300.0,
+              -200.0
+            ]
+          ]
+        },
+        {
+          "label": "Base HQ",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Medium)",
+            "dbid": 452
+          },
+          "x": 200.0,
+          "y": -150.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "x": 350.0,
+          "y": -150.0
+        },
+        {
+          "label": "Port Crane",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Port Crane)",
+            "dbid": 53
+          },
+          "x": 100.0,
+          "y": 200.0
+        }
+      ]
+    },
+    {
+      "id": "nav_major_base",
+      "name": "Naval base (major)",
+      "category": "Naval",
+      "description": "Fleet base: very large and extra-large piers, dry dock, cranes, fuel and munitions, fleet HQ, accommodation, surface radar and air defence.",
+      "tags": [
+        "naval",
+        "port"
+      ],
+      "components": [
+        {
+          "label": "Naval Dock",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Naval Dock)",
+            "dbid": 210
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Fleet Pier",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Pier [Very Large (45.1-200m) x 4])",
+            "dbid": 4120
+          },
+          "at": [
+            [
+              -400.0,
+              400.0
+            ],
+            [
+              0.0,
+              400.0
+            ],
+            [
+              400.0,
+              400.0
+            ]
+          ]
+        },
+        {
+          "label": "Carrier Pier",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Pier [Extra Large (200-500m) x 1])",
+            "dbid": 4253
+          },
+          "x": 800.0,
+          "y": 450.0
+        },
+        {
+          "label": "Dry Dock",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Dry Dock [Very Large (45.1-200m) x 1])",
+            "dbid": 4698
+          },
+          "x": -800.0,
+          "y": 250.0
+        },
+        {
+          "label": "Port Crane",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Port Crane)",
+            "dbid": 53
+          },
+          "at": [
+            [
+              -500.0,
+              250.0
+            ],
+            [
+              -200.0,
+              250.0
+            ],
+            [
+              100.0,
+              250.0
+            ],
+            [
+              400.0,
+              250.0
+            ]
+          ]
+        },
+        {
+          "label": "Fuel Tank",
+          "db": {
+            "type": "Facility",
+            "name": "Diesel (750k Liter Tank)",
+            "dbid": 76
+          },
+          "at": [
+            [
+              -700.0,
+              -300.0
+            ],
+            [
+              -550.0,
+              -300.0
+            ],
+            [
+              -700.0,
+              -450.0
+            ],
+            [
+              -550.0,
+              -450.0
+            ]
+          ]
+        },
+        {
+          "label": "Ammo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Surface)",
+            "dbid": 322
+          },
+          "at": [
+            [
+              600.0,
+              -500.0
+            ],
+            [
+              720.0,
+              -500.0
+            ],
+            [
+              840.0,
+              -500.0
+            ],
+            [
+              960.0,
+              -500.0
+            ]
+          ]
+        },
+        {
+          "label": "Fleet HQ",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Large Government Building)",
+            "dbid": 2289
+          },
+          "x": 0.0,
+          "y": -300.0
+        },
+        {
+          "label": "Barracks",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Barracks)",
+            "dbid": 428
+          },
+          "at": [
+            [
+              200.0,
+              -150.0
+            ],
+            [
+              310.0,
+              -150.0
+            ],
+            [
+              420.0,
+              -150.0
+            ]
+          ]
+        },
+        {
+          "label": "Surface Search Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Surface Search Radar)",
+            "dbid": 939
+          },
+          "x": 1100.0,
+          "y": 200.0,
+          "radar": true
+        },
+        {
+          "label": "SAM Site",
+          "db": {
+            "type": "Facility",
+            "name": "SAM Site (Reveted)",
+            "dbid": 3404
+          },
+          "at": [
+            [
+              -1500.0,
+              -800.0
+            ],
+            [
+              1500.0,
+              -800.0
+            ]
+          ]
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              -800.0
+            ],
+            [
+              -1000.0,
+              -600.0
+            ],
+            [
+              1000.0,
+              -600.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nav_submarine_base",
+      "name": "Submarine base",
+      "category": "Naval",
+      "description": "Submarine pens and an underground pier with bunkered fuel, torpedo storage and command.",
+      "tags": [
+        "naval",
+        "submarine",
+        "hardened"
+      ],
+      "components": [
+        {
+          "label": "Submarine Pens",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Submarine Pens)",
+            "dbid": 4226
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Underground Pier",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Underground Pier [Large (25.1-45m) x 4])",
+            "dbid": 3589
+          },
+          "x": 400.0,
+          "y": 200.0,
+          "host": true
+        },
+        {
+          "label": "Torpedo Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Ammo Bunker (Underground)",
+            "dbid": 325
+          },
+          "at": [
+            [
+              -300.0,
+              -200.0
+            ],
+            [
+              -150.0,
+              -200.0
+            ]
+          ]
+        },
+        {
+          "label": "Diesel Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Diesel Bunker (400k Liter Tank)",
+            "dbid": 951
+          },
+          "x": 300.0,
+          "y": -200.0
+        },
+        {
+          "label": "Command Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Medium C3M)",
+            "dbid": 100
+          },
+          "x": 0.0,
+          "y": -350.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              0.0,
+              -550.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nav_commercial_port",
+      "name": "Commercial port",
+      "category": "Naval",
+      "description": "Container and bulk port: large piers, cranes, container park and oil storage.",
+      "tags": [
+        "port",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Port",
+          "db": {
+            "type": "Facility",
+            "name": "Single-Unit Port",
+            "dbid": 2980
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "Cargo Pier",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Pier [Very Large (45.1-200m) x 2])",
+            "dbid": 4241
+          },
+          "at": [
+            [
+              -300.0,
+              300.0
+            ],
+            [
+              300.0,
+              300.0
+            ]
+          ]
+        },
+        {
+          "label": "Port Crane",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Port Crane)",
+            "dbid": 53
+          },
+          "at": [
+            [
+              -450.0,
+              200.0
+            ],
+            [
+              -150.0,
+              200.0
+            ],
+            [
+              150.0,
+              200.0
+            ],
+            [
+              450.0,
+              200.0
+            ]
+          ]
+        },
+        {
+          "label": "Container Park",
+          "db": {
+            "type": "Facility",
+            "name": "Container Storage Park",
+            "dbid": 3098
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Oil Tank",
+          "db": {
+            "type": "Facility",
+            "name": "Diesel (750k Liter Tank)",
+            "dbid": 76
+          },
+          "at": [
+            [
+              700.0,
+              -100.0
+            ],
+            [
+              850.0,
+              -100.0
+            ]
+          ]
+        },
+        {
+          "label": "Warehouse",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Large)",
+            "dbid": 115
+          },
+          "x": -600.0,
+          "y": -100.0
+        }
+      ]
+    },
+    {
+      "id": "nav_anchorage",
+      "name": "Fleet anchorage",
+      "category": "Naval",
+      "description": "Mooring buoys for an anchored task group.",
+      "tags": [
+        "naval"
+      ],
+      "components": [
+        {
+          "label": "Mooring Buoy",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Mooring Buoy [Very Large])",
+            "dbid": 4258
+          },
+          "at": [
+            [
+              0.0,
+              900.0
+            ],
+            [
+              779.0,
+              450.0
+            ],
+            [
+              779.0,
+              -450.0
+            ],
+            [
+              0.0,
+              -900.0
+            ],
+            [
+              -779.0,
+              -450.0
+            ],
+            [
+              -779.0,
+              450.0
+            ]
+          ]
+        },
+        {
+          "label": "Boom Net",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Boom Net)",
+            "dbid": 4261
+          },
+          "x": 0.0,
+          "y": 1800.0
+        }
+      ]
+    },
+    {
+      "id": "nav_coastal_battery",
+      "name": "Coastal missile battery position",
+      "category": "Naval",
+      "description": "Anti-ship missile battery in revetments with a surface radar and C2.",
+      "tags": [
+        "naval",
+        "coastal",
+        "missile"
+      ],
+      "components": [
+        {
+          "label": "SSM Battery",
+          "db": {
+            "type": "Facility",
+            "name": "SSM Bty",
+            "dbid": 3727
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Missile Revetment",
+          "db": {
+            "type": "Facility",
+            "name": "Missile Revetment (1x TEL)",
+            "dbid": 3597
+          },
+          "at": [
+            [
+              212.0,
+              212.0
+            ],
+            [
+              212.0,
+              -212.0
+            ],
+            [
+              -212.0,
+              -212.0
+            ],
+            [
+              -212.0,
+              212.0
+            ]
+          ]
+        },
+        {
+          "label": "Surface Search Radar",
+          "db": {
+            "type": "Facility",
+            "name": "Radar (Generic Surface Search Radar)",
+            "dbid": 939
+          },
+          "x": 0.0,
+          "y": 600.0,
+          "radar": true
+        },
+        {
+          "label": "C2 Trailer",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (C2/C3 Trailer)",
+            "dbid": 3162
+          },
+          "x": -100.0,
+          "y": -100.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "msl_field_battery",
+      "name": "SSM battery (field)",
+      "category": "Missiles and drones",
+      "description": "A surface-to-surface missile battery in revetments with command and reloads.",
+      "tags": [
+        "missile"
+      ],
+      "components": [
+        {
+          "label": "SSM Battery",
+          "db": {
+            "type": "Facility",
+            "name": "SSM Bty",
+            "dbid": 3727
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Missile Revetment",
+          "db": {
+            "type": "Facility",
+            "name": "Missile Revetment (1x TEL)",
+            "dbid": 3597
+          },
+          "at": [
+            [
+              -200.0,
+              0.0
+            ],
+            [
+              0.0,
+              150.0
+            ],
+            [
+              200.0,
+              0.0
+            ],
+            [
+              0.0,
+              -150.0
+            ]
+          ]
+        },
+        {
+          "label": "C2 Trailer",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (C2/C3 Trailer)",
+            "dbid": 3162
+          },
+          "x": -300.0,
+          "y": -200.0,
+          "hold": true
+        },
+        {
+          "label": "Reload Trucks",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Ammo Truck x 4)",
+            "dbid": 2086
+          },
+          "x": 300.0,
+          "y": -200.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "msl_hardened_site",
+      "name": "Hardened missile site",
+      "category": "Missiles and drones",
+      "description": "Hardened shelters for missile launchers with a command bunker.",
+      "tags": [
+        "missile",
+        "hardened"
+      ],
+      "components": [
+        {
+          "label": "Hardened Missile Shelter",
+          "db": {
+            "type": "Facility",
+            "name": "Hardened Missile Shelter (1x TEL)",
+            "dbid": 3596
+          },
+          "at": [
+            [
+              -450.0,
+              0.0
+            ],
+            [
+              -150.0,
+              0.0
+            ],
+            [
+              150.0,
+              0.0
+            ],
+            [
+              450.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Command Bunker",
+          "db": {
+            "type": "Facility",
+            "name": "Bunker (Medium C3M)",
+            "dbid": 100
+          },
+          "x": 0.0,
+          "y": -400.0
+        },
+        {
+          "label": "SAM Site",
+          "db": {
+            "type": "Facility",
+            "name": "SAM Site (Reveted)",
+            "dbid": 3404
+          },
+          "x": 0.0,
+          "y": 600.0
+        },
+        {
+          "label": "Guard Post",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Guard Post)",
+            "dbid": 617
+          },
+          "at": [
+            [
+              -700.0,
+              -300.0
+            ],
+            [
+              700.0,
+              -300.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "msl_drone_battery",
+      "name": "Loitering-munition battery",
+      "category": "Missiles and drones",
+      "description": "Ground-launched one-way attack drones with control.",
+      "tags": [
+        "drone",
+        "missile"
+      ],
+      "components": [
+        {
+          "label": "Drone Battery",
+          "db": {
+            "type": "Facility",
+            "name": "SSM Bty (Suicide Drone)",
+            "dbid": 4573
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "UAV Ground Control",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (UAV Ground Control)",
+            "dbid": 3164
+          },
+          "x": 150.0,
+          "y": -100.0,
+          "hold": true
+        },
+        {
+          "label": "Security Section",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Plt (Generic)",
+            "dbid": 2272
+          },
+          "x": 0.0,
+          "y": 200.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "uav_launch_site",
+      "name": "UAV launch site",
+      "category": "Missiles and drones",
+      "description": "Fixed launch site for reconnaissance drones with ground control and launch trucks.",
+      "tags": [
+        "drone"
+      ],
+      "components": [
+        {
+          "label": "UAV Launch Site",
+          "db": {
+            "type": "Facility",
+            "name": "UAV Launch Site",
+            "dbid": 4605
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "host": true
+        },
+        {
+          "label": "UAV Ground Control",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicle (UAV Ground Control)",
+            "dbid": 3164
+          },
+          "x": 150.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Launch Truck",
+          "db": {
+            "type": "Facility",
+            "name": "UAV Launch Truck",
+            "dbid": 3157
+          },
+          "at": [
+            [
+              -150.0,
+              100.0
+            ],
+            [
+              -150.0,
+              -100.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "Tents",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Tents)",
+            "dbid": 1749
+          },
+          "x": 250.0,
+          "y": 150.0
+        }
+      ]
+    },
+    {
+      "id": "grd_battlegroup",
+      "name": "Mechanised battlegroup (generic)",
+      "category": "Ground forces",
+      "description": "A combined-arms battlegroup in a defensive laager: HQ, armour, two mechanised companies, artillery, air defence and logistics.",
+      "tags": [
+        "ground",
+        "battlegroup"
+      ],
+      "components": [
+        {
+          "label": "Battlegroup HQ",
+          "db": {
+            "type": "Facility",
+            "name": "HQ",
+            "dbid": 4142
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Armoured Company",
+          "db": {
+            "type": "Facility",
+            "name": "Armored Coy",
+            "dbid": 3350
+          },
+          "x": 0.0,
+          "y": 1500.0,
+          "hold": true
+        },
+        {
+          "label": "Mech Inf Company",
+          "db": {
+            "type": "Facility",
+            "name": "Mech Inf Coy",
+            "dbid": 3354
+          },
+          "at": [
+            [
+              -1200.0,
+              800.0
+            ],
+            [
+              1200.0,
+              800.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "Artillery Battery",
+          "db": {
+            "type": "Facility",
+            "name": "Arty Bty",
+            "dbid": 3373
+          },
+          "x": 0.0,
+          "y": -1800.0,
+          "hold": true
+        },
+        {
+          "label": "AAA",
+          "db": {
+            "type": "Facility",
+            "name": "AAA",
+            "dbid": 2989
+          },
+          "x": 500.0,
+          "y": -500.0,
+          "hold": true
+        },
+        {
+          "label": "Logistics Company",
+          "db": {
+            "type": "Facility",
+            "name": "Logistics Coy",
+            "dbid": 4178
+          },
+          "x": -500.0,
+          "y": -1000.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "grd_infantry_battalion",
+      "name": "Infantry battalion position",
+      "category": "Ground forces",
+      "description": "Dug-in infantry battalion with mortars, HQ and a recon screen.",
+      "tags": [
+        "ground",
+        "infantry"
+      ],
+      "components": [
+        {
+          "label": "Battalion HQ",
+          "db": {
+            "type": "Facility",
+            "name": "HQ",
+            "dbid": 4142
+          },
+          "x": 0.0,
+          "y": 0.0,
+          "hold": true
+        },
+        {
+          "label": "Infantry Company",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Coy (Generic)",
+            "dbid": 2273
+          },
+          "at": [
+            [
+              -1000.0,
+              800.0
+            ],
+            [
+              0.0,
+              1200.0
+            ],
+            [
+              1000.0,
+              800.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "Mortar Platoon",
+          "db": {
+            "type": "Facility",
+            "name": "Mortar Plt (120mm Mortar)",
+            "dbid": 2739
+          },
+          "x": 0.0,
+          "y": -500.0,
+          "hold": true
+        },
+        {
+          "label": "Recon Section",
+          "db": {
+            "type": "Facility",
+            "name": "Inf Sec (Recon)",
+            "dbid": 614
+          },
+          "at": [
+            [
+              -1500.0,
+              2500.0
+            ],
+            [
+              1500.0,
+              2500.0
+            ]
+          ],
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "grd_artillery_battalion",
+      "name": "Artillery battalion firing position",
+      "category": "Ground forces",
+      "description": "Three batteries dispersed around a battalion command post with ammunition resupply.",
+      "tags": [
+        "ground",
+        "artillery"
+      ],
+      "components": [
+        {
+          "label": "Battalion CP",
+          "db": {
+            "type": "Facility",
+            "name": "Command Post",
+            "dbid": 3730
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Artillery Battery",
+          "db": {
+            "type": "Facility",
+            "name": "Arty Bty",
+            "dbid": 3373
+          },
+          "at": [
+            [
+              0.0,
+              1500.0
+            ],
+            [
+              1299.0,
+              -750.0
+            ],
+            [
+              -1299.0,
+              -750.0
+            ]
+          ],
+          "hold": true
+        },
+        {
+          "label": "Ammo Trucks",
+          "db": {
+            "type": "Facility",
+            "name": "Vehicles (Ammo Truck x 4)",
+            "dbid": 2086
+          },
+          "x": 0.0,
+          "y": -700.0,
+          "hold": true
+        }
+      ]
+    },
+    {
+      "id": "inf_power_gas",
+      "name": "Gas power station",
+      "category": "Infrastructure",
+      "description": "Power station with substation, transformers and outgoing lines.",
+      "tags": [
+        "power",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Power Station",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Power Station - Gas)",
+            "dbid": 598
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Substation",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Electric Sub Station)",
+            "dbid": 164
+          },
+          "x": 300.0,
+          "y": 0.0
+        },
+        {
+          "label": "Transformer",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Transformer)",
+            "dbid": 130
+          },
+          "at": [
+            [
+              400.0,
+              100.0
+            ],
+            [
+              400.0,
+              -100.0
+            ]
+          ]
+        },
+        {
+          "label": "Transmission Line",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Power Transmission Line)",
+            "dbid": 600
+          },
+          "x": 700.0,
+          "y": 0.0
+        }
+      ]
+    },
+    {
+      "id": "inf_power_nuclear",
+      "name": "Nuclear power plant",
+      "category": "Infrastructure",
+      "description": "Two reactor buildings, turbines and a substation. Strike with care.",
+      "tags": [
+        "power",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Nuclear Power Station",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Power Station - Nuclear)",
+            "dbid": 599
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Reactor",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Reactor)",
+            "dbid": 48
+          },
+          "at": [
+            [
+              -150.0,
+              150.0
+            ],
+            [
+              150.0,
+              150.0
+            ]
+          ]
+        },
+        {
+          "label": "Turbine Hall",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Turbine)",
+            "dbid": 125
+          },
+          "x": 0.0,
+          "y": -100.0
+        },
+        {
+          "label": "Substation",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Electric Sub Station)",
+            "dbid": 164
+          },
+          "x": 400.0,
+          "y": 0.0
+        }
+      ]
+    },
+    {
+      "id": "inf_hydro_dam",
+      "name": "Dam and hydro-electric plant",
+      "category": "Infrastructure",
+      "description": "A dam with its power station and substation.",
+      "tags": [
+        "power",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Dam",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Dam)",
+            "dbid": 110
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Hydro Power Station",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Power Station - Hydro-Electric)",
+            "dbid": 596
+          },
+          "x": 0.0,
+          "y": -200.0
+        },
+        {
+          "label": "Substation",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Electric Sub Station)",
+            "dbid": 164
+          },
+          "x": 300.0,
+          "y": -250.0
+        }
+      ]
+    },
+    {
+      "id": "inf_refinery",
+      "name": "Oil refinery complex",
+      "category": "Infrastructure",
+      "description": "Refinery with tank farm, pump house and pipelines.",
+      "tags": [
+        "oil",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Refinery",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Oil Refinery)",
+            "dbid": 149
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Storage Tank",
+          "db": {
+            "type": "Facility",
+            "name": "Diesel (750k Liter Tank)",
+            "dbid": 76
+          },
+          "at": [
+            [
+              300.0,
+              -150.0
+            ],
+            [
+              300.0,
+              150.0
+            ],
+            [
+              450.0,
+              -150.0
+            ],
+            [
+              450.0,
+              150.0
+            ],
+            [
+              600.0,
+              -150.0
+            ],
+            [
+              600.0,
+              150.0
+            ]
+          ]
+        },
+        {
+          "label": "Pump House",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Pump House)",
+            "dbid": 17
+          },
+          "x": -250.0,
+          "y": 0.0
+        },
+        {
+          "label": "Pipeline",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Pipeline - Surface)",
+            "dbid": 603
+          },
+          "x": -500.0,
+          "y": 0.0
+        },
+        {
+          "label": "Chimney",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Chimney)",
+            "dbid": 865
+          },
+          "x": -100.0,
+          "y": 200.0
+        }
+      ]
+    },
+    {
+      "id": "inf_oil_field",
+      "name": "Oil field",
+      "category": "Infrastructure",
+      "description": "A cluster of wells with a pump house.",
+      "tags": [
+        "oil",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Oil Well",
+          "db": {
+            "type": "Facility",
+            "name": "Structure (Oil Well)",
+            "dbid": 702
+          },
+          "at": [
+            [
+              0.0,
+              800.0
+            ],
+            [
+              761.0,
+              247.0
+            ],
+            [
+              470.0,
+              -647.0
+            ],
+            [
+              -470.0,
+              -647.0
+            ],
+            [
+              -761.0,
+              247.0
+            ]
+          ]
+        },
+        {
+          "label": "Pump House",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Pump House)",
+            "dbid": 17
+          },
+          "x": 0.0,
+          "y": 0.0
+        }
+      ]
+    },
+    {
+      "id": "inf_government",
+      "name": "Government district",
+      "category": "Infrastructure",
+      "description": "Seat of government: ministries, palace, leadership compound and police.",
+      "tags": [
+        "government",
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Ministry",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Large Government Building)",
+            "dbid": 2289
+          },
+          "at": [
+            [
+              -200.0,
+              0.0
+            ],
+            [
+              200.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "label": "Palace",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Palace)",
+            "dbid": 189
+          },
+          "x": 0.0,
+          "y": 300.0
+        },
+        {
+          "label": "Leadership Compound",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Very Large Leadership Compound)",
+            "dbid": 2291
+          },
+          "x": 0.0,
+          "y": -400.0
+        },
+        {
+          "label": "Police Station",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Police Station)",
+            "dbid": 616
+          },
+          "x": 400.0,
+          "y": -200.0
+        },
+        {
+          "label": "Radio/TV Station",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Radio/TV Station)",
+            "dbid": 238
+          },
+          "x": -400.0,
+          "y": -250.0
+        }
+      ]
+    },
+    {
+      "id": "inf_town",
+      "name": "Small town",
+      "category": "Infrastructure",
+      "description": "A town marker with typical public buildings - useful for population-sensitive scenarios.",
+      "tags": [
+        "civil",
+        "town"
+      ],
+      "components": [
+        {
+          "label": "Town",
+          "db": {
+            "type": "Facility",
+            "name": "Marker (Town)",
+            "dbid": 1778
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Hospital",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Hospital)",
+            "dbid": 318
+          },
+          "x": 200.0,
+          "y": 150.0
+        },
+        {
+          "label": "School",
+          "db": {
+            "type": "Facility",
+            "name": "Building (School)",
+            "dbid": 319
+          },
+          "x": -200.0,
+          "y": 150.0
+        },
+        {
+          "label": "Police Station",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Police Station)",
+            "dbid": 616
+          },
+          "x": 150.0,
+          "y": -150.0
+        },
+        {
+          "label": "Place of Worship",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Place of Worship)",
+            "dbid": 2290
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Houses",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Medium)",
+            "dbid": 452
+          },
+          "at": [
+            [
+              283.0,
+              283.0
+            ],
+            [
+              283.0,
+              -283.0
+            ],
+            [
+              -283.0,
+              -283.0
+            ],
+            [
+              -283.0,
+              283.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "inf_village",
+      "name": "Village",
+      "category": "Infrastructure",
+      "description": "A village marker with a handful of houses.",
+      "tags": [
+        "civil"
+      ],
+      "components": [
+        {
+          "label": "Village",
+          "db": {
+            "type": "Facility",
+            "name": "Marker (Village)",
+            "dbid": 1779
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "House",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Small)",
+            "dbid": 113
+          },
+          "at": [
+            [
+              0.0,
+              150.0
+            ],
+            [
+              143.0,
+              46.0
+            ],
+            [
+              88.0,
+              -121.0
+            ],
+            [
+              -88.0,
+              -121.0
+            ],
+            [
+              -143.0,
+              46.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "inf_target_range",
+      "name": "Training / bombing range",
+      "category": "Infrastructure",
+      "description": "Range targets around a bullseye with an observation tower.",
+      "tags": [
+        "training"
+      ],
+      "components": [
+        {
+          "label": "Bullseye",
+          "db": {
+            "type": "Facility",
+            "name": "Marker (Bombing Target [Bullseye])",
+            "dbid": 3166
+          },
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "label": "Target",
+          "db": {
+            "type": "Facility",
+            "name": "Marker (Training Target)",
+            "dbid": 3165
+          },
+          "at": [
+            [
+              0.0,
+              500.0
+            ],
+            [
+              433.0,
+              250.0
+            ],
+            [
+              433.0,
+              -250.0
+            ],
+            [
+              0.0,
+              -500.0
+            ],
+            [
+              -433.0,
+              -250.0
+            ],
+            [
+              -433.0,
+              250.0
+            ]
+          ]
+        },
+        {
+          "label": "Range Tower",
+          "db": {
+            "type": "Facility",
+            "name": "Building (Watch Tower)",
+            "dbid": 457
+          },
+          "x": 0.0,
+          "y": -1500.0
+        }
+      ]
+    }
+  ]
+}

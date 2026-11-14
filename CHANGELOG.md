@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- **Unit templates**: 80 pre-grouped sites (670 units) from generic DB3000 facilities - single-unit airfields of
+  every size; tactical, main-operating, bomber, mountain, helicopter, road, expeditionary and civil air bases; FARPs;
+  command posts and bunkers; communications, intelligence and EW sites; radar and air defence; barracks, FOBs and
+  outposts; ammunition, fuel and supply depots; naval, submarine and commercial ports; missile and drone sites;
+  ground force positions; power, oil and civil infrastructure. Place with a name, side, position and orientation
+  (Ctrl+T, map toolbar or right-click); sites are CMO groups that move and rotate together. Components resolve by
+  database name with a DBID hint and search fallback. Editable JSON library with an editor, and "Save as unit
+  template" from any selection.
+- Formations can now be grouped in CMO without formation stations (used for fixed sites).
+
 ## 1.4.0 — 2026-11-14
 
 - **Callsigns**: a standalone, editable JSON callsign library (38 air arms, ~365 squadrons, 1,100+ words) and an

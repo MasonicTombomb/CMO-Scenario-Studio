@@ -388,8 +388,11 @@ def compile_formations(project: Project) -> list[dict]:
             true = bearing_deg(lead.lat, lead.lon, u.lat, u.lon) if dist_nm > 1e-6 else 0.0
             brg = true if f.station_type == "Fixed" else (true - f.heading) % 360.0
             members.append({"id": u.id, "bearing": round(brg, 1), "dist": round(dist_nm, 3)})
-        out.append({"name": f.name, "lead": lead.id, "stype": f.station_type, "sprint": bool(f.sprint_drift),
-                    "members": members})
+        rec = {"name": f.name, "lead": lead.id, "stype": f.station_type, "sprint": bool(f.sprint_drift),
+               "members": members}
+        if not f.set_stations:
+            rec["nostations"] = True
+        out.append(rec)
     return out
 
 

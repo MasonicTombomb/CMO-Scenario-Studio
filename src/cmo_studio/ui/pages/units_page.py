@@ -219,6 +219,8 @@ class UnitsPage(Page):
         menu.addAction("Assign callsigns...", self._callsigns)
         menu.addAction("Assign to mission...", self._assign)
         menu.addAction("Make formation", self._formation)
+        menu.addAction("Save as unit template...", lambda: self.ctx.window and
+                       self.ctx.window.save_units_as_template(self._selected_ids()))
         menu.addAction("Toggle reinforcement", self._toggle_reserve)
         menu.addSeparator()
         if len(ids) == 1 and self.ctx.window is not None:

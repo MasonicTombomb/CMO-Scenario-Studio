@@ -191,7 +191,8 @@ class FormationsPage(Page):
         f.addRow(b.check(QCheckBox("Keep members on station (move with the lead, follow setting changes)"),
                          "keep_on_station"))
         f.addRow(b.check(QCheckBox("Give every unit the formation heading"), "set_heading"))
-        f.addRow(b.check(QCheckBox("Build as a CMO group with formation stations"), "group_in_cmo"))
+        f.addRow(b.check(QCheckBox("Build as a CMO group"), "group_in_cmo"))
+        f.addRow(b.check(QCheckBox("Give members formation stations in CMO (untick for fixed sites)"), "set_stations"))
         self.stype = QComboBox()
         self.stype.addItem("Rotating - stations turn with the group's course", "Rotating")
         self.stype.addItem("Fixed - stations keep their true bearing", "Fixed")

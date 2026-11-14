@@ -52,6 +52,11 @@ class MapPage(Page):
         self.side_combo.setMinimumWidth(110)
         tb.addWidget(self.side_combo)
         tb.addSeparator()
+        tpl = QAction("Templates...", self)
+        tpl.setToolTip("Place a pre-grouped site (airfield, command post, barracks...) at the map centre (Ctrl+T)")
+        tpl.triggered.connect(lambda: self.ctx.window and self.ctx.window.place_template())
+        tb.addAction(tpl)
+        tb.addSeparator()
         fit = QAction("Fit all", self)
         fit.triggered.connect(lambda: self.map.fit_project())
         tb.addAction(fit)
@@ -354,6 +359,8 @@ class MapPage(Page):
         if self.place_entry:
             menu.addAction(f"Place {self.place_entry.name} here", lambda: self._place(lat, lon))
         menu.addAction("Add reference point here", lambda: self._add_rp(lat, lon))
+        if self.ctx.window is not None:
+            menu.addAction("Place unit template here...", lambda: self.ctx.window.place_template(lat, lon))
         menu.addAction("Draw area from here", lambda: (self.set_tool(Tool.ZONE), self.map._draft.append([lat, lon])))
         menu.addAction("Measure from here", lambda: (self.set_tool(Tool.MEASURE),
                                                       self.map._measure.append((lat, lon))))
