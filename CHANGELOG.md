@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.1 — 2026-11-14
+
+- **Patrol area library**: 134 predefined sea and air patrol areas (94 sea, 40 air) in eight regions -
+  Europe, Arctic, Middle East, Africa, Asia, Oceania, North America and South America - from the Bay of Biscay,
+  GIUK gaps and Baltic to Hormuz, the Taiwan Strait, the South China Sea and the Falklands TEZ, plus CAP and QRA
+  boxes, AEW orbits and tanker tracks. Browse by region and sea/air with a map preview and add one or several as
+  areas, optionally with a suggested patrol or support mission (Ctrl+Shift+A, map toolbar and right-click, Areas
+  tab, Ctrl+K search). Editable JSON library with an editor (drag corners on the map), and "Save to area library"
+  for areas you draw.
+
 ## 1.5.0 — 2026-11-14
 
 - **Unit templates**: 80 pre-grouped sites (670 units) from generic DB3000 facilities - single-unit airfields of
