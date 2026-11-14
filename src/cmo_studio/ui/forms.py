@@ -450,9 +450,16 @@ class ZoneForm(_Scroll):
         self.notes.setPlaceholderText("Notes (not exported)")
         self.notes.setMaximumHeight(60)
         self.lay.addWidget(self.notes)
+        row = QHBoxLayout()
+        lib = QPushButton("Save to area library...")
+        lib.setToolTip("Keep this area in your area library to reuse it in other scenarios")
+        lib.clicked.connect(lambda: self.ctx.window and self.ctx.window.save_zone_to_library(self.zid))
+        row.addWidget(lib)
+        row.addStretch()
         dele = QPushButton("Delete area")
         dele.clicked.connect(self._delete)
-        self.lay.addWidget(dele, 0, Qt.AlignmentFlag.AlignRight)
+        row.addWidget(dele)
+        self.lay.addLayout(row)
         self.lay.addStretch()
 
     def set_zone(self, zid: str) -> None:

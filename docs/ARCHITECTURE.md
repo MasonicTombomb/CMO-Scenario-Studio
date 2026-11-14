@@ -12,6 +12,7 @@ src/cmo_studio/
     timeline.py          events and missions on the scenario clock, timing problems
     callsigns.py         callsign library (JSON), role detection, flight allocation
     templates.py         unit templates (JSON): DB resolution, placement, save-as-template
+    area_library.py      predefined patrol areas (JSON): regions, add as zone + mission, save areas back
     validation.py        project checks (optionally against the database)
   db/
     database.py          read-only DB3000/CWDB access: search, details, loadouts, media
@@ -28,6 +29,7 @@ src/cmo_studio/
   data/
     callsigns.json       the default callsign library
     templates.json       the default unit templates
+    areas.json           the default patrol areas
   importers/
     lua_table.py         tolerant Lua table literal reader
     legacy_lua.py        If Russia Wins-style Build_Scenario.lua -> project
@@ -43,6 +45,7 @@ src/cmo_studio/
     bulk_edit.py         edit fields on many units at once
     callsigns_ui.py      assign-callsigns dialog and callsign library editor
     templates_ui.py      template placer, preview and template library editor
+    areas_library_ui.py  patrol area browser with map preview and area library editor
     forms.py             UnitForm, RPForm, ZoneForm (shared by map and pages)
     widgets.py           code editor, highlighters, pickers, key/value table...
     dialogs.py           settings, new project, about, issues panel

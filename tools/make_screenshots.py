@@ -130,6 +130,28 @@ def main():
     ld2.grab().save(str(OUT / "templates_library.png"))
     ld2.dirty = False
     ld2.close()
+    from cmo_studio.ui.areas_library_ui import AreaBrowserDialog
+    ab = AreaBrowserDialog(w.ctx, w)
+    ab.region.setCurrentIndex(ab.region.findData("Europe"))
+    ab.select_area("biscay")
+    ab.show()
+    pump(app, 6)
+    ab.grab().save(str(OUT / "areas_library.png"))
+    ab.region.setCurrentIndex(0)
+    for i, aid in enumerate(("biscay", "western_approaches", "celtic_sea", "channel_west", "giuk_iceland_faroes",
+                             "faroes_shetland", "norwegian_sea", "cap_north_sea_qra", "tanker_north_sea")):
+        if i == 0:
+            ab.select_area(aid)
+        else:
+            from cmo_studio.ui.areas_library_ui import _find_item
+            _find_item(ab.tree, aid).setSelected(True)
+    ab._add()
+    p = w.doc.project
+    w.tabs.setCurrentWidget(w.map_page)
+    w.map_page.map.fit([(q[0], q[1]) for zid in ab.added_zone_ids for q in p.zone(zid).points])
+    pump(app, 8)
+    w.grab().save(str(OUT / "areas_map.png"))
+    w.doc.undo()
     w.tabs.setCurrentWidget(w.formations_page)
     w.formations_page.select_formation(w.doc.project.formations[0].id)
     pump(app, 0.4)

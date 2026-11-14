@@ -13,6 +13,7 @@ files that live happily in git.
 - [Event timeline](#event-timeline)
 - [Search everything](#search-everything)
 - [Editing many units at once](#editing-many-units-at-once)
+- [Patrol area library](#patrol-area-library)
 - [Unit templates](#unit-templates)
 - [Callsigns](#callsigns)
 - [Loadout Viewer](#loadout-viewer)
@@ -101,7 +102,8 @@ Unit fields worth knowing:
 ### Areas
 Lists of areas and reference points with editors. An area named `CAP_WEST` with four corners becomes reference
 points `CAP_WEST-1` .. `CAP_WEST-4` on its side (or on every side). Missions use areas of their own side, or areas
-marked *all sides*.
+marked *all sides*. **From library...** adds predefined patrol areas (see
+[Patrol area library](#patrol-area-library)); **Save to area library...** on an area's form keeps it for reuse.
 
 ### Missions
 | Class | Needs |
@@ -286,6 +288,21 @@ lot.
 - **Loadout**, when all selected units are the same aircraft type.
 - An **extra ScenEdit_SetUnit field** to set or remove (e.g. `fuel` = `50`).
 
+## Patrol area library
+
+**Tools > Add patrol area from library** (Ctrl+Shift+A), the map's **Patrol areas...** button, right-click on the
+map, or **From library...** on the Areas tab opens 134 predefined sea and air areas (94 sea, 40 air) grouped
+by region: Europe, Arctic, Middle East, Africa, Asia, Oceania, North America and South America. Sea areas cover
+patrol areas, chokepoints and barriers (Bay of Biscay, GIUK gaps, Baltic, Mediterranean, Hormuz, Taiwan Strait,
+South China Sea, Falklands TEZ...); air areas cover CAP and QRA boxes, AEW orbits, tanker tracks and ranges.
+
+Filter by region, sea/air or words, check the map preview, choose the side and area name, and optionally create a
+mission on it (suggested per area: ASW or ASuW patrol for sea, CAP for air, support for AEW orbits and tanker tracks).
+Ctrl/Shift-click adds several at once. Ctrl+K search finds library areas by name.
+
+**Tools > Area library** edits the list (corners in a table or dragged on the map), saved as your own `areas.json`;
+**Save to area library...** on an area keeps one you drew. See [AREAS.md](AREAS.md) for the format and full list.
+
 ## Unit templates
 
 **Tools > Place unit template** (Ctrl+T), the map's **Templates...** button or right-click > **Place unit template
@@ -418,6 +435,7 @@ reinforcements, areas and missions. Events and runtime scripts are not imported.
 | Ctrl+Shift+E | Edit selected units |
 | Ctrl+Shift+C | Assign callsigns |
 | Ctrl+T | Place unit template |
+| Ctrl+Shift+A | Add patrol area from library |
 | Ctrl+Shift+F | Create units in formation |
 | Ctrl+L | Loadout viewer |
 | F5 | Dry-run build |

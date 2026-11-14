@@ -56,6 +56,11 @@ class MapPage(Page):
         tpl.setToolTip("Place a pre-grouped site (airfield, command post, barracks...) at the map centre (Ctrl+T)")
         tpl.triggered.connect(lambda: self.ctx.window and self.ctx.window.place_template())
         tb.addAction(tpl)
+        areas = QAction("Patrol areas...", self)
+        areas.setToolTip("Add predefined sea and air patrol areas (Biscay, GIUK gap, Hormuz...) by region "
+                         "(Ctrl+Shift+A)")
+        areas.triggered.connect(lambda: self.ctx.window and self.ctx.window.add_library_area())
+        tb.addAction(areas)
         tb.addSeparator()
         fit = QAction("Fit all", self)
         fit.triggered.connect(lambda: self.map.fit_project())
@@ -354,6 +359,8 @@ class MapPage(Page):
                     else:
                         menu.addAction("Make formation from this unit...",
                                        lambda: self.ctx.window.make_formation([oid]))
+            if isinstance(obj, Zone) and self.ctx.window is not None:
+                menu.addAction("Save area to library...", lambda: self.ctx.window.save_zone_to_library(oid))
             menu.addAction("Delete", lambda: self._delete(oid))
             menu.addSeparator()
         if self.place_entry:
@@ -361,6 +368,7 @@ class MapPage(Page):
         menu.addAction("Add reference point here", lambda: self._add_rp(lat, lon))
         if self.ctx.window is not None:
             menu.addAction("Place unit template here...", lambda: self.ctx.window.place_template(lat, lon))
+            menu.addAction("Add patrol area from library...", lambda: self.ctx.window.add_library_area())
         menu.addAction("Draw area from here", lambda: (self.set_tool(Tool.ZONE), self.map._draft.append([lat, lon])))
         menu.addAction("Measure from here", lambda: (self.set_tool(Tool.MEASURE),
                                                       self.map._measure.append((lat, lon))))

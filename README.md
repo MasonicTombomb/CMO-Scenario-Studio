@@ -25,6 +25,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Search everything** (Ctrl+K) — jump to any unit, mission, event, area, formation, script line or command.
 - **Edit many units at once** — tick the fields to change across a selection: rename patterns (`Escort {nn}`),
   side, group, proficiency, EMCON, hold, heading, speed, altitude, base, loadout and more, in one undo step.
+- **Patrol area library** — 134 predefined sea and air patrol areas by region (Europe, Arctic, Middle East,
+  Africa, Asia, Oceania, North and South America): Bay of Biscay, GIUK gaps, Baltic, Hormuz, Taiwan Strait, South
+  China Sea, Falklands TEZ, CAP boxes, AEW orbits, tanker tracks and more. Add one (or several) with a patrol or
+  support mission ready to staff. Editable JSON library; save your own areas into it.
 - **Unit templates** — 80 pre-grouped sites (670 units in all) dropped in one go: airfields of every size,
   hardened and dispersed air bases, FARPs, command posts and C3 bunkers, communications, SIGINT and EW sites, radar
   and SAM sites, barracks, FOBs, depots, ports and naval bases, missile sites and civil infrastructure. Name it,
@@ -74,6 +78,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 | Search everything (Ctrl+K) | Edit many units at once |
 | --- | --- |
 | ![Search](docs/images/search.png) | ![Bulk edit](docs/images/bulk_edit.png) |
+
+| Patrol area library | Areas added on the map |
+| --- | --- |
+| ![Area library](docs/images/areas_library.png) | ![Areas on map](docs/images/areas_map.png) |
 
 | Place a unit template | Placed on the map |
 | --- | --- |
@@ -151,6 +159,7 @@ See [`examples/output`](examples/output) for a real export.
 - [User guide](docs/USER_GUIDE.md) — every tab, workflows and tips
 - [Export format and Lua runtime](docs/EXPORT_FORMAT.md) — what each file does, the `Studio*` Lua API
 - [Project file format](docs/PROJECT_FORMAT.md) — the `.cmoproj` JSON schema
+- [Patrol area library](docs/AREAS.md) — format and full list of areas
 - [Unit templates](docs/TEMPLATES.md) — format and catalogue
 - [Callsign library](docs/CALLSIGNS.md) — the JSON format, roles and allocation rules
 - [Database access](docs/DATABASE.md) — which DB3000 tables are read and how

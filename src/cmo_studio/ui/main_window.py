@@ -192,6 +192,8 @@ class MainWindow(QMainWindow):
         self._action(t, "Loadout viewer...", lambda: self.open_loadout_viewer(), "Ctrl+L")
         self._action(t, "Place unit template...", lambda: self.place_template(), "Ctrl+T")
         self._action(t, "Template library...", self.open_template_library)
+        self._action(t, "Add patrol area from library...", lambda: self.add_library_area(), "Ctrl+Shift+A")
+        self._action(t, "Area library...", self.open_area_library)
         self._action(t, "Assign callsigns to aircraft...", self.assign_callsigns, "Ctrl+Shift+C")
         self._action(t, "Callsign library...", self.open_callsign_library)
         self._action(t, "Create units in formation...",
@@ -477,11 +479,23 @@ class MainWindow(QMainWindow):
             ("Place unit template", "Ctrl+T", lambda: self.place_template()),
             ("Template library", "Tools menu", self.open_template_library),
             ("Callsign library", "Tools menu", self.open_callsign_library),
+            ("Add patrol area from library", "Ctrl+Shift+A", lambda: self.add_library_area()),
+            ("Area library", "Tools menu", self.open_area_library),
             ("Fit map to scenario", "Map", lambda: (self.tabs.setCurrentWidget(self.map_page),
                                                     self.map_page.map.fit_project())),
             ("Save", "Ctrl+S", self.save_project),
             ("Settings", "File menu", self.open_settings),
-        ]
+        ] + self._library_area_commands()
+
+    def _library_area_commands(self) -> list:
+        """Every predefined patrol area, so Ctrl+K finds 'Biscay' or 'Hormuz' directly."""
+        try:
+            from .areas_library_ui import current_library
+            lib = current_library(self.ctx)[0]
+        except Exception:      # noqa: BLE001 - a broken user file must not break search
+            return []
+        return [(f"Patrol area: {a.name}", f"{a.region} · {a.kind} · area library",
+                 lambda aid=a.id: self.add_library_area(aid)) for a in lib.areas]
 
     def open_search(self) -> None:
         from .search import SearchDialog
@@ -538,6 +552,28 @@ class MainWindow(QMainWindow):
     def save_units_as_template(self, ids: list) -> None:
         from .templates_ui import save_units_as_template
         save_units_as_template(self.ctx, ids, self)
+
+    def add_library_area(self, select: str = "") -> None:
+        """Browse the predefined patrol areas and add some to the scenario."""
+        from .areas_library_ui import AreaBrowserDialog
+        if not self.doc.project.sides:
+            self.statusBar().showMessage("Add a side first (Sides tab).", 5000)
+            return
+        dlg = AreaBrowserDialog(self.ctx, self, select=select)
+        if dlg.exec() and dlg.added_zone_ids:
+            p = self.doc.project
+            pts = [(q[0], q[1]) for zid in dlg.added_zone_ids if p.zone(zid) for q in p.zone(zid).points]
+            self.tabs.setCurrentWidget(self.map_page)
+            self.map_page.map.fit(pts)
+            self.doc.select(dlg.added_zone_ids[0], None)
+
+    def open_area_library(self) -> None:
+        from .areas_library_ui import AreaLibraryDialog
+        AreaLibraryDialog(self.ctx, self).exec()
+
+    def save_zone_to_library(self, zid: str) -> None:
+        from .areas_library_ui import save_zone_to_library
+        save_zone_to_library(self.ctx, zid, self)
 
     def open_callsign_library(self) -> None:
         from .callsigns_ui import CallsignLibraryDialog
