@@ -31,6 +31,9 @@ of the studio load.
                  "actions":    [ { "type", "params": { } } ], "notes" } ],
   "special_actions": [ { "id", "side", "name", "description", "repeatable", "active", "script" } ],
   "scripts": [ { "id", "name", "content", "load_on_init", "notes" } ],
+  "formations": [ { "id", "name", "side", "preset", "lead", "members": [ids], "spacing_nm", "heading",
+                    "params": { }, "alt_step_m", "mirror", "jitter", "seed", "set_heading", "keep_on_station",
+                    "group_in_cmo", "station_type": "Rotating|Fixed", "sprint_drift", "notes" } ],
   "variants":[ { "id", "name", "key", "computer_sides": [ids], "scen_suffix", "description_html" } ],
   "key_values": { "KEY": "value" }
 }
@@ -41,6 +44,7 @@ of the studio load.
 - `units[].type`: `Aircraft`, `Ship`, `Submarine`, `Facility`, `GroundUnit`.
 - `missions[].mclass`: `patrol` (`aaw asw naval land mixed sead`), `strike` (`air land sea sub`), `support`,
   `ferry`, `mining`, `mineclearing`, `cargo`.
+- `formations[].preset` is a key from [`model/formations.py`](../src/cmo_studio/model/formations.py) (`line_ahead`, `circular_screen`, `finger_four`, `ground_wedge`...); `params` holds only the values that differ from the preset.
 - Trigger, condition and action types and their `params` are listed in
   [`src/cmo_studio/model/enums.py`](../src/cmo_studio/model/enums.py). Ids inside params refer to project objects
   (`SpecificUnit`, `Area`, `Mission`, `Side`...). `Raw` types hold a Lua table literal in `params.Spec`.

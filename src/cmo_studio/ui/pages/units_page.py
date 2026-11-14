@@ -56,7 +56,8 @@ class UnitsPage(Page):
         self.table.itemSelectionChanged.connect(self._selection)
         ll.addWidget(self.table)
         bulk = QHBoxLayout()
-        for text, fn in (("Assign to mission...", self._assign), ("Set group...", self._group),
+        for text, fn in (("Assign to mission...", self._assign), ("Make formation", self._formation),
+                         ("Set group...", self._group),
                          ("Toggle reinforcement", self._toggle_reserve), ("Delete selected", self._delete)):
             b = QPushButton(text)
             b.clicked.connect(fn)
@@ -182,6 +183,11 @@ class UnitsPage(Page):
                     if uid not in m.units and self.project.unit(uid).side == m.side:
                         m.units.append(uid)
             self.ctx.status(f"Assigned {len(ids)} unit(s) to {m.name}")
+
+    def _formation(self):
+        ids = self._selected_ids()
+        if ids and self.ctx.window is not None:
+            self.ctx.window.make_formation(ids)
 
     def _group(self):
         ids = self._selected_ids()

@@ -86,6 +86,19 @@ def bearing_deg(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return (math.degrees(math.atan2(x, y)) + 360) % 360
 
 
+def destination(lat: float, lon: float, bearing: float, dist_km: float) -> tuple[float, float]:
+    """Point reached from (lat, lon) after dist_km on an initial true bearing (great circle)."""
+    if dist_km <= 0:
+        return lat, lon
+    d = dist_km / EARTH_KM
+    b = math.radians(bearing)
+    p1, l1 = math.radians(lat), math.radians(lon)
+    p2 = math.asin(math.sin(p1) * math.cos(d) + math.cos(p1) * math.sin(d) * math.cos(b))
+    l2 = l1 + math.atan2(math.sin(b) * math.sin(d) * math.cos(p1), math.cos(d) - math.sin(p1) * math.sin(p2))
+    lon2 = (math.degrees(l2) + 540.0) % 360.0 - 180.0
+    return math.degrees(p2), lon2
+
+
 # ------------------------------------------------------------------ Web Mercator (world pixels at zoom z)
 def world_size(z: float) -> float:
     return TILE * (2.0 ** z)

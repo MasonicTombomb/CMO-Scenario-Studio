@@ -13,8 +13,9 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "src"))
 
 from cmo_studio.export import Exporter  # noqa: E402
-from cmo_studio.model import (Action, Condition, Event, Mission, ReferencePoint, Script, SpecialAction,  # noqa: E402
-                              Trigger, Unit, Variant, Zone, new_project)
+from cmo_studio.model import (Action, Condition, Event, Formation, Mission, ReferencePoint, Script,  # noqa: E402
+                              SpecialAction, Trigger, Unit, Variant, Zone, new_project)
+from cmo_studio.model.formations import apply_formation  # noqa: E402
 
 TICK = """-- Tick.lua - runs every minute (event 'Clock Tick').
 -- Blue scores a point for every 30 minutes Hogland island stays out of Red hands.
@@ -92,6 +93,13 @@ def build():
     s400 = unit(rus, "Facility", 1937, "S-400", "S-400 Bn Kingisepp", 59.38, 28.60, radar_active=True,
                 hold_position=True)
     unit(rus, "Submarine", 771, "Kilo", "B-271 Kolpino", 59.85, 25.0, depth=60)
+
+    # The surface action group sails as a CMO group: Karakurt in the centre, corvettes on a wedge ahead
+    sag_group = Formation(name="Baltic SAG", side=rus.id, preset="inverted_wedge", lead=karakurt.id,
+                          members=[s.id for s in sag], spacing_nm=2.0, heading=270.0,
+                          notes="Corvettes screen the missile ship on the approach to Hogland.")
+    p.formations.append(sag_group)
+    apply_formation(p, sag_group)
 
     # Civilians
     for i, (lat, lon) in enumerate(((59.70, 23.5), (59.85, 26.0), (59.60, 22.4))):

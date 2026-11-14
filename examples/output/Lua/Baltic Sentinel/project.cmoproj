@@ -38,7 +38,7 @@
   },
   "sides": [
     {
-      "id": "s_f9de992a",
+      "id": "s_3d0cea3a",
       "name": "NATO",
       "tag": "NATO",
       "color": "#3d8bfd",
@@ -51,14 +51,14 @@
         "weapon_control_status_air": "Tight"
       },
       "postures": {
-        "s_6ef6aa16": "H",
-        "s_1144a2fd": "N"
+        "s_2bea36ad": "H",
+        "s_e2e978db": "N"
       },
       "briefing_html": "<h1>Situation</h1>\n<p>A Russian surface action group of two Steregushchiy corvettes and a Karakurt missile ship is in the eastern\nGulf of Finland, covered by Su-35S fighters and an S-400 battalion near Kingisepp.</p>\n\n<h1>Mission</h1>\n<p>Keep Allied airspace and the sea lanes open, and keep Russian warships away from Hogland.</p>\n\n<h1>Execution</h1>\n<ul>\n\t<li>Weapons tight in the air until the enemy shows hostile intent.</li>\n\t<li>Finnish F-35As can be readied after three hours (75% chance).</li>\n</ul>\n\n<h1>Command and Signal</h1>\n<p>+10 points per Russian unit destroyed, +1 every 30 minutes Hogland stays free.</p>",
       "export_briefing": true
     },
     {
-      "id": "s_6ef6aa16",
+      "id": "s_2bea36ad",
       "name": "Russia",
       "tag": "RU",
       "color": "#e5484d",
@@ -70,14 +70,14 @@
         "use_nuclear_weapons": "no"
       },
       "postures": {
-        "s_f9de992a": "H",
-        "s_1144a2fd": "N"
+        "s_3d0cea3a": "H",
+        "s_e2e978db": "N"
       },
       "briefing_html": "<h1>Situation</h1>\n<p>NATO has deployed Typhoons to Amari and Finnish Hornets are on alert at Rissala.</p>\n\n<h1>Mission</h1>\n<p>Show the flag in the Gulf of Finland and put warships off Hogland.</p>\n\n<h1>Execution</h1>\n<p>The strike on the Finnish patrol boat is released after four hours.</p>\n\n<h1>Command and Signal</h1>\n<p>+50 for reaching Hogland, +10 per NATO unit destroyed.</p>",
       "export_briefing": true
     },
     {
-      "id": "s_1144a2fd",
+      "id": "s_e2e978db",
       "name": "Civilian",
       "tag": "CIV",
       "color": "#aaaaaa",
@@ -87,8 +87,8 @@
       "start_score": 0,
       "doctrine": {},
       "postures": {
-        "s_f9de992a": "N",
-        "s_6ef6aa16": "N"
+        "s_3d0cea3a": "N",
+        "s_2bea36ad": "N"
       },
       "briefing_html": "",
       "export_briefing": false
@@ -96,8 +96,8 @@
   ],
   "units": [
     {
-      "id": "u_99212141",
-      "side": "s_f9de992a",
+      "id": "u_8c60171f",
+      "side": "s_3d0cea3a",
       "type": "Facility",
       "dbid": 1877,
       "db_name": "Single-Unit Airfield (1x 2600-3200m, Runway)",
@@ -122,8 +122,8 @@
       "extra": {}
     },
     {
-      "id": "u_36cd9947",
-      "side": "s_f9de992a",
+      "id": "u_b975ca3c",
+      "side": "s_3d0cea3a",
       "type": "Facility",
       "dbid": 1877,
       "db_name": "Single-Unit Airfield (1x 2600-3200m, Runway)",
@@ -148,8 +148,8 @@
       "extra": {}
     },
     {
-      "id": "u_e9cc2fd8",
-      "side": "s_f9de992a",
+      "id": "u_c0eff515",
+      "side": "s_3d0cea3a",
       "type": "Aircraft",
       "dbid": 8261,
       "db_name": "Eurofighter Typhoon [EF2000]",
@@ -161,7 +161,7 @@
       "depth": null,
       "heading": null,
       "speed": null,
-      "host": "u_99212141",
+      "host": "u_8c60171f",
       "loadout": 17284,
       "radar_active": false,
       "sonar_active": false,
@@ -174,8 +174,8 @@
       "extra": {}
     },
     {
-      "id": "u_f7dcfe3d",
-      "side": "s_f9de992a",
+      "id": "u_fdbb91c6",
+      "side": "s_3d0cea3a",
       "type": "Aircraft",
       "dbid": 2836,
       "db_name": "F/A-18C Hornet [F-18C]",
@@ -187,7 +187,7 @@
       "depth": null,
       "heading": null,
       "speed": null,
-      "host": "u_36cd9947",
+      "host": "u_b975ca3c",
       "loadout": 16771,
       "radar_active": false,
       "sonar_active": false,
@@ -200,8 +200,8 @@
       "extra": {}
     },
     {
-      "id": "u_06a48bd2",
-      "side": "s_f9de992a",
+      "id": "u_96f80acc",
+      "side": "s_3d0cea3a",
       "type": "Aircraft",
       "dbid": 1626,
       "db_name": "E-3A Sentry",
@@ -226,8 +226,8 @@
       "extra": {}
     },
     {
-      "id": "u_be2a5b89",
-      "side": "s_f9de992a",
+      "id": "u_2f81d861",
+      "side": "s_3d0cea3a",
       "type": "Ship",
       "dbid": 4643,
       "db_name": "80 Hamina [Rauma 2]",
@@ -252,8 +252,8 @@
       "extra": {}
     },
     {
-      "id": "u_fb8ea184",
-      "side": "s_f9de992a",
+      "id": "u_815f0ac0",
+      "side": "s_3d0cea3a",
       "type": "Facility",
       "dbid": 2011,
       "db_name": "SAM Plt/2 (NASAMS II [ItO 12])",
@@ -278,8 +278,8 @@
       "extra": {}
     },
     {
-      "id": "u_3bd2e7df",
-      "side": "s_f9de992a",
+      "id": "u_54bc5868",
+      "side": "s_3d0cea3a",
       "type": "Aircraft",
       "dbid": 6180,
       "db_name": "F-35A Lightning II",
@@ -291,7 +291,7 @@
       "depth": null,
       "heading": null,
       "speed": null,
-      "host": "u_36cd9947",
+      "host": "u_b975ca3c",
       "loadout": 1836,
       "radar_active": false,
       "sonar_active": false,
@@ -304,8 +304,8 @@
       "extra": {}
     },
     {
-      "id": "u_a5a3a39b",
-      "side": "s_6ef6aa16",
+      "id": "u_8f9dfef4",
+      "side": "s_2bea36ad",
       "type": "Facility",
       "dbid": 1712,
       "db_name": "Single-Unit Airfield (1x 2001-2600m Runway)",
@@ -330,8 +330,8 @@
       "extra": {}
     },
     {
-      "id": "u_43b7f41c",
-      "side": "s_6ef6aa16",
+      "id": "u_22e3cd4a",
+      "side": "s_2bea36ad",
       "type": "Aircraft",
       "dbid": 6645,
       "db_name": "Su-35S Flanker M",
@@ -343,7 +343,7 @@
       "depth": null,
       "heading": null,
       "speed": null,
-      "host": "u_a5a3a39b",
+      "host": "u_8f9dfef4",
       "loadout": 30249,
       "radar_active": false,
       "sonar_active": false,
@@ -356,8 +356,8 @@
       "extra": {}
     },
     {
-      "id": "u_a0798982",
-      "side": "s_6ef6aa16",
+      "id": "u_e1caea7d",
+      "side": "s_2bea36ad",
       "type": "Aircraft",
       "dbid": 3461,
       "db_name": "A-50U Mainstay A",
@@ -382,18 +382,18 @@
       "extra": {}
     },
     {
-      "id": "u_8bcf3c24",
-      "side": "s_6ef6aa16",
+      "id": "u_e0f2f6e3",
+      "side": "s_2bea36ad",
       "type": "Ship",
       "dbid": 2814,
       "db_name": "MPK Steregushchiy [Pr.20380]",
       "name": "Soobrazitelny",
       "count": 1,
-      "lat": 60.02,
-      "lon": 27.3,
+      "lat": 60.073546,
+      "lon": 28.152786,
       "altitude": null,
       "depth": null,
-      "heading": null,
+      "heading": 270.0,
       "speed": null,
       "host": "",
       "loadout": null,
@@ -408,18 +408,18 @@
       "extra": {}
     },
     {
-      "id": "u_d55cdb65",
-      "side": "s_6ef6aa16",
+      "id": "u_22b46e61",
+      "side": "s_2bea36ad",
       "type": "Ship",
       "dbid": 2814,
       "db_name": "MPK Steregushchiy [Pr.20380]",
       "name": "Stoikiy",
       "count": 1,
-      "lat": 59.98,
-      "lon": 27.45,
+      "lat": 60.026437,
+      "lon": 28.152854,
       "altitude": null,
       "depth": null,
-      "heading": null,
+      "heading": 270.0,
       "speed": null,
       "host": "",
       "loadout": null,
@@ -434,8 +434,8 @@
       "extra": {}
     },
     {
-      "id": "u_c0934a00",
-      "side": "s_6ef6aa16",
+      "id": "u_3bc99509",
+      "side": "s_2bea36ad",
       "type": "Ship",
       "dbid": 3294,
       "db_name": "MRK Uragan [Pr.22800 Karakurt]",
@@ -445,7 +445,7 @@
       "lon": 28.2,
       "altitude": null,
       "depth": null,
-      "heading": null,
+      "heading": 270.0,
       "speed": null,
       "host": "",
       "loadout": null,
@@ -460,8 +460,8 @@
       "extra": {}
     },
     {
-      "id": "u_29dd78ad",
-      "side": "s_6ef6aa16",
+      "id": "u_a458b78d",
+      "side": "s_2bea36ad",
       "type": "Facility",
       "dbid": 1937,
       "db_name": "SAM Bn (SA-21a/b Growler [S-400 Triumf])",
@@ -486,8 +486,8 @@
       "extra": {}
     },
     {
-      "id": "u_a5afe1e4",
-      "side": "s_6ef6aa16",
+      "id": "u_930e0ece",
+      "side": "s_2bea36ad",
       "type": "Submarine",
       "dbid": 771,
       "db_name": "PL-636.3 Improved Kilo II [Varshavyanka]",
@@ -512,8 +512,8 @@
       "extra": {}
     },
     {
-      "id": "u_4636565e",
-      "side": "s_1144a2fd",
+      "id": "u_875d1e54",
+      "side": "s_e2e978db",
       "type": "Ship",
       "dbid": 2357,
       "db_name": "Commercial Trawler [800t DWT]",
@@ -538,8 +538,8 @@
       "extra": {}
     },
     {
-      "id": "u_e7342e18",
-      "side": "s_1144a2fd",
+      "id": "u_7a617bac",
+      "side": "s_e2e978db",
       "type": "Ship",
       "dbid": 2357,
       "db_name": "Commercial Trawler [800t DWT]",
@@ -564,8 +564,8 @@
       "extra": {}
     },
     {
-      "id": "u_c53425e1",
-      "side": "s_1144a2fd",
+      "id": "u_035eb43b",
+      "side": "s_e2e978db",
       "type": "Ship",
       "dbid": 2357,
       "db_name": "Commercial Trawler [800t DWT]",
@@ -592,8 +592,8 @@
   ],
   "reference_points": [
     {
-      "id": "rp_8bd5e6a6",
-      "side": "s_f9de992a",
+      "id": "rp_6e6271f1",
+      "side": "s_3d0cea3a",
       "name": "OBJ Hogland",
       "lat": 60.07,
       "lon": 26.98,
@@ -603,8 +603,8 @@
   ],
   "zones": [
     {
-      "id": "z_ae36541b",
-      "side": "s_f9de992a",
+      "id": "z_52c9bfb3",
+      "side": "s_3d0cea3a",
       "name": "CAP_EST",
       "points": [
         [
@@ -629,8 +629,8 @@
       "notes": ""
     },
     {
-      "id": "z_82f0f257",
-      "side": "s_f9de992a",
+      "id": "z_97eed044",
+      "side": "s_3d0cea3a",
       "name": "CAP_FIN",
       "points": [
         [
@@ -655,8 +655,8 @@
       "notes": ""
     },
     {
-      "id": "z_26f30a1b",
-      "side": "s_f9de992a",
+      "id": "z_0fccd8e6",
+      "side": "s_3d0cea3a",
       "name": "GOF_PATROL",
       "points": [
         [
@@ -681,8 +681,8 @@
       "notes": ""
     },
     {
-      "id": "z_98524a20",
-      "side": "s_6ef6aa16",
+      "id": "z_b0c00711",
+      "side": "s_2bea36ad",
       "name": "CAP_GOF",
       "points": [
         [
@@ -707,8 +707,8 @@
       "notes": ""
     },
     {
-      "id": "z_81a53053",
-      "side": "s_6ef6aa16",
+      "id": "z_ee72b1da",
+      "side": "s_2bea36ad",
       "name": "SAG_AREA",
       "points": [
         [
@@ -733,8 +733,8 @@
       "notes": ""
     },
     {
-      "id": "z_f6a2e146",
-      "side": "s_6ef6aa16",
+      "id": "z_53cc7c08",
+      "side": "s_2bea36ad",
       "name": "HOGLAND",
       "points": [
         [
@@ -761,16 +761,16 @@
   ],
   "missions": [
     {
-      "id": "m_642f5868",
-      "side": "s_f9de992a",
+      "id": "m_f3f25716",
+      "side": "s_3d0cea3a",
       "name": "CAP Estonia",
       "mclass": "patrol",
       "subtype": "aaw",
-      "zone": "z_ae36541b",
+      "zone": "z_52c9bfb3",
       "prosecution_zone": "",
       "destination": "",
       "units": [
-        "u_e9cc2fd8"
+        "u_c0eff515"
       ],
       "targets": [],
       "options": {
@@ -779,17 +779,17 @@
       "notes": ""
     },
     {
-      "id": "m_ecdee2bf",
-      "side": "s_f9de992a",
+      "id": "m_599b4bf6",
+      "side": "s_3d0cea3a",
       "name": "CAP Finland",
       "mclass": "patrol",
       "subtype": "aaw",
-      "zone": "z_82f0f257",
+      "zone": "z_97eed044",
       "prosecution_zone": "",
       "destination": "",
       "units": [
-        "u_f7dcfe3d",
-        "u_3bd2e7df"
+        "u_fdbb91c6",
+        "u_54bc5868"
       ],
       "targets": [],
       "options": {
@@ -798,58 +798,58 @@
       "notes": ""
     },
     {
-      "id": "m_5d14b508",
-      "side": "s_f9de992a",
+      "id": "m_a4620aa7",
+      "side": "s_3d0cea3a",
       "name": "Gulf Patrol",
       "mclass": "patrol",
       "subtype": "naval",
-      "zone": "z_26f30a1b",
+      "zone": "z_0fccd8e6",
       "prosecution_zone": "",
       "destination": "",
       "units": [
-        "u_be2a5b89"
+        "u_2f81d861"
       ],
       "targets": [],
       "options": {},
       "notes": ""
     },
     {
-      "id": "m_877bdcdb",
-      "side": "s_6ef6aa16",
+      "id": "m_c395e991",
+      "side": "s_2bea36ad",
       "name": "CAP Gulf",
       "mclass": "patrol",
       "subtype": "aaw",
-      "zone": "z_98524a20",
+      "zone": "z_b0c00711",
       "prosecution_zone": "",
       "destination": "",
       "units": [
-        "u_43b7f41c"
+        "u_22e3cd4a"
       ],
       "targets": [],
       "options": {},
       "notes": ""
     },
     {
-      "id": "m_7fa712ab",
-      "side": "s_6ef6aa16",
+      "id": "m_3d776356",
+      "side": "s_2bea36ad",
       "name": "SAG Presence",
       "mclass": "patrol",
       "subtype": "naval",
-      "zone": "z_81a53053",
+      "zone": "z_ee72b1da",
       "prosecution_zone": "",
       "destination": "",
       "units": [
-        "u_8bcf3c24",
-        "u_d55cdb65",
-        "u_c0934a00"
+        "u_e0f2f6e3",
+        "u_22b46e61",
+        "u_3bc99509"
       ],
       "targets": [],
       "options": {},
       "notes": ""
     },
     {
-      "id": "m_70b080be",
-      "side": "s_6ef6aa16",
+      "id": "m_e7189c59",
+      "side": "s_2bea36ad",
       "name": "Strike Hamina",
       "mclass": "strike",
       "subtype": "sea",
@@ -858,7 +858,7 @@
       "destination": "",
       "units": [],
       "targets": [
-        "u_be2a5b89"
+        "u_2f81d861"
       ],
       "options": {
         "isactive": false
@@ -868,7 +868,7 @@
   ],
   "events": [
     {
-      "id": "e_da4a6719",
+      "id": "e_2aea13d2",
       "name": "Welcome",
       "repeatable": false,
       "active": true,
@@ -895,7 +895,7 @@
       "notes": ""
     },
     {
-      "id": "e_e76a9713",
+      "id": "e_f704abb1",
       "name": "Clock Tick",
       "repeatable": true,
       "active": true,
@@ -921,7 +921,7 @@
       "notes": ""
     },
     {
-      "id": "e_03b55d5c",
+      "id": "e_6b1015d0",
       "name": "Russian losses",
       "repeatable": true,
       "active": true,
@@ -931,28 +931,28 @@
         {
           "type": "UnitDestroyed",
           "params": {
-            "TargetSide": "s_6ef6aa16",
+            "TargetSide": "s_2bea36ad",
             "TargetType": "Aircraft"
           }
         },
         {
           "type": "UnitDestroyed",
           "params": {
-            "TargetSide": "s_6ef6aa16",
+            "TargetSide": "s_2bea36ad",
             "TargetType": "Ship"
           }
         },
         {
           "type": "UnitDestroyed",
           "params": {
-            "TargetSide": "s_6ef6aa16",
+            "TargetSide": "s_2bea36ad",
             "TargetType": "Submarine"
           }
         },
         {
           "type": "UnitDestroyed",
           "params": {
-            "TargetSide": "s_6ef6aa16",
+            "TargetSide": "s_2bea36ad",
             "TargetType": "Facility"
           }
         }
@@ -962,7 +962,7 @@
         {
           "type": "Score",
           "params": {
-            "Side": "s_f9de992a",
+            "Side": "s_3d0cea3a",
             "Change": 10,
             "Reason": "Russian unit destroyed"
           }
@@ -971,7 +971,7 @@
       "notes": ""
     },
     {
-      "id": "e_f2f1ccd5",
+      "id": "e_5532da40",
       "name": "NATO losses",
       "repeatable": true,
       "active": true,
@@ -981,21 +981,21 @@
         {
           "type": "UnitDestroyed",
           "params": {
-            "TargetSide": "s_f9de992a",
+            "TargetSide": "s_3d0cea3a",
             "TargetType": "Aircraft"
           }
         },
         {
           "type": "UnitDestroyed",
           "params": {
-            "TargetSide": "s_f9de992a",
+            "TargetSide": "s_3d0cea3a",
             "TargetType": "Ship"
           }
         },
         {
           "type": "UnitDestroyed",
           "params": {
-            "TargetSide": "s_f9de992a",
+            "TargetSide": "s_3d0cea3a",
             "TargetType": "Facility"
           }
         }
@@ -1005,7 +1005,7 @@
         {
           "type": "Score",
           "params": {
-            "Side": "s_6ef6aa16",
+            "Side": "s_2bea36ad",
             "Change": 10,
             "Reason": "NATO unit destroyed"
           }
@@ -1014,7 +1014,7 @@
       "notes": ""
     },
     {
-      "id": "e_8113c69f",
+      "id": "e_8782bdf3",
       "name": "Hogland landing",
       "repeatable": false,
       "active": true,
@@ -1024,9 +1024,9 @@
         {
           "type": "UnitEntersArea",
           "params": {
-            "TargetSide": "s_6ef6aa16",
+            "TargetSide": "s_2bea36ad",
             "TargetType": "Ship",
-            "Area": "z_f6a2e146"
+            "Area": "z_53cc7c08"
           }
         }
       ],
@@ -1049,7 +1049,7 @@
         {
           "type": "Score",
           "params": {
-            "Side": "s_6ef6aa16",
+            "Side": "s_2bea36ad",
             "Change": 50,
             "Reason": "Russian ships at Hogland"
           }
@@ -1065,7 +1065,7 @@
       "notes": ""
     },
     {
-      "id": "e_4bf6743e",
+      "id": "e_16b06f17",
       "name": "Finnish F-35s scramble",
       "repeatable": false,
       "active": true,
@@ -1084,13 +1084,13 @@
         {
           "type": "SpawnUnit",
           "params": {
-            "Unit": "u_3bd2e7df"
+            "Unit": "u_54bc5868"
           }
         },
         {
           "type": "Message",
           "params": {
-            "Side": "s_f9de992a",
+            "Side": "s_3d0cea3a",
             "Text": "<P>HavLLv 11 F-35As are ready at Rissala.</P>"
           }
         }
@@ -1098,7 +1098,7 @@
       "notes": ""
     },
     {
-      "id": "e_4774b323",
+      "id": "e_03531bf0",
       "name": "Release the strike",
       "repeatable": false,
       "active": true,
@@ -1117,7 +1117,7 @@
         {
           "type": "MissionStatus",
           "params": {
-            "Mission": "m_70b080be",
+            "Mission": "m_e7189c59",
             "Active": true
           }
         }
@@ -1125,7 +1125,7 @@
       "notes": ""
     },
     {
-      "id": "e_2372f65a",
+      "id": "e_329ec04e",
       "name": "Time is nearly up",
       "repeatable": false,
       "active": true,
@@ -1154,8 +1154,8 @@
   ],
   "special_actions": [
     {
-      "id": "sa_68bf6b01",
-      "side": "s_f9de992a",
+      "id": "sa_db0c6dc1",
+      "side": "s_3d0cea3a",
       "name": "SITREP",
       "description": "Show the score.",
       "repeatable": true,
@@ -1163,8 +1163,8 @@
       "script": "BS_Sitrep('NATO')"
     },
     {
-      "id": "sa_ace1f0e6",
-      "side": "s_6ef6aa16",
+      "id": "sa_fb4f3ef2",
+      "side": "s_2bea36ad",
       "name": "SITREP",
       "description": "Show the score.",
       "repeatable": true,
@@ -1174,14 +1174,14 @@
   ],
   "scripts": [
     {
-      "id": "lua_600f9368",
+      "id": "lua_17aea8db",
       "name": "Helpers",
       "content": "-- Helpers.lua - loaded when the scenario loads (shared functions for events).\nfunction BS_Sitrep(side)\n  local text = string.format('<P><B>SITREP</B></P><P>NATO score: %d<BR>Russia score: %d</P>',\n    StudioScore('NATO'), StudioScore('Russia'))\n  StudioMsg(side, text)\nend\n",
       "load_on_init": true,
       "notes": "Shared functions, loaded with LuaInit"
     },
     {
-      "id": "lua_5590846d",
+      "id": "lua_4549a4e4",
       "name": "Tick",
       "content": "-- Tick.lua - runs every minute (event 'Clock Tick').\n-- Blue scores a point for every 30 minutes Hogland island stays out of Red hands.\nlocal last = StudioGetNumKV('BS_LAST_HOLD', STUDIO.START)\nlocal now = tonumber(ScenEdit_CurrentTime()) or 0\nif now - last >= 1800 then\n  StudioSetKV('BS_LAST_HOLD', now)\n  if not StudioFlag('BS_HOGLAND_LOST') then\n    StudioAddScore('NATO', 1, 'Hogland held')\n  end\nend\n",
       "load_on_init": false,
@@ -1190,24 +1190,50 @@
   ],
   "variants": [
     {
-      "id": "v_610b49ed",
+      "id": "v_f91ad508",
       "name": "Play as NATO",
       "key": "PLAY_NATO",
       "computer_sides": [
-        "s_6ef6aa16"
+        "s_2bea36ad"
       ],
       "scen_suffix": " - Play as NATO",
       "description_html": "<P><B>In this version Russia is commanded by the computer.</B></P>"
     },
     {
-      "id": "v_684673c0",
+      "id": "v_9b5d9915",
       "name": "Play as Russia",
       "key": "PLAY_RUSSIA",
       "computer_sides": [
-        "s_f9de992a"
+        "s_3d0cea3a"
       ],
       "scen_suffix": " - Play as Russia",
       "description_html": "<P><B>In this version NATO is commanded by the computer.</B></P>"
+    }
+  ],
+  "formations": [
+    {
+      "id": "f_3eec9d30",
+      "name": "Baltic SAG",
+      "side": "s_2bea36ad",
+      "preset": "inverted_wedge",
+      "lead": "u_3bc99509",
+      "members": [
+        "u_e0f2f6e3",
+        "u_22b46e61"
+      ],
+      "spacing_nm": 2.0,
+      "heading": 270.0,
+      "params": {},
+      "alt_step_m": null,
+      "mirror": false,
+      "jitter": 0.0,
+      "seed": 1,
+      "set_heading": true,
+      "keep_on_station": true,
+      "group_in_cmo": true,
+      "station_type": "Rotating",
+      "sprint_drift": false,
+      "notes": "Corvettes screen the missile ship on the approach to Hogland."
     }
   ],
   "key_values": {

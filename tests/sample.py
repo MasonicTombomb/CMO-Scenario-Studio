@@ -60,3 +60,19 @@ def make_sample():
                               scen_suffix=" - Play as Blue", description_html="<P>Red is the computer.</P>"))
     p.key_values["MY_KEY"] = "42"
     return p
+
+
+def make_sample_with_formation():
+    from cmo_studio.model import Formation
+    from cmo_studio.model.formations import apply_formation
+    p = make_sample()
+    red = p.sides[1]
+    lead = next(u for u in p.units if u.type == "Ship")
+    escorts = [Unit(side=red.id, type="Ship", dbid=2814, name=f"Escort {i}", lat=lead.lat, lon=lead.lon)
+               for i in range(1, 5)]
+    p.units += escorts
+    f = Formation(name="Red SAG", side=red.id, preset="circular_screen", lead=lead.id,
+                  members=[u.id for u in escorts], spacing_nm=3.0, heading=270)
+    p.formations.append(f)
+    apply_formation(p, f)
+    return p

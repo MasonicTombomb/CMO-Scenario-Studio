@@ -345,6 +345,7 @@ def compile_build_data(project: Project) -> dict:
                    "pts": [[round(p[0], 6), round(p[1], 6)] for p in z.points]}
                   for z in project.zones if z.points]
     D["UNITS"] = [unit_record(project, u) for u in ordered_units(project)]
+    D["FORMATIONS"] = compile_formations(project)
     missions = []
     for ms in project.missions:
         rec: dict[str, Any] = {"side": project.side_name(ms.side), "name": ms.name, "class": ms.mclass}
@@ -368,6 +369,28 @@ def compile_build_data(project: Project) -> dict:
                       "repeatable": bool(a.repeatable), "active": bool(a.active), "script": a.script}
                      for a in project.special_actions]
     return D
+
+
+def compile_formations(project: Project) -> list[dict]:
+    """Groups with stations measured from the units' actual positions (what the map shows)."""
+    from ..geo import bearing_deg, distance_km
+    out = []
+    for f in project.formations:
+        lead = project.unit(f.lead)
+        if not f.group_in_cmo or lead is None or lead.reserve or lead.host:
+            continue
+        members = []
+        for uid in f.members:
+            u = project.unit(uid)
+            if u is None or u.reserve or u.host or u.id == lead.id:
+                continue
+            dist_nm = distance_km(lead.lat, lead.lon, u.lat, u.lon) / 1.852
+            true = bearing_deg(lead.lat, lead.lon, u.lat, u.lon) if dist_nm > 1e-6 else 0.0
+            brg = true if f.station_type == "Fixed" else (true - f.heading) % 360.0
+            members.append({"id": u.id, "bearing": round(brg, 1), "dist": round(dist_nm, 3)})
+        out.append({"name": f.name, "lead": lead.id, "stype": f.station_type, "sprint": bool(f.sprint_drift),
+                    "members": members})
+    return out
 
 
 def compile_reserves(project: Project) -> dict:

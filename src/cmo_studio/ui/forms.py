@@ -264,8 +264,9 @@ class UnitForm(_Scroll):
         u = self.project.unit(self.uid)
         if not u:
             return
+        from ..model.formations import move_with_formation
         with self.edit("Move unit", "units"):
-            u.lat, u.lon = lat, lon
+            move_with_formation(self.project, u.id, lat, lon)
 
     def _host_changed(self, *_):
         u = self.project.unit(self.uid)

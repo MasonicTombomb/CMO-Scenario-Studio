@@ -44,11 +44,14 @@ The events reference the script folder at run time, so `Lua\<F>\` must exist on 
 4. Start time, duration, current time, weather.
 5. Reference points and area points.
 6. Units — hosts first; then EMCON, hold position, auto-detectable, proficiency, speed, extra fields.
-7. Missions — options, prosecution area, assigned units, strike targets.
-8. Key values (initial values, `STUDIO_VARIANT`, reset of event once-flags).
-9. Events — triggers, native conditions, the generated Lua action, native actions.
-10. Special actions.
-11. BUILD REPORT with counts, failures, warnings and the exact editor steps.
+7. Formations — `unit.group = 'Name'` for the lead and members, then each member's station with
+   `ScenEdit_SetUnit({guid=, formation={bearing=, distance=, type=, sprint=}})` (retried with bearing and
+   distance only). Units are already on station, so a refusal only leaves them ungrouped (reported).
+8. Missions — options, prosecution area, assigned units, strike targets.
+9. Key values (initial values, `STUDIO_VARIANT`, reset of event once-flags).
+10. Events — triggers, native conditions, the generated Lua action, native actions.
+11. Special actions.
+12. BUILD REPORT with counts, failures, warnings and the exact editor steps.
 
 Every API call is wrapped in `pcall`; a failure becomes a warning in the report instead of stopping the build. Some
 calls have fallbacks (date order, submarine type name, ground units as facilities, refused loadouts → reserve).
@@ -66,6 +69,8 @@ D.RPS      = { { side, name, lat, lon, hl }, ... }
 D.ZONES    = { { id, name, sides = {...}, pts = {{lat, lon}, ...} }, ... }
 D.UNITS    = { { id, side, type, dbid, name, count?, host?, lat?, lon?, alt?, depth?, heading?, speed?,
                  loadout?, radar?, sonar?, hold?, auto?, prof?, set? }, ... }
+D.FORMATIONS = { { name, lead = unitId, stype = 'Rotating'|'Fixed', sprint,
+                   members = { { id, bearing, dist }, ... } }, ... }   -- bearing deg, dist nm
 D.MISSIONS = { { side, name, class, sub?, zone?, pzone?, dest?, units = {ids}, targets = {ids}, opts? }, ... }
 D.KV       = { { key, value }, ... }
 D.EVENTS   = { { key, name, repeatable, active, shown, triggers = { {name, spec, unit?, area?} },

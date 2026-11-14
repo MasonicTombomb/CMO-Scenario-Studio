@@ -81,7 +81,17 @@ function ScenEdit_GetUnit(sel)
   end
   return nil
 end
-function ScenEdit_SetUnit(t) need(MOCK.units[t.guid], 'SetUnit: unknown unit'); return MOCK.units[t.guid] end
+function ScenEdit_SetUnit(t)
+  local u = MOCK.units[t.guid]
+  need(u, 'SetUnit: unknown unit')
+  if t.formation then
+    need(u.group, 'SetUnit: formation station for ' .. u.name .. ' before it was grouped')
+    need(tonumber(t.formation.bearing) and tonumber(t.formation.distance), 'SetUnit: formation needs bearing/distance')
+    MOCK.groups = MOCK.groups or {}
+    MOCK.groups[u.group] = (MOCK.groups[u.group] or 0) + 1
+  end
+  return u
+end
 function ScenEdit_SetEMCON(kind, id, s) need(MOCK.units[id] or MOCK.sides[id], 'SetEMCON: unknown ' .. tostring(id)); return true end
 function ScenEdit_DeleteUnit(t) MOCK.units[t.guid] = nil end
 
@@ -186,8 +196,10 @@ function MOCK_SUMMARY()
     events = events + 1
     if e.triggers == 0 then noTrig[#noTrig + 1] = name end
   end
-  local s = string.format('MOCK: %d side(s), %d unit(s), %d reference point(s), %d mission(s), %d event(s), %d special action(s)',
-    #MOCK.order, units, #MOCK.rps, missions, events, #MOCK.specials)
+  local groups = 0
+  for _ in pairs(MOCK.groups or {}) do groups = groups + 1 end
+  local s = string.format('MOCK: %d side(s), %d unit(s), %d reference point(s), %d mission(s), %d event(s), %d special action(s), %d group(s) with stations',
+    #MOCK.order, units, #MOCK.rps, missions, events, #MOCK.specials, groups)
   local types = {}
   for k, v in pairs(byType) do types[#types + 1] = k .. '=' .. v end
   table.sort(types)

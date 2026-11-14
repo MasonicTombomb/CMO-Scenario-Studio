@@ -23,6 +23,7 @@ from .pages.base import AppContext
 from .pages.briefings_page import BriefingsPage
 from .pages.events_page import EventsPage
 from .pages.export_page import ExportPage
+from .pages.formations_page import FormationsPage
 from .pages.map_page import MapPage
 from .pages.missions_page import MissionsPage
 from .pages.scenario_page import ScenarioPage
@@ -51,6 +52,7 @@ class MainWindow(QMainWindow):
         self.sides_page = SidesPage(self.ctx)
         self.map_page = MapPage(self.ctx)
         self.units_page = UnitsPage(self.ctx)
+        self.formations_page = FormationsPage(self.ctx)
         self.areas_page = AreasPage(self.ctx)
         self.missions_page = MissionsPage(self.ctx)
         self.events_page = EventsPage(self.ctx)
@@ -58,7 +60,8 @@ class MainWindow(QMainWindow):
         self.scripts_page = ScriptsPage(self.ctx)
         self.briefings_page = BriefingsPage(self.ctx)
         self.export_page = ExportPage(self.ctx)
-        for page in (self.scenario_page, self.sides_page, self.map_page, self.units_page, self.areas_page,
+        for page in (self.scenario_page, self.sides_page, self.map_page, self.units_page, self.formations_page,
+                     self.areas_page,
                      self.missions_page, self.events_page, self.specials_page, self.scripts_page,
                      self.briefings_page, self.export_page):
             self.tabs.addTab(page, page.title)
@@ -182,6 +185,9 @@ class MainWindow(QMainWindow):
         self._action(t, "Dry-run build (CMO Lua)", lambda: (self.tabs.setCurrentWidget(self.export_page),
                                                             self.export_page._dry()), "F5")
         self._action(t, "Loadout viewer...", lambda: self.open_loadout_viewer(), "Ctrl+L")
+        self._action(t, "Create units in formation...",
+                     lambda: (self.tabs.setCurrentWidget(self.formations_page), self.formations_page.open_creator()),
+                     "Ctrl+Shift+F")
         self._action(t, "Fit map to scenario", lambda: (self.tabs.setCurrentWidget(self.map_page),
                                                         self.map_page.map.fit_project()))
         self._action(t, "Open the CMO folder", self._open_cmo)
@@ -415,6 +421,16 @@ class MainWindow(QMainWindow):
             u.name = name.strip() or e.name
         self.doc.select(u.id)
 
+    def open_formation(self, fid: str) -> None:
+        self.tabs.setCurrentWidget(self.formations_page)
+        self.formations_page.select_formation(fid)
+
+    def make_formation(self, unit_ids: list[str]) -> None:
+        f = self.formations_page.create_from_units(unit_ids)
+        if f is not None:
+            self.open_formation(f.id)
+            self.statusBar().showMessage(f"Formation '{f.name}' created - choose a layout and spacing.", 6000)
+
     def open_loadout_viewer(self, aircraft_id: int = 0, loadout_id: int = 0):
         """Open (or bring forward) the Loadout Viewer; defaults to the selected aircraft."""
         from .loadout_viewer import LoadoutViewer
@@ -464,7 +480,7 @@ class MainWindow(QMainWindow):
         page = {"Scenario": self.scenario_page, "Sides": self.sides_page, "Units": self.units_page,
                 "Database": self.units_page, "Areas": self.areas_page, "Missions": self.missions_page,
                 "Events": self.events_page, "Special actions": self.specials_page, "Scripts": self.scripts_page,
-                "Variants": self.sides_page}.get(area, self.scenario_page)
+                "Variants": self.sides_page, "Formations": self.formations_page}.get(area, self.scenario_page)
         if obj is not None:
             if area == "Missions":
                 self.missions_page.mid = oid
@@ -478,6 +494,8 @@ class MainWindow(QMainWindow):
                 self.sides_page.vid = oid
             elif area == "Sides":
                 self.sides_page.sid = oid
+            elif area == "Formations":
+                self.formations_page.fid = oid
         self.tabs.setCurrentWidget(page)
         page.refresh()
         if obj is not None and area in ("Units", "Database", "Areas"):

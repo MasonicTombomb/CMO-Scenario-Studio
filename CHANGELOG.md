@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- **Formations**: a Formations tab and a "Create units in formation" creator with 40 layouts across naval, air and
+  ground (columns, line abreast, echelons, wedges, diamond, box, convoy, circular and double screens, ASW bent-line,
+  picket line, finger four, vic, ladder, wall, bomber stream, road column, herringbone, coil, SAM dispersal,
+  perimeter, random dispersal and custom stations), with spacing, orientation, altitude step, mirror, jitter and
+  per-layout settings, a live preview and station table. Formations are built as CMO groups with formation stations;
+  moving a kept formation's lead or member on the map moves the whole group. The example scenario's Russian surface
+  action group is now a formation.
+- Fixed the release tests hanging on GitHub Actions (first-run prompt on a headless display); the release job and its
+  test step now have timeouts.
+
 ## 1.1.0 — 2026-11-14
 
 - **Loadout Viewer** (Tools > Loadout viewer, Ctrl+L; also from the Database dock and the aircraft inspector):

@@ -8,6 +8,7 @@ src/cmo_studio/
   model/
     project.py           dataclasses for the whole project + JSON (de)serialisation
     enums.py             API vocab: unit types, mission classes, trigger/condition/action specs
+    formations.py        formation presets, station geometry, apply/move helpers
     validation.py        project checks (optionally against the database)
   db/
     database.py          read-only DB3000/CWDB access: search, details, loadouts, media
@@ -31,6 +32,7 @@ src/cmo_studio/
     document.py          ProjectDocument: undo/redo snapshots, dirty flag, selection
     db_browser.py        DBManager + DB browser dock
     loadout_viewer.py    Loadout Viewer window (linked loadout / weapon browsing with history)
+    formation_widgets.py formation preview, preset picker, layout-settings form
     forms.py             UnitForm, RPForm, ZoneForm (shared by map and pages)
     widgets.py           code editor, highlighters, pickers, key/value table...
     dialogs.py           settings, new project, about, issues panel

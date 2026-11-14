@@ -230,6 +230,47 @@ local function buildUnits()
   end
 end
 
+------------------------------------------------------------------ formations
+-- As in the official scenarios: unit.group = 'Name' groups a unit, and
+-- ScenEdit_SetUnit({guid=, formation={bearing=, distance=}}) sets its station
+-- relative to the group lead. Units are already on their stations, so if
+-- grouping is refused the layout is still right and the report says so.
+local function setGroup(guid, name)
+  local ok, u = try(ScenEdit_GetUnit, { guid = guid })
+  if not ok or not u then return false end
+  return (pcall(function() u.group = name end))
+end
+
+local function buildFormations()
+  for _, f in ipairs(D.FORMATIONS or {}) do
+    local lead = B.guids[f.lead] and B.guids[f.lead][1]
+    if not lead then
+      warn('Formation "' .. f.name .. '": its lead was not built')
+    elseif not setGroup(lead, f.name) then
+      warn('Formation "' .. f.name .. '": units are on station but could not be grouped from Lua - select them ' ..
+           'in the editor and group them.')
+    else
+      local placed = 0
+      for _, m in ipairs(f.members) do
+        local g = B.guids[m.id] and B.guids[m.id][1]
+        if g and setGroup(g, f.name) then
+          local full = { bearing = m.bearing, distance = m.dist, type = f.stype, sprint = f.sprint }
+          if try(ScenEdit_SetUnit, { guid = g, formation = full })
+             or try(ScenEdit_SetUnit, { guid = g, formation = { bearing = m.bearing, distance = m.dist } }) then
+            placed = placed + 1
+          else
+            warn('Formation "' .. f.name .. '": station for ' .. tostring(B.names[m.id]) .. ' not set')
+          end
+        elseif g then
+          warn('Formation "' .. f.name .. '": could not add ' .. tostring(B.names[m.id]) .. ' to the group')
+        end
+      end
+      count('formations')
+      log(2, 'group   %-30s lead %s, %d/%d station(s)', f.name, tostring(B.names[f.lead]), placed, #f.members)
+    end
+  end
+end
+
 ------------------------------------------------------------------ missions
 local function buildMissions()
   for _, m in ipairs(D.MISSIONS) do
@@ -426,6 +467,7 @@ local function build()
   log(1, 'Clock and weather...'); buildClock()
   log(1, 'Reference points...'); buildPoints()
   log(1, 'Units...');            buildUnits()
+  log(1, 'Formations...');       buildFormations()
   log(1, 'Missions...');         buildMissions()
   log(1, 'Key values...');       buildKeyValues()
   log(1, 'Events...');           buildEvents()

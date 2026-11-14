@@ -257,6 +257,30 @@ class Script:
 
 
 @dataclass
+class Formation:
+    """A lead unit plus ordered members kept on stations computed from a preset (see model/formations.py)."""
+    id: str = field(default_factory=lambda: new_id("f"))
+    name: str = "New Formation"         # also the CMO group name
+    side: str = ""
+    preset: str = "line_ahead"
+    lead: str = ""                      # unit id
+    members: list[str] = field(default_factory=list)   # unit ids in station order
+    spacing_nm: float = 1.0
+    heading: float = 0.0                # formation orientation, true degrees
+    params: dict[str, Any] = field(default_factory=dict)   # overrides of the preset's parameters
+    alt_step_m: Optional[float] = None  # altitude step per member (air); None = preset default
+    mirror: bool = False
+    jitter: float = 0.0                 # random offset, in spacing units
+    seed: int = 1
+    set_heading: bool = True            # give every unit the formation heading
+    keep_on_station: bool = True        # re-position members when the lead or the settings change
+    group_in_cmo: bool = True           # build a CMO group with formation stations
+    station_type: str = "Rotating"      # Rotating (relative to group course) or Fixed (true bearing)
+    sprint_drift: bool = False
+    notes: str = ""
+
+
+@dataclass
 class Variant:
     """An extra build of the same scenario with different computer-controlled sides."""
     id: str = field(default_factory=lambda: new_id("v"))
@@ -284,6 +308,7 @@ class Project:
     special_actions: list[SpecialAction] = field(default_factory=list)
     scripts: list[Script] = field(default_factory=list)
     variants: list[Variant] = field(default_factory=list)
+    formations: list[Formation] = field(default_factory=list)
     key_values: dict[str, str] = field(default_factory=dict)   # initial ScenEdit_SetKeyValue pairs
 
     # ------------------------------------------------------------------ lookups
@@ -306,6 +331,9 @@ class Project:
     def mission(self, mid: str) -> Optional[Mission]:
         return next((m for m in self.missions if m.id == mid), None)
 
+    def formation(self, fid: str) -> Optional[Formation]:
+        return next((f for f in self.formations if f.id == fid), None)
+
     def script(self, name: str) -> Optional[Script]:
         return next((s for s in self.scripts if s.name == name or s.id == name), None)
 
@@ -325,6 +353,7 @@ class Project:
         yield from self.special_actions
         yield from self.scripts
         yield from self.variants
+        yield from self.formations
 
     def find(self, oid: str) -> Optional[Any]:
         return next((o for o in self.all_objects() if getattr(o, "id", None) == oid), None)
@@ -350,6 +379,7 @@ class Project:
         self.zones = [z for z in self.zones if z.side != sid]
         self.missions = [m for m in self.missions if m.side != sid]
         self.special_actions = [a for a in self.special_actions if a.side != sid]
+        self.formations = [f for f in self.formations if f.side != sid]
         for v in self.variants:
             v.computer_sides = [x for x in v.computer_sides if x != sid]
 
@@ -369,6 +399,10 @@ class Project:
             m.targets = [x for x in m.targets if x not in doomed]
             if m.destination in doomed:
                 m.destination = ""
+        for f in self.formations:
+            f.members = [x for x in f.members if x not in doomed]
+            if f.lead in doomed:
+                f.lead = f.members.pop(0) if f.members else ""
 
     def remove_zone(self, zid: str) -> None:
         self.zones = [z for z in self.zones if z.id != zid]

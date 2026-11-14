@@ -139,7 +139,8 @@ class Exporter:
     def build_scenario_lua(self) -> str:
         D = compile_build_data(self.p)
         parts = [self.header_comment(), "", "local D = {}", ""]
-        order = ("CFG", "PAGES", "SIDES", "POSTURES", "VARIANTS", "RPS", "ZONES", "UNITS", "MISSIONS", "KV",
+        order = ("CFG", "PAGES", "SIDES", "POSTURES", "VARIANTS", "RPS", "ZONES", "UNITS", "FORMATIONS",
+                 "MISSIONS", "KV",
                  "EVENTS", "SPECIALS")
         for key in order:
             value = D[key]

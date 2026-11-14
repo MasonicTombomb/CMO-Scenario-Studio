@@ -64,6 +64,21 @@ def main():
             page.list.setCurrentRow(1)
         pump(app, 0.4)
         w.grab().save(str(OUT / f"{name}.png"))
+    w.tabs.setCurrentWidget(w.formations_page)
+    w.formations_page.select_formation(w.doc.project.formations[0].id)
+    pump(app, 0.4)
+    w.grab().save(str(OUT / "formations.png"))
+    from cmo_studio.db.database import DBEntry
+    from cmo_studio.ui.pages.formations_page import FormationCreator
+    w.db_browser.current = DBEntry("Ship", 2814, "MPK Steregushchiy [Pr.20380]")
+    dlg = FormationCreator(w.ctx, w)
+    dlg.rows.cellWidget(0, 3).setValue(7)
+    dlg.preset.set_key("double_screen")
+    dlg._preset_changed()
+    dlg.show()
+    pump(app, 0.4)
+    dlg.grab().save(str(OUT / "formation_creator.png"))
+    dlg.reject()
     w.open_loadout_viewer(6645, 30249)          # Su-35S, R-77-1 / R-73M loadout
     v = w._loadout_viewer
     v.resize(1680, 900)

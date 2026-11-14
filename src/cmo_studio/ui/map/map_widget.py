@@ -160,6 +160,7 @@ class MapWidget(QWidget):
                 self._paint_zones(p)
             if self.show_rps:
                 self._paint_rps(p)
+            self._paint_formations(p)
             self._paint_units(p)
         self._paint_draft(p)
         self._paint_measure(p)
@@ -284,6 +285,22 @@ class MapWidget(QWidget):
                                      QPointF(q.x(), q.y() + d), QPointF(q.x() - d, q.y())]))
             if self.show_labels:
                 self._label(p, QPointF(q.x() + 8, q.y() + 4), r.name, col)
+
+    def _paint_formations(self, p: QPainter) -> None:
+        """Thin dashed links from each formation lead to its members."""
+        for f in getattr(self.project, "formations", []):
+            lead = self.project.unit(f.lead)
+            if lead is None or lead.host or not self._visible(lead.side):
+                continue
+            col = QColor(self._side_color(lead.side))
+            col.setAlpha(150 if f.id == self.selected or f.lead == self.selected else 90)
+            pen = QPen(col, 1.2, Qt.PenStyle.DashLine)
+            p.setPen(pen)
+            a = self.to_screen(lead.lat, lead.lon)
+            for uid in f.members:
+                u = self.project.unit(uid)
+                if u is not None and not u.host:
+                    p.drawLine(a, self.to_screen(u.lat, u.lon))
 
     def _unit_path(self, utype: str, s: float) -> QPainterPath:
         path = QPainterPath()

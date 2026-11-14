@@ -15,6 +15,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
   sensors, weapons, aircraft loadouts (with their weapons), hangar/dock facilities and the DB description text.
 - **Map editor** — slippy map (Esri, OpenStreetMap, OpenTopoMap or offline grid) to place units, build airbases
   with squadrons, draw patrol/trigger areas, drop reference points and measure ranges and bearings.
+- **Formations** — 40 ready-made layouts (naval screens and columns, carrier group, convoy, ASW bent-line, air
+  finger-four, ladder, wall, ground wedge, coil, SAM dispersal and more, plus custom stations) with spacing,
+  orientation, altitude step, mirror and jitter controls and a live preview. Create new units straight into a
+  formation from the database, or group existing ones; they are built as CMO groups with formation stations.
 - **Loadout Viewer** (Ctrl+L) — every loadout of an aircraft with role, radius, time on station, ready and
   quick-turnaround times, mission profile and Winchester/Shotgun rule; the weapons it carries with quantities and
   ranges; each weapon's ranges, PoK, warheads, seekers, targets and capabilities; and links to every other aircraft
@@ -46,6 +50,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 | ![Events](docs/images/events.png) | ![Missions](docs/images/missions.png) |
 | **Briefings with live preview** | **Build & Export with dry-run** |
 | ![Briefings](docs/images/briefings.png) | ![Export](docs/images/export.png) |
+
+| Formations | Create units in formation |
+| --- | --- |
+| ![Formations](docs/images/formations.png) | ![Formation creator](docs/images/formation_creator.png) |
 
 ![Loadout Viewer](docs/images/loadout_viewer.png)
 

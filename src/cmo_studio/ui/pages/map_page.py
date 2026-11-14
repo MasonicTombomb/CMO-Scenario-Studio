@@ -243,11 +243,19 @@ class MapPage(Page):
         obj = self.project.find(oid)
         if obj is None:
             return
+        from ...model.formations import move_with_formation
+        moved_group = False
         with self.edit("Move " + getattr(obj, "name", "object"), "units" if isinstance(obj, Unit) else "rps"):
-            obj.lat, obj.lon = lat, lon
             if isinstance(obj, Unit):
-                for h in self.project.hosted_by(obj.id):
-                    h.lat, h.lon = lat, lon
+                moved_group = move_with_formation(self.project, obj.id, lat, lon)
+                for u in self.project.units:
+                    host = self.project.unit(u.host) if u.host else None
+                    if host is not None:
+                        u.lat, u.lon = host.lat, host.lon
+            else:
+                obj.lat, obj.lon = lat, lon
+        if moved_group:
+            self.ctx.status("Moved the whole formation (untick 'keep on station' to move one unit).")
         self.doc.select(oid, self)
 
     def _vertex_moved(self, zid: str, idx: int, lat: float, lon: float):
@@ -333,6 +341,14 @@ class MapPage(Page):
             menu.addAction(f"Select '{getattr(obj, 'name', oid)}'", lambda: self.doc.select(oid, self))
             if isinstance(obj, Unit):
                 menu.addAction("Duplicate", lambda: (self.unit_form.set_unit(oid), self.unit_form._duplicate()))
+                from ...model.formations import formation_of
+                fm = formation_of(self.project, oid)
+                if self.ctx.window is not None:
+                    if fm is not None:
+                        menu.addAction(f"Edit formation '{fm.name}'", lambda: self.ctx.window.open_formation(fm.id))
+                    else:
+                        menu.addAction("Make formation from this unit...",
+                                       lambda: self.ctx.window.make_formation([oid]))
             menu.addAction("Delete", lambda: self._delete(oid))
             menu.addSeparator()
         if self.place_entry:
