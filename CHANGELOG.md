@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0 — 2026-11-14
 
 - **Event timeline** tab: events (one-shot, random window, repeating, on condition) and missions (active periods,
   switches) on the scenario clock, with zoom, tooltips, double-click to edit, and timing problems flagged.
