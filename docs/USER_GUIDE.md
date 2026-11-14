@@ -13,6 +13,7 @@ files that live happily in git.
 - [Event timeline](#event-timeline)
 - [Search everything](#search-everything)
 - [Editing many units at once](#editing-many-units-at-once)
+- [Callsigns](#callsigns)
 - [Loadout Viewer](#loadout-viewer)
 - [Events in depth](#events-in-depth)
 - [Variants](#variants)
@@ -284,6 +285,28 @@ lot.
 - **Loadout**, when all selected units are the same aircraft type.
 - An **extra ScenEdit_SetUnit field** to set or remove (e.g. `fuel` = `50`).
 
+## Callsigns
+
+**Assign callsigns** (Units tab *Callsigns...*, right-click, Tools menu or **Ctrl+Shift+C**) names the selected
+aircraft (or every aircraft, if none are selected) from the callsign library: `TARTAN 11`, `TARTAN 12`...
+
+For each unit the dialog shows the **country** (from the aircraft's operator in the database) and the **role**
+(from its type, category and loadout: an F-16 carrying HARMs is SEAD, a Ka-27 a naval helicopter, an Il-78 a
+tanker). Change either per row, or pick a specific **squadron**; the preview updates as you go. Options:
+
+- **Split counted units into single aircraft**: a squadron entry with count 6 becomes six aircraft, each with its
+  own callsign, keeping its base, mission assignments and formation place. Reinforcements are not split (their spawn
+  action refers to one unit); they get a flight callsign instead (`TARTAN 3 #1..#4` in CMO).
+- **Put the squadron name in the group tag**, handy for filtering and bulk edits.
+
+Each unit starts a new flight, separate units come from separate squadrons, and names already used in the project
+are never reused. One undo reverts everything.
+
+**Tools > Callsign library** edits the library: countries (with the database countries they match, the name
+format and the flight size) and their squadrons (service, base, aircraft, roles and callsign words). *Save* writes
+your own `callsigns.json`, which is a plain, standalone JSON file you can also edit by hand, share (*Export* /
+*Import*) or reset. See [CALLSIGNS.md](CALLSIGNS.md) for the format.
+
 ## Loadout Viewer
 
 Open it with **Tools > Loadout viewer** (Ctrl+L), the **Loadout viewer** button in the Database dock (aircraft), or
@@ -376,6 +399,7 @@ reinforcements, areas and missions. Events and runtime scripts are not imported.
 | Ctrl+E | Build & Export tab |
 | Ctrl+K | Search everything |
 | Ctrl+Shift+E | Edit selected units |
+| Ctrl+Shift+C | Assign callsigns |
 | Ctrl+Shift+F | Create units in formation |
 | Ctrl+L | Loadout viewer |
 | F5 | Dry-run build |

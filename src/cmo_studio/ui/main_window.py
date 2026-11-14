@@ -190,6 +190,8 @@ class MainWindow(QMainWindow):
         self._action(t, "Dry-run build (CMO Lua)", lambda: (self.tabs.setCurrentWidget(self.export_page),
                                                             self.export_page._dry()), "F5")
         self._action(t, "Loadout viewer...", lambda: self.open_loadout_viewer(), "Ctrl+L")
+        self._action(t, "Assign callsigns to aircraft...", self.assign_callsigns, "Ctrl+Shift+C")
+        self._action(t, "Callsign library...", self.open_callsign_library)
         self._action(t, "Create units in formation...",
                      lambda: (self.tabs.setCurrentWidget(self.formations_page), self.formations_page.open_creator()),
                      "Ctrl+Shift+F")
@@ -469,6 +471,8 @@ class MainWindow(QMainWindow):
             ("Create units in formation", "Ctrl+Shift+F",
              lambda: (self.tabs.setCurrentWidget(self.formations_page), self.formations_page.open_creator())),
             ("Edit selected units", "Ctrl+Shift+E", self.bulk_edit_selected),
+            ("Assign callsigns", "Ctrl+Shift+C", self.assign_callsigns),
+            ("Callsign library", "Tools menu", self.open_callsign_library),
             ("Fit map to scenario", "Map", lambda: (self.tabs.setCurrentWidget(self.map_page),
                                                     self.map_page.map.fit_project())),
             ("Save", "Ctrl+S", self.save_project),
@@ -496,6 +500,23 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage("Select units on the Units tab first (Ctrl/Shift-click for several).", 5000)
             return
         BulkEditDialog(self.ctx, ids, self).exec()
+
+    def assign_callsigns(self, ids: Optional[list] = None) -> None:
+        """Name the selected aircraft (or every aircraft, if none are selected) from the callsign library."""
+        from .callsigns_ui import CallsignAssignDialog
+        p = self.doc.project
+        ids = ids or self.units_page.selected_ids() or ([self.doc.selection] if p.unit(self.doc.selection) else [])
+        ids = [i for i in ids if p.unit(i) and p.unit(i).type == "Aircraft"]
+        if not ids:
+            ids = [u.id for u in p.units if u.type == "Aircraft"]
+            if not ids:
+                self.statusBar().showMessage("There are no aircraft in the project yet.", 5000)
+                return
+        CallsignAssignDialog(self.ctx, ids, self).exec()
+
+    def open_callsign_library(self) -> None:
+        from .callsigns_ui import CallsignLibraryDialog
+        CallsignLibraryDialog(self.ctx, self).exec()
 
     def open_formation(self, fid: str) -> None:
         self.tabs.setCurrentWidget(self.formations_page)

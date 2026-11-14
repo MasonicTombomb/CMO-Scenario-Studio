@@ -25,6 +25,9 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Search everything** (Ctrl+K) — jump to any unit, mission, event, area, formation, script line or command.
 - **Edit many units at once** — tick the fields to change across a selection: rename patterns (`Escort {nn}`),
   side, group, proficiency, EMCON, hold, heading, speed, altitude, base, loadout and more, in one undo step.
+- **Callsigns** — name aircraft from an editable JSON library of 38 air arms (NATO and beyond), ~365 squadrons
+  and 1,100+ callsign words, by detected country and role (fighter, strike, SEAD, AEW, tanker, MPA, helicopters...),
+  in flights: `TARTAN 11–14`, `SOKOL-21`... Rename, add or share entries in the built-in library editor.
 - **Loadout Viewer** (Ctrl+L) — every loadout of an aircraft with role, radius, time on station, ready and
   quick-turnaround times, mission profile and Winchester/Shotgun rule; the weapons it carries with quantities and
   ranges; each weapon's ranges, PoK, warheads, seekers, targets and capabilities; and links to every other aircraft
@@ -66,6 +69,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 | Search everything (Ctrl+K) | Edit many units at once |
 | --- | --- |
 | ![Search](docs/images/search.png) | ![Bulk edit](docs/images/bulk_edit.png) |
+
+| Assign callsigns | Callsign library |
+| --- | --- |
+| ![Assign callsigns](docs/images/callsigns_assign.png) | ![Callsign library](docs/images/callsigns_library.png) |
 
 ![Loadout Viewer](docs/images/loadout_viewer.png)
 
@@ -135,6 +142,7 @@ See [`examples/output`](examples/output) for a real export.
 - [User guide](docs/USER_GUIDE.md) — every tab, workflows and tips
 - [Export format and Lua runtime](docs/EXPORT_FORMAT.md) — what each file does, the `Studio*` Lua API
 - [Project file format](docs/PROJECT_FORMAT.md) — the `.cmoproj` JSON schema
+- [Callsign library](docs/CALLSIGNS.md) — the JSON format, roles and allocation rules
 - [Database access](docs/DATABASE.md) — which DB3000 tables are read and how
 - [Architecture](docs/ARCHITECTURE.md) — code layout for contributors
 - [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)

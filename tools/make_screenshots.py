@@ -94,6 +94,20 @@ def main():
     pump(app, 0.3)
     bd.grab().save(str(OUT / "bulk_edit.png"))
     bd.reject()
+    from cmo_studio.ui.callsigns_ui import CallsignAssignDialog, CallsignLibraryDialog
+    ad = CallsignAssignDialog(w.ctx, [u.id for u in w.doc.project.units if u.type == "Aircraft"], w)
+    ad.show()
+    pump(app, 0.3)
+    ad.grab().save(str(OUT / "callsigns_assign.png"))
+    ad.reject()
+    ld = CallsignLibraryDialog(w.ctx, w)
+    ld.country_name = "United Kingdom"
+    ld._fill_countries()
+    ld.show()
+    pump(app, 0.3)
+    ld.grab().save(str(OUT / "callsigns_library.png"))
+    ld.dirty = False
+    ld.close()
     w.tabs.setCurrentWidget(w.formations_page)
     w.formations_page.select_formation(w.doc.project.formations[0].id)
     pump(app, 0.4)

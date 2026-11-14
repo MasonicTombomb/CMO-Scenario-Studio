@@ -63,6 +63,10 @@ class UnitsPage(Page):
         edit_btn.setToolTip("Change fields on every selected unit at once (Ctrl+Shift+E)")
         edit_btn.clicked.connect(self._bulk_edit)
         bulk.addWidget(edit_btn)
+        cs_btn = QPushButton("Callsigns...")
+        cs_btn.setToolTip("Name the selected aircraft from the callsign library (Ctrl+Shift+C)")
+        cs_btn.clicked.connect(self._callsigns)
+        bulk.addWidget(cs_btn)
         for text, fn in (("Assign to mission...", self._assign), ("Make formation", self._formation),
                          ("Set group...", self._group),
                          ("Toggle reinforcement", self._toggle_reserve), ("Delete selected", self._delete)):
@@ -200,6 +204,11 @@ class UnitsPage(Page):
             self.ctx.window.bulk_edit_selected(ids)
             self.refresh_table()
 
+    def _callsigns(self):
+        if self.ctx.window is not None:
+            self.ctx.window.assign_callsigns(self._selected_ids())
+            self.refresh_table()
+
     def _context_menu(self, pos):
         from PyQt6.QtWidgets import QMenu
         ids = self._selected_ids()
@@ -207,6 +216,7 @@ class UnitsPage(Page):
             return
         menu = QMenu(self)
         menu.addAction(f"Edit {len(ids)} selected unit(s)...", self._bulk_edit)
+        menu.addAction("Assign callsigns...", self._callsigns)
         menu.addAction("Assign to mission...", self._assign)
         menu.addAction("Make formation", self._formation)
         menu.addAction("Toggle reinforcement", self._toggle_reserve)

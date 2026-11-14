@@ -29,7 +29,7 @@ cmo-studio = "cmo_studio.app:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-cmo_studio = ["export/lua/*.lua", "resources/*"]
+cmo_studio = ["export/lua/*.lua", "resources/*", "data/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

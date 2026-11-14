@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- **Callsigns**: a standalone, editable JSON callsign library (38 air arms, ~365 squadrons, 1,100+ words) and an
+  *Assign callsigns* dialog that detects each aircraft's country and role from the database and names it in flights
+  (`TARTAN 11-14`), optionally splitting counted units into single aircraft and tagging the squadron. A library
+  editor (Tools > Callsign library) adds, renames and removes countries, squadrons, roles and words, and imports,
+  exports or resets the file.
+
 ## 1.3.0 — 2026-11-14
 
 - **Event timeline** tab: events (one-shot, random window, repeating, on condition) and missions (active periods,

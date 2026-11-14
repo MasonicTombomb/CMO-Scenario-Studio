@@ -11,6 +11,7 @@ PKG = SRC / "cmo_studio"
 datas = [
     (str(PKG / "export" / "lua" / "*.lua"), "cmo_studio/export/lua"),
     (str(PKG / "resources" / "*"), "cmo_studio/resources"),
+    (str(PKG / "data" / "*.json"), "cmo_studio/data"),
 ]
 
 # Qt modules the studio never imports; leaving them out keeps the download small.
