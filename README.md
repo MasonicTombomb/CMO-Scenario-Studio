@@ -136,7 +136,8 @@ python packaging/build_release.py
 
 This writes `release/CMO-Scenario-Studio-<version>-win64.zip` and its `.sha256`, after a smoke test of the frozen
 exe. Pushing a tag such as `v1.0.0` makes GitHub Actions build the same zip and publish a release with the notes in
-`docs/releases/<version>.md`.
+`docs/releases/<version>.md`. That is the only workflow: ordinary pushes run nothing, so run `pytest` locally first
+(the release job runs it once more before building).
 
 ## Tests
 

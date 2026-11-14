@@ -11,7 +11,7 @@ pip install -e .[dev]
 pytest
 ```
 
-Set `CMO_DIR` to your CMO folder if it is not in a Steam library, so the database and Lua tests run instead of
+There is no CI on ordinary pushes or pull requests, so please run `pytest` before pushing. Set `CMO_DIR` to your CMO folder if it is not in a Steam library, so the database and Lua tests run instead of
 being skipped. GUI tests run off-screen (`QT_QPA_PLATFORM=offscreen`).
 
 ## Guidelines

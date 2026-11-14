@@ -1,6 +1,7 @@
 name: release
 
-# Push a tag like v1.0.0 to build the Windows exe and publish a GitHub release with the zip attached.
+# The only workflow: push a tag like v1.2.0 to build the Windows exe and publish a GitHub release with the zip
+# attached. Ordinary pushes run nothing. The test step takes seconds and stops a broken build being published.
 on:
   push:
     tags: ["v*"]
