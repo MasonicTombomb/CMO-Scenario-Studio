@@ -19,6 +19,12 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
   finger-four, ladder, wall, ground wedge, coil, SAM dispersal and more, plus custom stations) with spacing,
   orientation, altitude step, mirror and jitter controls and a live preview. Create new units straight into a
   formation from the database, or group existing ones; they are built as CMO groups with formation stations.
+- **Event timeline** — every event and mission on the scenario clock: one-shot moments, random windows, repeating
+  ticks and condition triggers, with problems flagged (outside the scenario, same-minute clashes, missions ending
+  before they start). Double-click to edit.
+- **Search everything** (Ctrl+K) — jump to any unit, mission, event, area, formation, script line or command.
+- **Edit many units at once** — tick the fields to change across a selection: rename patterns (`Escort {nn}`),
+  side, group, proficiency, EMCON, hold, heading, speed, altitude, base, loadout and more, in one undo step.
 - **Loadout Viewer** (Ctrl+L) — every loadout of an aircraft with role, radius, time on station, ready and
   quick-turnaround times, mission profile and Winchester/Shotgun rule; the weapons it carries with quantities and
   ranges; each weapon's ranges, PoK, warheads, seekers, targets and capabilities; and links to every other aircraft
@@ -54,6 +60,12 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 | Formations | Create units in formation |
 | --- | --- |
 | ![Formations](docs/images/formations.png) | ![Formation creator](docs/images/formation_creator.png) |
+
+![Event timeline](docs/images/timeline.png)
+
+| Search everything (Ctrl+K) | Edit many units at once |
+| --- | --- |
+| ![Search](docs/images/search.png) | ![Bulk edit](docs/images/bulk_edit.png) |
 
 ![Loadout Viewer](docs/images/loadout_viewer.png)
 

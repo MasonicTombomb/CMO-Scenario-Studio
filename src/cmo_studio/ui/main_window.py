@@ -29,6 +29,7 @@ from .pages.missions_page import MissionsPage
 from .pages.scenario_page import ScenarioPage
 from .pages.scripts_page import ScriptsPage, SpecialActionsPage
 from .pages.sides_page import SidesPage
+from .pages.timeline_page import TimelinePage
 from .pages.units_page import UnitsPage
 
 FILE_FILTER = f"CMO Scenario Studio project (*{PROJECT_SUFFIX});;All files (*)"
@@ -56,13 +57,14 @@ class MainWindow(QMainWindow):
         self.areas_page = AreasPage(self.ctx)
         self.missions_page = MissionsPage(self.ctx)
         self.events_page = EventsPage(self.ctx)
+        self.timeline_page = TimelinePage(self.ctx)
         self.specials_page = SpecialActionsPage(self.ctx)
         self.scripts_page = ScriptsPage(self.ctx)
         self.briefings_page = BriefingsPage(self.ctx)
         self.export_page = ExportPage(self.ctx)
         for page in (self.scenario_page, self.sides_page, self.map_page, self.units_page, self.formations_page,
                      self.areas_page,
-                     self.missions_page, self.events_page, self.specials_page, self.scripts_page,
+                     self.missions_page, self.events_page, self.timeline_page, self.specials_page, self.scripts_page,
                      self.briefings_page, self.export_page):
             self.tabs.addTab(page, page.title)
         self.setCentralWidget(self.tabs)
@@ -170,6 +172,9 @@ class MainWindow(QMainWindow):
         e = mb.addMenu("&Edit")
         self.undo_act = self._action(e, "&Undo", self.doc.undo, QKeySequence.StandardKey.Undo)
         self.redo_act = self._action(e, "&Redo", self.doc.redo, QKeySequence.StandardKey.Redo)
+        e.addSeparator()
+        self._action(e, "Search everything...", self.open_search, "Ctrl+K")
+        self._action(e, "Edit selected units...", self.bulk_edit_selected, "Ctrl+Shift+E")
         self._update_undo()
 
         v = mb.addMenu("&View")
@@ -421,6 +426,77 @@ class MainWindow(QMainWindow):
             u.name = name.strip() or e.name
         self.doc.select(u.id)
 
+    # ------------------------------------------------------------------ navigation
+    def goto_object(self, oid: str, line: int = 0) -> None:
+        """Show any project object in the tab that edits it."""
+        from ..model.project import (Event, Formation, Mission, ReferencePoint, Script, Side, SpecialAction, Unit,
+                                     Variant, Zone)
+        p = self.doc.project
+        obj = p.find(oid)
+        if obj is None:
+            return
+        if isinstance(obj, Unit):
+            self.tabs.setCurrentWidget(self.units_page if obj.host else self.map_page)
+            self.doc.select(oid)
+            return
+        if isinstance(obj, (ReferencePoint, Zone)):
+            self.tabs.setCurrentWidget(self.map_page)
+            self.doc.select(oid)
+            return
+        if isinstance(obj, Formation):
+            self.open_formation(oid)
+            return
+        target = {Mission: (self.missions_page, "mid"), Event: (self.events_page, "eid"),
+                  SpecialAction: (self.specials_page, "aid"), Script: (self.scripts_page, "sid"),
+                  Side: (self.sides_page, "sid"), Variant: (self.sides_page, "vid")}.get(type(obj))
+        if target is None:
+            return
+        page, attr = target
+        setattr(page, attr, oid)
+        self.tabs.setCurrentWidget(page)
+        page.refresh()
+        if isinstance(obj, Script) and line:
+            self.scripts_page.editor.goto_line(line)
+
+    def search_commands(self) -> list:
+        tabs = [(f"Go to {self.tabs.tabText(i).replace('&&', '&')}", "tab",
+                 lambda k=i: self.tabs.setCurrentIndex(k)) for i in range(self.tabs.count())]
+        return tabs + [
+            ("Validate project", "F7", lambda: self.run_validation(True)),
+            ("Dry-run build", "F5", lambda: (self.tabs.setCurrentWidget(self.export_page), self.export_page._dry())),
+            ("Export", "Build & Export tab", lambda: self.tabs.setCurrentWidget(self.export_page)),
+            ("Loadout viewer", "Ctrl+L", lambda: self.open_loadout_viewer()),
+            ("Create units in formation", "Ctrl+Shift+F",
+             lambda: (self.tabs.setCurrentWidget(self.formations_page), self.formations_page.open_creator())),
+            ("Edit selected units", "Ctrl+Shift+E", self.bulk_edit_selected),
+            ("Fit map to scenario", "Map", lambda: (self.tabs.setCurrentWidget(self.map_page),
+                                                    self.map_page.map.fit_project())),
+            ("Save", "Ctrl+S", self.save_project),
+            ("Settings", "File menu", self.open_settings),
+        ]
+
+    def open_search(self) -> None:
+        from .search import SearchDialog
+
+        def open_hit(hit):
+            if hit.action is not None:
+                hit.action()
+            else:
+                self.goto_object(hit.oid, hit.line)
+        dlg = SearchDialog(self.doc.project, self.search_commands(), open_hit, self)
+        geo = self.geometry()
+        dlg.move(geo.x() + (geo.width() - dlg.width()) // 2, geo.y() + 90)
+        dlg.exec()
+
+    def bulk_edit_selected(self, ids: Optional[list] = None) -> None:
+        from .bulk_edit import BulkEditDialog
+        ids = ids or self.units_page.selected_ids() or ([self.doc.selection] if self.doc.project.unit(
+            self.doc.selection) else [])
+        if not ids:
+            self.statusBar().showMessage("Select units on the Units tab first (Ctrl/Shift-click for several).", 5000)
+            return
+        BulkEditDialog(self.ctx, ids, self).exec()
+
     def open_formation(self, fid: str) -> None:
         self.tabs.setCurrentWidget(self.formations_page)
         self.formations_page.select_formation(fid)
@@ -481,6 +557,9 @@ class MainWindow(QMainWindow):
                 "Database": self.units_page, "Areas": self.areas_page, "Missions": self.missions_page,
                 "Events": self.events_page, "Special actions": self.specials_page, "Scripts": self.scripts_page,
                 "Variants": self.sides_page, "Formations": self.formations_page}.get(area, self.scenario_page)
+        if obj is not None and area not in ("Scenario",):
+            self.goto_object(oid)
+            return
         if obj is not None:
             if area == "Missions":
                 self.missions_page.mid = oid

@@ -10,6 +10,9 @@ files that live happily in git.
 - [Tabs](#tabs)
 - [Database browser](#database-browser)
 - [Formations](#formations)
+- [Event timeline](#event-timeline)
+- [Search everything](#search-everything)
+- [Editing many units at once](#editing-many-units-at-once)
 - [Loadout Viewer](#loadout-viewer)
 - [Events in depth](#events-in-depth)
 - [Variants](#variants)
@@ -234,6 +237,53 @@ Settings per layout family:
 - **Random dispersal**: Radius (spacing units), Minimum separation (spacing units), Random seed
 - **Custom stations**: Stations
 
+## Event timeline
+
+The **Timeline** tab puts every event and mission on the scenario clock (start in yellow, end as a dashed red line),
+with Zulu times on top and H+ times beneath them.
+
+| Shape | Meaning |
+| --- | --- |
+| Diamond | fires once at that moment (date/time, minutes after start, scenario loaded/ended) |
+| Bar | a random-time window, or a mission's active period (from its start/end time options) |
+| Bar with ticks | a regular-time trigger, ticked at its interval when zoomed in enough |
+| Dotted line | fires on a condition (unit destroyed, area entered, points...), at any time |
+| Grey row | inactive event, or a mission that starts inactive |
+
+Missions switched on or off by a timed event show a diamond where that happens; condition-triggered switches are
+listed in the mission's details. The panel on the right lists **timing problems**: events that fire before the start
+or after the end, random windows outside the scenario, missions that end before they start, events without
+triggers, and two one-shot events in the same minute (circled in red, because their order is not guaranteed).
+
+Hover for details, click a row for the full summary, double-click to open it in the Events or Missions tab.
+**Ctrl+wheel** zooms, *Fit* shows the whole scenario; the filter, *Missions*, *Condition-only events* and
+*Sort by time* options trim the view.
+
+## Search everything
+
+**Ctrl+K** (Edit > Search everything) opens a search box over the whole project: units (by name, class, DBID, group
+or base), sides, missions, events (including their trigger and action types), areas, reference points, formations,
+special actions, variants, scripts and **every line of every script**, plus studio commands ("Validate project",
+"Dry-run build", "Go to Timeline"...). All words must match; name matches rank first, and a single word also matches
+loosely (e.g. `stgsh` finds Steregushchiy). Arrow keys choose, **Enter** opens the result in the tab that edits it
+(units and areas on the map, script lines at that line), **Esc** closes.
+
+## Editing many units at once
+
+On the **Units** tab select several rows (Ctrl/Shift-click, or filter then Ctrl+A) and press **Edit selected...**,
+right-click, or **Ctrl+Shift+E**. Tick only the fields to change; the rest are left alone, and one undo reverts the
+lot.
+
+- **Rename** with a pattern: `{name}` current name, `{n}` running number (from *first {n}*), `{nn}` zero-padded,
+  `{class}` database class, `{side}`, `{type}`. Example: `Escort {nn}` gives Escort 01, Escort 02...
+- **Side** (moving units drops mission assignments, strike targets, formation places and bases that belong to the
+  old side), **group tag**, **count**.
+- **Proficiency**, **radar / sonar active**, **hold position**, **auto-detectable**, **reinforcement**.
+- **Heading**, **speed**, **altitude** (airborne aircraft), **depth** (submarines), **starts at** (a base or ship of
+  the same side).
+- **Loadout**, when all selected units are the same aircraft type.
+- An **extra ScenEdit_SetUnit field** to set or remove (e.g. `fuel` = `50`).
+
 ## Loadout Viewer
 
 Open it with **Tools > Loadout viewer** (Ctrl+L), the **Loadout viewer** button in the Database dock (aircraft), or
@@ -324,6 +374,10 @@ reinforcements, areas and missions. Events and runtime scripts are not imported.
 | Ctrl+Z / Ctrl+Y | Undo / redo |
 | Ctrl+1 .. Ctrl+9 | Switch tab |
 | Ctrl+E | Build & Export tab |
+| Ctrl+K | Search everything |
+| Ctrl+Shift+E | Edit selected units |
+| Ctrl+Shift+F | Create units in formation |
+| Ctrl+L | Loadout viewer |
 | F5 | Dry-run build |
 | F7 | Validate |
 | Map: Esc / Delete / + / − | Cancel tool or deselect / delete selection / zoom |

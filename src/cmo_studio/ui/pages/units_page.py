@@ -54,8 +54,15 @@ class UnitsPage(Page):
         hh.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         hh.setStretchLastSection(True)
         self.table.itemSelectionChanged.connect(self._selection)
+        self.table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.table.customContextMenuRequested.connect(self._context_menu)
         ll.addWidget(self.table)
         bulk = QHBoxLayout()
+        edit_btn = QPushButton("Edit selected...")
+        edit_btn.setProperty("primary", True)
+        edit_btn.setToolTip("Change fields on every selected unit at once (Ctrl+Shift+E)")
+        edit_btn.clicked.connect(self._bulk_edit)
+        bulk.addWidget(edit_btn)
         for text, fn in (("Assign to mission...", self._assign), ("Make formation", self._formation),
                          ("Set group...", self._group),
                          ("Toggle reinforcement", self._toggle_reserve), ("Delete selected", self._delete)):
@@ -183,6 +190,31 @@ class UnitsPage(Page):
                     if uid not in m.units and self.project.unit(uid).side == m.side:
                         m.units.append(uid)
             self.ctx.status(f"Assigned {len(ids)} unit(s) to {m.name}")
+
+    def selected_ids(self) -> list[str]:
+        return self._selected_ids() if self.isVisible() else []
+
+    def _bulk_edit(self):
+        ids = self._selected_ids()
+        if ids and self.ctx.window is not None:
+            self.ctx.window.bulk_edit_selected(ids)
+            self.refresh_table()
+
+    def _context_menu(self, pos):
+        from PyQt6.QtWidgets import QMenu
+        ids = self._selected_ids()
+        if not ids:
+            return
+        menu = QMenu(self)
+        menu.addAction(f"Edit {len(ids)} selected unit(s)...", self._bulk_edit)
+        menu.addAction("Assign to mission...", self._assign)
+        menu.addAction("Make formation", self._formation)
+        menu.addAction("Toggle reinforcement", self._toggle_reserve)
+        menu.addSeparator()
+        if len(ids) == 1 and self.ctx.window is not None:
+            menu.addAction("Show on map", lambda: self.ctx.window.goto_object(ids[0]))
+        menu.addAction("Delete selected", self._delete)
+        menu.exec(self.table.viewport().mapToGlobal(pos))
 
     def _formation(self):
         ids = self._selected_ids()

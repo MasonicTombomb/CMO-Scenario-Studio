@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- **Event timeline** tab: events (one-shot, random window, repeating, on condition) and missions (active periods,
+  switches) on the scenario clock, with zoom, tooltips, double-click to edit, and timing problems flagged.
+- **Search everything** (Ctrl+K) across units, sides, missions, events, areas, reference points, formations, special
+  actions, variants, scripts and every script line, plus studio commands.
+- **Edit many units at once** (Units tab, Ctrl+Shift+E): rename patterns, side, group, count, proficiency, EMCON,
+  hold, auto-detect, reinforcement, heading, speed, altitude, depth, base, loadout and extra fields, as one undo step.
+- Issues panel and timeline double-clicks now open objects in the tab that edits them.
+
 ## 1.2.0 — 2026-11-14
 
 Includes the Loadout Viewer from 1.1.0, whose release build never published.
