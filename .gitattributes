@@ -1,0 +1,8 @@
+# Normalise text files in the repository (LF), check out with the platform's line endings.
+* text=auto
+
+# The example export is kept byte-for-byte as the studio writes it (CRLF, like CMO's own files).
+examples/output/** -text
+
+*.png binary
+*.jpg binary

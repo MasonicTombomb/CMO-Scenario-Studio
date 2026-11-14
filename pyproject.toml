@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cmo-scenario-studio"
+version = "1.0.0"
+description = "Scenario creation suite for Command: Modern Operations (PyQt6)"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = ["PyQt6>=6.5"]
+keywords = ["command modern operations", "cmo", "wargame", "scenario editor", "lua", "pyqt6"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows",
+    "Environment :: X11 Applications :: Qt",
+    "Topic :: Games/Entertainment :: Simulation",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+cmo-studio = "cmo_studio.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cmo_studio = ["export/lua/*.lua", "resources/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

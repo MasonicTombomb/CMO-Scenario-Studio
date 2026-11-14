@@ -1,0 +1,463 @@
+"""Main window: menus, tabs, docks, file handling, autosave."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Optional
+
+from PyQt6.QtCore import Qt, QTimer, QUrl
+from PyQt6.QtGui import QAction, QCloseEvent, QDesktopServices, QKeySequence
+from PyQt6.QtWidgets import (QDockWidget, QFileDialog, QLabel, QMainWindow, QMessageBox, QTabWidget)
+
+from .. import APP_NAME, __version__
+from ..db.database import DBEntry, latest_database
+from ..importers.legacy_lua import import_legacy_build
+from ..model.project import PROJECT_SUFFIX, Project, Unit, new_project
+from ..settings import AppSettings
+from .db_browser import DBBrowser, DBManager
+from .dialogs import AboutDialog, IssuesPanel, NewProjectDialog, SettingsDialog
+from .document import ProjectDocument
+from .pages.areas_page import AreasPage
+from .pages.base import AppContext
+from .pages.briefings_page import BriefingsPage
+from .pages.events_page import EventsPage
+from .pages.export_page import ExportPage
+from .pages.map_page import MapPage
+from .pages.missions_page import MissionsPage
+from .pages.scenario_page import ScenarioPage
+from .pages.scripts_page import ScriptsPage, SpecialActionsPage
+from .pages.sides_page import SidesPage
+from .pages.units_page import UnitsPage
+
+FILE_FILTER = f"CMO Scenario Studio project (*{PROJECT_SUFFIX});;All files (*)"
+DOCS_URL = "https://github.com/"
+
+
+class MainWindow(QMainWindow):
+    def __init__(self, settings: Optional[AppSettings] = None):
+        super().__init__()
+        self.settings = settings or AppSettings()
+        self.doc = ProjectDocument(parent=self)
+        self.dbm = DBManager(self)
+        self.dbm.cmo_dir = self.settings.cmo_dir
+        self.ctx = AppContext(self.doc, self.dbm, self.settings, self)
+        self.resize(1500, 920)
+
+        # ------------------------------------------------ pages
+        self.tabs = QTabWidget()
+        self.tabs.setDocumentMode(True)
+        self.scenario_page = ScenarioPage(self.ctx)
+        self.sides_page = SidesPage(self.ctx)
+        self.map_page = MapPage(self.ctx)
+        self.units_page = UnitsPage(self.ctx)
+        self.areas_page = AreasPage(self.ctx)
+        self.missions_page = MissionsPage(self.ctx)
+        self.events_page = EventsPage(self.ctx)
+        self.specials_page = SpecialActionsPage(self.ctx)
+        self.scripts_page = ScriptsPage(self.ctx)
+        self.briefings_page = BriefingsPage(self.ctx)
+        self.export_page = ExportPage(self.ctx)
+        for page in (self.scenario_page, self.sides_page, self.map_page, self.units_page, self.areas_page,
+                     self.missions_page, self.events_page, self.specials_page, self.scripts_page,
+                     self.briefings_page, self.export_page):
+            self.tabs.addTab(page, page.title)
+        self.setCentralWidget(self.tabs)
+
+        # ------------------------------------------------ docks
+        self.db_browser = DBBrowser(self.dbm, lambda: self.doc.project.scenario_year())
+        self.db_dock = QDockWidget("Database", self)
+        self.db_dock.setObjectName("db_dock")
+        self.db_dock.setWidget(self.db_browser)
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.db_dock)
+        self.issues = IssuesPanel(self.ctx)
+        self.issues_dock = QDockWidget("Issues", self)
+        self.issues_dock.setObjectName("issues_dock")
+        self.issues_dock.setWidget(self.issues)
+        self.addDockWidget(Qt.DockWidgetArea.BottomDockWidgetArea, self.issues_dock)
+        self.resizeDocks([self.db_dock], [470], Qt.Orientation.Horizontal)
+        self.resizeDocks([self.issues_dock], [150], Qt.Orientation.Vertical)
+
+        self.db_browser.placeRequested.connect(self._place_from_db)
+        self.db_browser.applyRequested.connect(self._apply_db)
+        self.db_browser.loadoutRequested.connect(self._loadout_from_db)
+        self.db_browser.addToBaseRequested.connect(self._add_to_base)
+        self.issues.jumpTo.connect(self._jump)
+        for form in (self.map_page.unit_form, self.units_page.form):
+            form.showInBrowser.connect(self._show_in_browser)
+            form.centerRequested.connect(self.show_on_map)
+
+        # ------------------------------------------------ status bar
+        self.cursor_label = QLabel("")
+        self.statusBar().addPermanentWidget(self.cursor_label)
+        self.db_label = QLabel("")
+        self.statusBar().addPermanentWidget(self.db_label)
+
+        self._build_menus()
+        self.doc.dirtyChanged.connect(lambda *_: self._title())
+        self.doc.pathChanged.connect(lambda *_: self._title())
+        self.doc.changed.connect(lambda *_: self._update_undo())
+        self.doc.reset.connect(self._update_undo)
+        self.dbm.changed.connect(self._db_changed)
+
+        self.autosave = QTimer(self)
+        self.autosave.timeout.connect(self._autosave)
+        self._restart_autosave()
+
+        # open a database
+        db = self.settings.db_file
+        cmo = self.settings.cmo_dir
+        if cmo:
+            path = Path(cmo) / "DB" / db if db else latest_database(cmo)
+            if path and Path(path).is_file():
+                self.dbm.open(path)
+            elif latest_database(cmo):
+                self.dbm.open(latest_database(cmo))
+        self.doc.load(new_project("New Scenario", self.dbm.db.path.name if self.dbm.db else ""))
+        self._title()
+        state = self.settings.value("window_state")
+        if state is not None:
+            self.restoreState(state)
+        else:
+            QTimer.singleShot(0, lambda: self.resizeDocks([self.db_dock], [440], Qt.Orientation.Horizontal))
+        geo = self.settings.value("window_geometry")
+        if geo is not None:
+            self.restoreGeometry(geo)
+        self.tabs.setCurrentWidget(self.map_page)
+        if not cmo:
+            QTimer.singleShot(300, self._first_run)
+
+    # ------------------------------------------------------------------ menus
+    def _action(self, menu, text, slot, shortcut=None, tip=""):
+        a = QAction(text, self)
+        if shortcut:
+            a.setShortcut(QKeySequence(shortcut))
+        if tip:
+            a.setStatusTip(tip)
+        a.triggered.connect(slot)
+        menu.addAction(a)
+        return a
+
+    def _build_menus(self):
+        mb = self.menuBar()
+        f = mb.addMenu("&File")
+        self._action(f, "&New scenario...", self.new_project, QKeySequence.StandardKey.New)
+        self._action(f, "&Open...", self.open_project, QKeySequence.StandardKey.Open)
+        self.recent_menu = f.addMenu("Open &recent")
+        self.recent_menu.aboutToShow.connect(self._fill_recent)
+        f.addSeparator()
+        self._action(f, "&Save", self.save_project, QKeySequence.StandardKey.Save)
+        self._action(f, "Save &as...", self.save_project_as, QKeySequence.StandardKey.SaveAs)
+        f.addSeparator()
+        self._action(f, "Import order of battle from a Build_Scenario.lua (If Russia Wins style)...",
+                     self.import_legacy)
+        self._action(f, "Open example project...", self.open_example)
+        f.addSeparator()
+        self._action(f, "&Export...", lambda: self.tabs.setCurrentWidget(self.export_page), "Ctrl+E")
+        f.addSeparator()
+        self._action(f, "Settings...", self.open_settings)
+        f.addSeparator()
+        self._action(f, "E&xit", self.close, QKeySequence.StandardKey.Quit)
+
+        e = mb.addMenu("&Edit")
+        self.undo_act = self._action(e, "&Undo", self.doc.undo, QKeySequence.StandardKey.Undo)
+        self.redo_act = self._action(e, "&Redo", self.doc.redo, QKeySequence.StandardKey.Redo)
+        self._update_undo()
+
+        v = mb.addMenu("&View")
+        v.addAction(self.db_dock.toggleViewAction())
+        v.addAction(self.issues_dock.toggleViewAction())
+        v.addSeparator()
+        for i in range(self.tabs.count()):
+            self._action(v, self.tabs.tabText(i), lambda _c, k=i: self.tabs.setCurrentIndex(k), f"Ctrl+{i + 1}"
+                         if i < 9 else None)
+
+        t = mb.addMenu("&Tools")
+        self._action(t, "Validate project", lambda: self.run_validation(True), "F7")
+        self._action(t, "Dry-run build (CMO Lua)", lambda: (self.tabs.setCurrentWidget(self.export_page),
+                                                            self.export_page._dry()), "F5")
+        self._action(t, "Fit map to scenario", lambda: (self.tabs.setCurrentWidget(self.map_page),
+                                                        self.map_page.map.fit_project()))
+        self._action(t, "Open the CMO folder", self._open_cmo)
+
+        h = mb.addMenu("&Help")
+        self._action(h, "User guide (docs folder)", self._open_docs, "F1")
+        self._action(h, "About", lambda: AboutDialog(self).exec())
+
+    def _fill_recent(self):
+        self.recent_menu.clear()
+        for path in self.settings.recent_files:
+            self.recent_menu.addAction(path, lambda p=path: self.open_project(p))
+        if not self.settings.recent_files:
+            self.recent_menu.addAction("(none)").setEnabled(False)
+
+    def _update_undo(self, *_):
+        self.undo_act.setEnabled(self.doc.can_undo())
+        self.redo_act.setEnabled(self.doc.can_redo())
+        self.undo_act.setText(f"&Undo {self.doc.undo_label()}".strip())
+        self.redo_act.setText(f"&Redo {self.doc.redo_label()}".strip())
+
+    def _title(self):
+        name = self.doc.path.name if self.doc.path else "untitled"
+        self.setWindowTitle(f"{'*' if self.doc.dirty else ''}{self.doc.project.meta.title} - {name} - "
+                            f"{APP_NAME} {__version__}")
+
+    def set_cursor_text(self, text: str):
+        self.cursor_label.setText(text)
+
+    def _db_changed(self):
+        db = self.dbm.db
+        self.db_label.setText(f"DB: {db.path.name}" if db else "No database")
+        if db:
+            self.settings.db_file = db.path.name
+
+    # ------------------------------------------------------------------ files
+    def _confirm_discard(self) -> bool:
+        if not self.doc.dirty:
+            return True
+        r = QMessageBox.question(self, APP_NAME, "Save changes to the current scenario?",
+                                 QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard |
+                                 QMessageBox.StandardButton.Cancel)
+        if r == QMessageBox.StandardButton.Save:
+            return self.save_project()
+        return r == QMessageBox.StandardButton.Discard
+
+    def new_project(self):
+        if not self._confirm_discard():
+            return
+        dbs = [p.name for p in self.dbm.available()]
+        dlg = NewProjectDialog(dbs, self.dbm.db.path.name if self.dbm.db else "", self)
+        if not dlg.exec():
+            return
+        p = new_project(dlg.title.text().strip() or "New Scenario", dlg.db.currentText())
+        if dlg.template.currentIndex() == 1:
+            civ = p.add_side("Civilian", "CIV", "#aaaaaa")
+            civ.computer_only = True
+            civ.awareness = "Blind"
+            civ.export_briefing = False
+        elif dlg.template.currentIndex() == 2:
+            p.sides.clear()
+        self.doc.load(p)
+        self.tabs.setCurrentWidget(self.scenario_page)
+
+    def open_project(self, path: Optional[str] = None):
+        if not self._confirm_discard():
+            return
+        if not path:
+            path, _ = QFileDialog.getOpenFileName(self, "Open scenario project", self._project_dir(), FILE_FILTER)
+            if not path:
+                return
+        try:
+            p = Project.load(path)
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Open", f"Could not open {path}:\n{exc}")
+            return
+        self.doc.load(p, Path(path))
+        self.settings.add_recent(str(path))
+        self._maybe_switch_db(p)
+        self.map_page.map.fit_project()
+        self.statusBar().showMessage(f"Opened {path}", 5000)
+
+    def _maybe_switch_db(self, p: Project):
+        want = p.meta.db_file
+        if want and self.settings.cmo_dir and (not self.dbm.db or self.dbm.db.path.name.lower() != want.lower()):
+            path = Path(self.settings.cmo_dir) / "DB" / want
+            if path.is_file():
+                self.dbm.open(path)
+
+    def _project_dir(self) -> str:
+        if self.doc.path:
+            return str(self.doc.path.parent)
+        return self.settings.value("project_dir", str(Path.home()))
+
+    def save_project(self) -> bool:
+        if not self.doc.path:
+            return self.save_project_as()
+        try:
+            self.doc.save()
+        except OSError as exc:
+            QMessageBox.critical(self, "Save", str(exc))
+            return False
+        self.settings.add_recent(str(self.doc.path))
+        self.statusBar().showMessage(f"Saved {self.doc.path}", 4000)
+        return True
+
+    def save_project_as(self) -> bool:
+        name = self.doc.project.meta.folder() + PROJECT_SUFFIX
+        path, _ = QFileDialog.getSaveFileName(self, "Save scenario project", str(Path(self._project_dir()) / name),
+                                              FILE_FILTER)
+        if not path:
+            return False
+        if not path.endswith(PROJECT_SUFFIX):
+            path += PROJECT_SUFFIX
+        self.doc.path = Path(path)
+        self.settings.set_value("project_dir", str(Path(path).parent))
+        return self.save_project()
+
+    def _autosave(self):
+        if self.doc.dirty and self.doc.path:
+            try:
+                self.doc.project.save(self.doc.path.with_suffix(PROJECT_SUFFIX + ".autosave"))
+            except OSError:
+                pass
+
+    def _restart_autosave(self):
+        m = self.settings.autosave_minutes
+        if m > 0:
+            self.autosave.start(m * 60 * 1000)
+        else:
+            self.autosave.stop()
+
+    def import_legacy(self):
+        start = str(Path(self.settings.cmo_dir) / "Lua") if self.settings.cmo_dir else str(Path.home())
+        path, _ = QFileDialog.getOpenFileName(self, "Import Build_Scenario.lua", start, "Lua (*.lua)")
+        if not path:
+            return
+        if not self._confirm_discard():
+            return
+        try:
+            p, report = import_legacy_build(path, self.dbm.db)
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Import", f"Could not import {path}:\n{exc}")
+            return
+        self.doc.load(p)
+        self.map_page.map.fit_project()
+        QMessageBox.information(self, "Import", "\n".join(report[:40]) + ("\n..." if len(report) > 40 else ""))
+
+    def open_example(self):
+        ex = Path(__file__).resolve().parents[3] / "examples"
+        path, _ = QFileDialog.getOpenFileName(self, "Open example", str(ex if ex.is_dir() else Path.home()),
+                                              FILE_FILTER)
+        if path:
+            self.open_project(path)
+
+    def open_settings(self):
+        dlg = SettingsDialog(self.settings, self)
+        if dlg.exec():
+            self.dbm.cmo_dir = self.settings.cmo_dir
+            latest = latest_database(self.settings.cmo_dir) if self.settings.cmo_dir else None
+            if latest and (not self.dbm.db or self.dbm.db.path.parent != latest.parent):
+                self.dbm.open(latest)
+            self.db_browser.refresh_db_list()
+            self._restart_autosave()
+            self.doc.reset.emit()
+
+    def _first_run(self):
+        QMessageBox.information(self, APP_NAME, "Welcome! The CMO install folder was not found automatically. "
+                                                "Please choose it so the studio can read the DB3000 databases.")
+        self.open_settings()
+
+    def _open_cmo(self):
+        if self.settings.cmo_dir:
+            QDesktopServices.openUrl(QUrl.fromLocalFile(self.settings.cmo_dir))
+
+    def _open_docs(self):
+        docs = Path(__file__).resolve().parents[3] / "docs" / "USER_GUIDE.md"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(docs)) if docs.is_file() else QUrl(DOCS_URL))
+
+    # ------------------------------------------------------------------ DB actions
+    def _place_from_db(self, e: DBEntry):
+        self.tabs.setCurrentWidget(self.map_page)
+        self.map_page.start_place(e)
+
+    def _selected_unit(self) -> Optional[Unit]:
+        return self.doc.project.unit(self.doc.selection) if self.doc.selection else None
+
+    def _apply_db(self, e: DBEntry):
+        u = self._selected_unit()
+        if not u:
+            self.statusBar().showMessage("Select a unit first.", 4000)
+            return
+        if u.type != e.type and QMessageBox.question(
+                self, "Change type", f"Change '{u.name}' from {u.type} to {e.type}?") != QMessageBox.StandardButton.Yes:
+            return
+        with self.doc.modify("Change database entry", "units"):
+            u.type, u.dbid, u.db_name = e.type, e.id, e.name
+            if e.type == "Aircraft":
+                los = self.dbm.db.loadouts(e.id, combat_only=True) if self.dbm.db else []
+                u.loadout = los[0].id if los else None
+            else:
+                u.loadout = None
+        self.doc.select(u.id)
+
+    def _loadout_from_db(self, aircraft_id: int, loadout_id: int):
+        u = self._selected_unit()
+        if not u or u.type != "Aircraft" or int(u.dbid) != int(aircraft_id):
+            self.statusBar().showMessage("Select an aircraft of this type first, then double-click a loadout.", 5000)
+            return
+        with self.doc.modify("Change loadout", "units"):
+            u.loadout = loadout_id
+        self.doc.select(u.id)
+        self.statusBar().showMessage(f"{u.name}: loadout {loadout_id}", 4000)
+
+    def _add_to_base(self, e: DBEntry):
+        base = self._selected_unit()
+        if not base or base.type not in ("Facility", "Ship", "GroundUnit"):
+            QMessageBox.information(self, "Add to base", "Select an airbase (facility) or ship first - on the map or "
+                                                         "in the Units tab.")
+            return
+        from PyQt6.QtWidgets import QInputDialog
+        n, ok = QInputDialog.getInt(self, "Squadron", f"How many {e.name} at {base.name}?", 4, 1, 200)
+        if not ok:
+            return
+        name, ok = QInputDialog.getText(self, "Squadron", "Squadron name (aircraft become '<name> #1'...):",
+                                        text=e.name)
+        if not ok:
+            return
+        u = self.map_page.add_unit_from_entry(e, base.side, base.lat, base.lon, host=base.id, count=n)
+        with self.doc.modify("Name squadron", "units"):
+            u.name = name.strip() or e.name
+        self.doc.select(u.id)
+
+    def _show_in_browser(self, utype: str, dbid: int):
+        self.db_dock.show()
+        self.db_browser.set_type(utype)
+        self.db_browser.search.setText(str(dbid))
+        if self.dbm.db:
+            e = self.dbm.db.get(utype, dbid)
+            if e:
+                self.db_browser.show_entry(e)
+
+    def show_on_map(self, lat: float, lon: float):
+        self.tabs.setCurrentWidget(self.map_page)
+        self.map_page.map.center_on(lat, lon, max(self.map_page.map.zoom, 8))
+
+    # ------------------------------------------------------------------ validation
+    def run_validation(self, show: bool = False):
+        self.issues.run()
+        if show:
+            self.issues_dock.show()
+            self.issues_dock.raise_()
+
+    def _jump(self, area: str, oid: str):
+        p = self.doc.project
+        obj = p.find(oid) if oid else None
+        page = {"Scenario": self.scenario_page, "Sides": self.sides_page, "Units": self.units_page,
+                "Database": self.units_page, "Areas": self.areas_page, "Missions": self.missions_page,
+                "Events": self.events_page, "Special actions": self.specials_page, "Scripts": self.scripts_page,
+                "Variants": self.sides_page}.get(area, self.scenario_page)
+        if obj is not None:
+            if area == "Missions":
+                self.missions_page.mid = oid
+            elif area == "Events":
+                self.events_page.eid = oid
+            elif area == "Special actions":
+                self.specials_page.aid = oid
+            elif area == "Scripts":
+                self.scripts_page.sid = oid
+            elif area == "Variants":
+                self.sides_page.vid = oid
+            elif area == "Sides":
+                self.sides_page.sid = oid
+        self.tabs.setCurrentWidget(page)
+        page.refresh()
+        if obj is not None and area in ("Units", "Database", "Areas"):
+            self.doc.select(oid)
+
+    # ------------------------------------------------------------------ close
+    def closeEvent(self, e: QCloseEvent):
+        if not self._confirm_discard():
+            e.ignore()
+            return
+        self.settings.set_value("window_state", self.saveState())
+        self.settings.set_value("window_geometry", self.saveGeometry())
+        e.accept()
