@@ -113,7 +113,7 @@ class AboutDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle(f"About {APP_NAME}")
         lay = QVBoxLayout(self)
-        lab = QLabel(f"<h2>{APP_NAME} {__version__}</h2>"
+        lab = QLabel(f"<h2>{APP_NAME} {__version__}</h2><p>Version 1</p>"
                      "<p>A scenario creation suite for <i>Command: Modern Operations</i>.</p>"
                      "<p>Builds scenarios through CMO's Lua API from a project you edit here, and exports the "
                      "same folder layout as the official Lua-driven scenarios.</p>"

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import sys
-from pathlib import Path
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -13,9 +12,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--cmo", help="CMO install folder (overrides the saved setting)")
     parser.add_argument("--export", metavar="DIR", help="export the project to DIR without opening the window")
     parser.add_argument("--dry-run", action="store_true", help="dry-run the build in CMO's Lua and print the report")
+    if sys.stdout is None and any(a in (argv or sys.argv) for a in ("-h", "--help", "--export", "--dry-run")):
+        _attach_console()
     args = parser.parse_args(argv)
 
     if args.export or args.dry_run:
+        _attach_console()
         return _headless(args)
 
     from PyQt6.QtCore import Qt
@@ -31,10 +33,18 @@ def main(argv: list[str] | None = None) -> int:
     app = QApplication(sys.argv[:1])
     app.setApplicationName(APP_NAME)
     app.setOrganizationName(ORG_NAME)
-    icon = Path(__file__).with_name("resources") / "icon.svg"
+    from .paths import resource
+    icon = resource("icon.png")
     if icon.is_file():
         app.setWindowIcon(QIcon(str(icon)))
+    if sys.platform == "win32":   # own taskbar group and icon instead of python.exe's
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("CMOScenarioStudio.App")
+        except (AttributeError, OSError):
+            pass
     apply_dark_theme(app)
+    _install_error_handler(AppSettings.data_dir())
     settings = AppSettings()
     if args.cmo:
         settings.cmo_dir = args.cmo
@@ -43,6 +53,53 @@ def main(argv: list[str] | None = None) -> int:
     if args.project:
         win.open_project(args.project)
     return app.exec()
+
+
+def _attach_console() -> None:
+    """The packaged .exe is a windowed app; borrow the calling console so --export/--dry-run can print."""
+    if sys.platform != "win32" or (sys.stdout is not None and sys.stdout.isatty()):
+        return
+    try:
+        import ctypes
+        if ctypes.windll.kernel32.AttachConsole(-1):   # ATTACH_PARENT_PROCESS
+            sys.stdout = open("CONOUT$", "w", encoding="utf-8", errors="replace")
+            sys.stderr = sys.stdout
+            print()
+    except (AttributeError, OSError):
+        pass
+    if sys.stdout is None:   # no console at all: discard output rather than crash on print()
+        import os
+        sys.stdout = sys.stderr = open(os.devnull, "w")
+
+
+def _install_error_handler(log_dir) -> None:
+    """Log unhandled exceptions and show them, instead of PyQt6's default of aborting the app."""
+    import datetime
+    import traceback
+
+    log = log_dir / "error.log"
+
+    def hook(etype, value, tb):
+        text = "".join(traceback.format_exception(etype, value, tb))
+        try:
+            with open(log, "a", encoding="utf-8") as f:
+                f.write(f"\n--- {datetime.datetime.now().isoformat(timespec='seconds')}\n{text}")
+        except OSError:
+            pass
+        if sys.stderr is not None:
+            sys.stderr.write(text)
+        try:
+            from PyQt6.QtWidgets import QApplication, QMessageBox
+            if QApplication.instance() is not None:
+                box = QMessageBox(QMessageBox.Icon.Critical, "Unexpected error",
+                                  f"{etype.__name__}: {value}\n\nThe studio is still running; save your work. "
+                                  f"Details were written to:\n{log}")
+                box.setDetailedText(text)
+                box.exec()
+        except Exception:  # noqa: BLE001 - never let the handler itself fail
+            pass
+
+    sys.excepthook = hook
 
 
 def _headless(args) -> int:

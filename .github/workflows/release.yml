@@ -1,0 +1,44 @@
+name: release
+
+# Push a tag like v1.0.0 to build the Windows exe and publish a GitHub release with the zip attached.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e .[dev] pyinstaller
+      - name: Test
+        run: pytest -q
+      - name: Build exe and zip
+        run: python packaging/build_release.py
+      - name: Version
+        id: version
+        shell: bash
+        run: echo "version=$(python -c "import sys; sys.path.insert(0,'src'); import cmo_studio; print(cmo_studio.__version__)")" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CMO-Scenario-Studio-${{ steps.version.outputs.version }}-win64
+          path: release/*
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: CMO Scenario Studio ${{ steps.version.outputs.version }}
+          body_path: docs/releases/${{ steps.version.outputs.version }}.md
+          files: |
+            release/*.zip
+            release/*.sha256

@@ -6,3 +6,4 @@ examples/output/** -text
 
 *.png binary
 *.jpg binary
+*.ico binary

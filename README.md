@@ -43,6 +43,15 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 | **Briefings with live preview** | **Build & Export with dry-run** |
 | ![Briefings](docs/images/briefings.png) | ![Export](docs/images/export.png) |
 
+## Download
+
+Get **`CMO-Scenario-Studio-<version>-win64.zip`** from the
+[Releases page](https://github.com/MasonicTombomb/CMO-Scenario-Studio/releases), unzip it anywhere and run
+`CMO-Scenario-Studio.exe`; no Python needed. Windows may show a SmartScreen warning because the exe is not
+code-signed (*More info > Run anyway*).
+
+To run from source instead, see [Quick start](#quick-start).
+
 ## Requirements
 
 - Windows with Command: Modern Operations installed (the studio reads `DB\*.db3` and uses `lua54.dll`)
@@ -111,6 +120,17 @@ cmo-studio "examples/Baltic Sentinel.cmoproj"                  # open a project
 cmo-studio project.cmoproj --dry-run --cmo "D:/Steam/.../Command - Modern Operations"
 cmo-studio project.cmoproj --export ./build                   # export without the GUI
 ```
+
+## Building the exe
+
+```bash
+pip install -e .[dev] pyinstaller
+python packaging/build_release.py
+```
+
+This writes `release/CMO-Scenario-Studio-<version>-win64.zip` and its `.sha256`, after a smoke test of the frozen
+exe. Pushing a tag such as `v1.0.0` makes GitHub Actions build the same zip and publish a release with the notes in
+`docs/releases/<version>.md`.
 
 ## Tests
 

@@ -2,7 +2,7 @@
 
 ## 1.0.0 — 2026-11-14
 
-First release.
+First release ("Version 1"), including a Windows exe (`CMO-Scenario-Studio-1.0.0-win64.zip`).
 
 - Project model (`.cmoproj` JSON) with sides, units, hosted squadrons, reinforcements, reference points, areas,
   missions, events, special actions, scripts, briefings, variants and key values; undo/redo and autosave.
@@ -14,3 +14,7 @@ First release.
 - Importer for *If Russia Wins*-style `Build_Scenario.lua` orders of battle.
 - Headless `--export` and `--dry-run` command line.
 - Example project *Baltic Sentinel* and its exported output.
+- PyInstaller build (`packaging/build_release.py`) with a smoke test, version metadata and icon; GitHub Actions
+  release workflow on version tags.
+- Unhandled errors are logged to `error.log` in the studio's data folder and shown in a dialog instead of closing
+  the app.

@@ -13,6 +13,7 @@ from .. import APP_NAME, __version__
 from ..db.database import DBEntry, latest_database
 from ..importers.legacy_lua import import_legacy_build
 from ..model.project import PROJECT_SUFFIX, Project, Unit, new_project
+from ..paths import docs_dir, examples_dir
 from ..settings import AppSettings
 from .db_browser import DBBrowser, DBManager
 from .dialogs import AboutDialog, IssuesPanel, NewProjectDialog, SettingsDialog
@@ -324,7 +325,7 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, "Import", "\n".join(report[:40]) + ("\n..." if len(report) > 40 else ""))
 
     def open_example(self):
-        ex = Path(__file__).resolve().parents[3] / "examples"
+        ex = examples_dir()
         path, _ = QFileDialog.getOpenFileName(self, "Open example", str(ex if ex.is_dir() else Path.home()),
                                               FILE_FILTER)
         if path:
@@ -351,7 +352,7 @@ class MainWindow(QMainWindow):
             QDesktopServices.openUrl(QUrl.fromLocalFile(self.settings.cmo_dir))
 
     def _open_docs(self):
-        docs = Path(__file__).resolve().parents[3] / "docs" / "USER_GUIDE.md"
+        docs = docs_dir() / "USER_GUIDE.md"
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(docs)) if docs.is_file() else QUrl(DOCS_URL))
 
     # ------------------------------------------------------------------ DB actions

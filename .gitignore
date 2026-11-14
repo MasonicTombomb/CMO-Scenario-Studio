@@ -20,3 +20,7 @@ docs/images/_shots.ini
 # Never commit game data
 *.db3
 *.scen
+
+# Release builds
+release/
+packaging/version_info.txt
