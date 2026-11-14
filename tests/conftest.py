@@ -8,8 +8,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+# CMO_STUDIO_TEST_NO_CMO=1 makes the tests behave as on a machine without CMO (e.g. GitHub Actions).
+if os.environ.get("CMO_STUDIO_TEST_NO_CMO"):
+    import cmo_studio.settings as _settings
+    _settings.detect_cmo_dir = lambda: None
+
 
 def _cmo_dir():
+    if os.environ.get("CMO_STUDIO_TEST_NO_CMO"):
+        return None
     env = os.environ.get("CMO_DIR")
     if env and Path(env, "DB").is_dir():
         return Path(env)

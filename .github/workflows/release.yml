@@ -13,6 +13,7 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 20
     env:
       QT_QPA_PLATFORM: offscreen
     steps:
@@ -23,6 +24,7 @@ jobs:
       - name: Install
         run: pip install -e .[dev] pyinstaller
       - name: Test
+        timeout-minutes: 5
         run: pytest -q
       - name: Build exe and zip
         run: python packaging/build_release.py

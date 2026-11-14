@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from PyQt6.QtCore import Qt, QTimer, QUrl
-from PyQt6.QtGui import QAction, QCloseEvent, QDesktopServices, QKeySequence
+from PyQt6.QtGui import QAction, QCloseEvent, QDesktopServices, QGuiApplication, QKeySequence
 from PyQt6.QtWidgets import (QDockWidget, QFileDialog, QLabel, QMainWindow, QMessageBox, QTabWidget)
 
 from .. import APP_NAME, __version__
@@ -127,7 +127,9 @@ class MainWindow(QMainWindow):
         if geo is not None:
             self.restoreGeometry(geo)
         self.tabs.setCurrentWidget(self.map_page)
-        if not cmo:
+        # Ask for the CMO folder on first run - but never on a headless (off-screen) display, where a modal box
+        # would wait forever (this hung the GitHub Actions test runs).
+        if not cmo and QGuiApplication.platformName() != "offscreen":
             QTimer.singleShot(300, self._first_run)
 
     # ------------------------------------------------------------------ menus

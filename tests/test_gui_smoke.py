@@ -69,3 +69,25 @@ def test_event_template(window, app, sample):
     for key, _label in TEMPLATES:
         e = make_template(sample, key)
         assert e.triggers and e.actions
+
+
+def test_no_first_run_dialog_offscreen(tmp_path, monkeypatch):
+    """Without a CMO install the first-run prompt must not be scheduled on a headless display (CI hang)."""
+    from PyQt6.QtCore import QSettings
+    from PyQt6.QtWidgets import QMessageBox
+
+    import cmo_studio.settings as settings_mod
+    from cmo_studio.settings import AppSettings
+    from cmo_studio.ui.main_window import MainWindow
+    monkeypatch.setattr(settings_mod, "detect_cmo_dir", lambda: None)
+    shown = []
+    monkeypatch.setattr(QMessageBox, "information", staticmethod(lambda *a, **k: shown.append(a)))
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    s = AppSettings()
+    s.q = QSettings(str(tmp_path / "s.ini"), QSettings.Format.IniFormat)
+    w = MainWindow(s)
+    from PyQt6.QtTest import QTest
+    QTest.qWait(500)
+    assert not shown
+    w.doc.set_dirty(False)
+    w.close()
