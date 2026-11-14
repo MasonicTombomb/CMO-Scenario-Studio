@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.4.0 — 2026-11-14
 
 - **Callsigns**: a standalone, editable JSON callsign library (38 air arms, ~365 squadrons, 1,100+ words) and an
   *Assign callsigns* dialog that detects each aircraft's country and role from the database and names it in flights
