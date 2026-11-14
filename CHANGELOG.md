@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0 — 2026-11-14
 
 - **Loadout Viewer** (Tools > Loadout viewer, Ctrl+L; also from the Database dock and the aircraft inspector):
   loadout parameters, stores with quantities and ranges, per-weapon ranges/PoK/warheads/seekers/targets/capabilities,
