@@ -3922,68 +3922,68 @@
       ],
       "points": [
         [
-          -48.417,
+          -48.4167,
           -59.2
         ],
         [
-          -48.67,
-          -57.14
+          -48.6704,
+          -57.1396
         ],
         [
           -49.393,
-          -55.393
+          -55.3928
         ],
         [
-          -50.474,
-          -54.226
+          -50.4744,
+          -54.2256
         ],
         [
           -51.75,
-          -53.816
+          -53.8158
         ],
         [
-          -53.026,
-          -54.226
+          -53.0256,
+          -54.2256
         ],
         [
           -54.107,
-          -55.393
+          -55.3928
         ],
         [
-          -54.83,
-          -57.14
+          -54.8296,
+          -57.1396
         ],
         [
-          -55.083,
+          -55.0833,
           -59.2
         ],
         [
-          -54.83,
-          -61.26
+          -54.8296,
+          -61.2604
         ],
         [
           -54.107,
-          -63.007
+          -63.0072
         ],
         [
-          -53.026,
-          -64.174
+          -53.0256,
+          -64.1744
         ],
         [
           -51.75,
-          -64.584
+          -64.5842
         ],
         [
-          -50.474,
-          -64.174
+          -50.4744,
+          -64.1744
         ],
         [
           -49.393,
-          -63.007
+          -63.0072
         ],
         [
-          -48.67,
-          -61.26
+          -48.6704,
+          -61.2604
         ]
       ]
     },
@@ -4256,13 +4256,78 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK air defence",
-      "description": "Approximate outline of the UK flight information regions (London and Scottish FIR/UIR): the whole area the UK air defence system polices. Simplified, not the AIP boundary.",
+      "description": "The UK flight information regions (London and Scottish FIR/UIR, same lateral limits): the whole area the UK air defence system polices. Official boundaries: UK AIP ENR 2.1, AIRAC 2026-10-29.",
       "tags": [
         "QRA",
         "CAP",
-        "UK"
+        "UK",
+        "official"
       ],
       "points": [
+        [
+          51.5,
+          2.0
+        ],
+        [
+          51.1167,
+          2.0
+        ],
+        [
+          51.0,
+          1.4667
+        ],
+        [
+          50.6667,
+          1.4667
+        ],
+        [
+          50.0,
+          -0.25
+        ],
+        [
+          50.0,
+          -2.0
+        ],
+        [
+          48.8333,
+          -8.0
+        ],
+        [
+          51.0,
+          -8.0
+        ],
+        [
+          52.3333,
+          -5.5
+        ],
+        [
+          53.9167,
+          -5.5
+        ],
+        [
+          54.4167,
+          -8.1667
+        ],
+        [
+          55.3333,
+          -6.9167
+        ],
+        [
+          55.4167,
+          -7.3333
+        ],
+        [
+          55.3333,
+          -8.25
+        ],
+        [
+          54.75,
+          -9.0
+        ],
+        [
+          54.5667,
+          -10.0
+        ],
         [
           61.0,
           -10.0
@@ -4273,87 +4338,15 @@
         ],
         [
           60.0,
-          1.5
+          0.0
         ],
         [
-          58.0,
-          2.5
-        ],
-        [
-          56.5,
-          3.5
+          57.0,
+          5.0
         ],
         [
           55.0,
           5.0
-        ],
-        [
-          53.5,
-          3.0
-        ],
-        [
-          52.75,
-          2.5
-        ],
-        [
-          51.5,
-          2.0
-        ],
-        [
-          51.1,
-          1.5
-        ],
-        [
-          50.65,
-          1.5
-        ],
-        [
-          50.0,
-          0.0
-        ],
-        [
-          49.5,
-          -3.0
-        ],
-        [
-          48.5,
-          -8.0
-        ],
-        [
-          51.0,
-          -8.0
-        ],
-        [
-          52.0,
-          -5.5
-        ],
-        [
-          53.4,
-          -5.4
-        ],
-        [
-          54.42,
-          -5.6
-        ],
-        [
-          54.1,
-          -6.3
-        ],
-        [
-          54.4,
-          -7.6
-        ],
-        [
-          55.2,
-          -7.3
-        ],
-        [
-          55.35,
-          -8.25
-        ],
-        [
-          56.0,
-          -10.0
         ]
       ]
     },
@@ -4363,72 +4356,65 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK air defence",
-      "description": "Northern half of UK airspace, covered by Quick Reaction Alert (North) from RAF Lossiemouth: Scotland, Northern Ireland, the northern North Sea and the Atlantic approaches.",
+      "description": "The Scottish FIR: Scotland, Northern Ireland, the northern North Sea and the Atlantic approaches, covered by Quick Reaction Alert (North) from RAF Lossiemouth. Official boundary: UK AIP ENR 2.1, AIRAC 2026-10-29. The QRA split along the FIR boundary is a convention, not a published line.",
       "tags": [
         "QRA",
         "CAP",
-        "UK"
+        "UK",
+        "official"
       ],
       "points": [
-        [
-          55.0,
-          5.0
-        ],
-        [
-          55.0,
-          -1.5
-        ],
-        [
-          54.6,
-          -2.75
-        ],
-        [
-          54.5,
-          -4.0
-        ],
-        [
-          54.42,
-          -5.6
-        ],
-        [
-          54.1,
-          -6.3
-        ],
-        [
-          54.4,
-          -7.6
-        ],
-        [
-          55.2,
-          -7.3
-        ],
-        [
-          55.35,
-          -8.25
-        ],
-        [
-          56.0,
-          -10.0
-        ],
-        [
-          61.0,
-          -10.0
-        ],
         [
           61.0,
           0.0
         ],
         [
           60.0,
-          1.5
+          0.0
         ],
         [
-          58.0,
-          2.5
+          57.0,
+          5.0
         ],
         [
-          56.5,
-          3.5
+          55.0,
+          5.0
+        ],
+        [
+          55.0,
+          -5.5
+        ],
+        [
+          53.9167,
+          -5.5
+        ],
+        [
+          54.4167,
+          -8.1667
+        ],
+        [
+          55.3333,
+          -6.9167
+        ],
+        [
+          55.4167,
+          -7.3333
+        ],
+        [
+          55.3333,
+          -8.25
+        ],
+        [
+          54.75,
+          -9.0
+        ],
+        [
+          54.5667,
+          -10.0
+        ],
+        [
+          61.0,
+          -10.0
         ]
       ]
     },
@@ -4438,11 +4424,12 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK air defence",
-      "description": "Southern half of UK airspace, covered by Quick Reaction Alert (South) from RAF Coningsby: England, Wales, the southern North Sea, the Channel and the South West approaches.",
+      "description": "The London FIR: England, Wales, the southern North Sea, the Channel and the South West approaches, covered by Quick Reaction Alert (South) from RAF Coningsby. Official boundary: UK AIP ENR 2.1, AIRAC 2026-10-29. The QRA split along the FIR boundary is a convention, not a published line.",
       "tags": [
         "QRA",
         "CAP",
-        "UK"
+        "UK",
+        "official"
       ],
       "points": [
         [
@@ -4450,35 +4437,31 @@
           5.0
         ],
         [
-          53.5,
-          3.0
-        ],
-        [
-          52.75,
-          2.5
-        ],
-        [
           51.5,
           2.0
         ],
         [
-          51.1,
-          1.5
+          51.1167,
+          2.0
         ],
         [
-          50.65,
-          1.5
+          51.0,
+          1.4667
+        ],
+        [
+          50.6667,
+          1.4667
         ],
         [
           50.0,
-          0.0
+          -0.25
         ],
         [
-          49.5,
-          -3.0
+          50.0,
+          -2.0
         ],
         [
-          48.5,
+          48.8333,
           -8.0
         ],
         [
@@ -4486,28 +4469,12 @@
           -8.0
         ],
         [
-          52.0,
+          52.3333,
           -5.5
         ],
         [
-          53.4,
-          -5.4
-        ],
-        [
-          54.42,
-          -5.6
-        ],
-        [
-          54.5,
-          -4.0
-        ],
-        [
-          54.6,
-          -2.75
-        ],
-        [
           55.0,
-          -1.5
+          -5.5
         ]
       ]
     },
@@ -4517,7 +4484,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK intercept sectors",
-      "description": "Shetland, Orkney, the Faroes-Shetland gap and the far north of Scotland. Usually the first UK sector reached by aircraft coming round the North Cape. One of eight sectors that together cover the whole UK FIR.",
+      "description": "Shetland, Orkney, the Faroes-Shetland gap and the far north of Scotland. Usually the first UK sector reached by aircraft coming round the North Cape. One of eight notional sectors cut from the official FIR boundaries; together they cover the whole UK FIR exactly once.",
       "tags": [
         "QRA",
         "CAP",
@@ -4526,24 +4493,24 @@
       ],
       "points": [
         [
-          58.5,
-          -10.0
-        ],
-        [
-          61.0,
-          -10.0
-        ],
-        [
           61.0,
           0.0
         ],
         [
           60.0,
-          1.5
+          0.0
         ],
         [
           58.5,
-          2.25
+          2.5
+        ],
+        [
+          58.5,
+          -10.0
+        ],
+        [
+          61.0,
+          -10.0
         ]
       ]
     },
@@ -4553,7 +4520,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK intercept sectors",
-      "description": "Moray Firth to the Firth of Forth and the northern North Sea oil and gas fields. One of eight sectors that together cover the whole UK FIR.",
+      "description": "Moray Firth to the Firth of Forth and the northern North Sea oil and gas fields. One of eight notional sectors cut from the official FIR boundaries; together they cover the whole UK FIR exactly once.",
       "tags": [
         "QRA",
         "CAP",
@@ -4562,36 +4529,24 @@
       ],
       "points": [
         [
+          58.5,
+          -3.5
+        ],
+        [
+          58.5,
+          2.5
+        ],
+        [
+          57.0,
+          5.0
+        ],
+        [
           55.0,
           5.0
         ],
         [
           55.0,
-          -1.5
-        ],
-        [
-          54.6,
-          -2.75
-        ],
-        [
-          54.54,
           -3.5
-        ],
-        [
-          58.5,
-          -3.5
-        ],
-        [
-          58.5,
-          2.25
-        ],
-        [
-          58.0,
-          2.5
-        ],
-        [
-          56.5,
-          3.5
         ]
       ]
     },
@@ -4601,7 +4556,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK intercept sectors",
-      "description": "The Hebrides, Minches, Clyde (Faslane and Coulport), the North Channel and Northern Ireland. One of eight sectors that together cover the whole UK FIR.",
+      "description": "The Hebrides, Minches, Clyde (Faslane and Coulport), the North Channel and Northern Ireland. One of eight notional sectors cut from the official FIR boundaries; together they cover the whole UK FIR exactly once.",
       "tags": [
         "QRA",
         "CAP",
@@ -4610,44 +4565,48 @@
       ],
       "points": [
         [
-          54.54,
+          58.5,
           -3.5
         ],
         [
-          54.5,
-          -4.0
+          55.0,
+          -3.5
         ],
         [
-          54.42,
-          -5.6
+          55.0,
+          -5.5
         ],
         [
-          54.1,
-          -6.3
+          53.9167,
+          -5.5
         ],
         [
-          54.4,
-          -7.6
+          54.4167,
+          -8.1667
         ],
         [
-          55.2,
-          -7.3
+          55.3333,
+          -6.9167
         ],
         [
-          55.35,
+          55.4167,
+          -7.3333
+        ],
+        [
+          55.3333,
           -8.25
         ],
         [
-          56.0,
+          54.75,
+          -9.0
+        ],
+        [
+          54.5667,
           -10.0
         ],
         [
           58.5,
           -10.0
-        ],
-        [
-          58.5,
-          -3.5
         ]
       ]
     },
@@ -4657,7 +4616,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK intercept sectors",
-      "description": "Northumberland to the Humber and the central North Sea, including the Yorkshire radar and air bases. One of eight sectors that together cover the whole UK FIR.",
+      "description": "Northumberland to the Humber and the central North Sea, including the Yorkshire radar and air bases. One of eight notional sectors cut from the official FIR boundaries; together they cover the whole UK FIR exactly once.",
       "tags": [
         "QRA",
         "CAP",
@@ -4667,27 +4626,19 @@
       "points": [
         [
           55.0,
-          5.0
-        ],
-        [
-          53.5,
-          3.0
-        ],
-        [
-          53.0,
-          2.667
-        ],
-        [
-          53.0,
-          -2.0
-        ],
-        [
-          54.84,
           -2.0
         ],
         [
           55.0,
-          -1.5
+          5.0
+        ],
+        [
+          53.0,
+          3.2857
+        ],
+        [
+          53.0,
+          -2.0
         ]
       ]
     },
@@ -4697,7 +4648,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK intercept sectors",
-      "description": "Cumbria, Lancashire, the Isle of Man and the Irish Sea. One of eight sectors that together cover the whole UK FIR.",
+      "description": "Cumbria, Lancashire, the Isle of Man and the Irish Sea. One of eight notional sectors cut from the official FIR boundaries; together they cover the whole UK FIR exactly once.",
       "tags": [
         "QRA",
         "CAP",
@@ -4706,32 +4657,20 @@
       ],
       "points": [
         [
+          55.0,
+          -2.0
+        ],
+        [
           53.0,
           -2.0
         ],
         [
           53.0,
-          -5.429
+          -5.5
         ],
         [
-          53.4,
-          -5.4
-        ],
-        [
-          54.42,
-          -5.6
-        ],
-        [
-          54.5,
-          -4.0
-        ],
-        [
-          54.6,
-          -2.75
-        ],
-        [
-          54.84,
-          -2.0
+          55.0,
+          -5.5
         ]
       ]
     },
@@ -4741,7 +4680,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK intercept sectors",
-      "description": "East Midlands, Lincolnshire, East Anglia and the southern North Sea: the main fast-jet and USAF bases. One of eight sectors that together cover the whole UK FIR.",
+      "description": "East Midlands, Lincolnshire, East Anglia and the southern North Sea: the main fast-jet and USAF bases. One of eight notional sectors cut from the official FIR boundaries; together they cover the whole UK FIR exactly once.",
       "tags": [
         "QRA",
         "CAP",
@@ -4755,15 +4694,11 @@
         ],
         [
           53.0,
-          2.667
-        ],
-        [
-          52.75,
-          2.5
+          3.2857
         ],
         [
           51.6,
-          2.04
+          2.0857
         ],
         [
           51.6,
@@ -4777,7 +4712,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK intercept sectors",
-      "description": "London, the Thames, Kent, the Dover Strait and the eastern Channel. One of eight sectors that together cover the whole UK FIR.",
+      "description": "London, the Thames, Kent, the Dover Strait and the eastern Channel. One of eight notional sectors cut from the official FIR boundaries; together they cover the whole UK FIR exactly once.",
       "tags": [
         "QRA",
         "CAP",
@@ -4791,26 +4726,30 @@
         ],
         [
           51.6,
-          2.04
+          2.0857
         ],
         [
           51.5,
           2.0
         ],
         [
-          51.1,
-          1.5
+          51.1167,
+          2.0
         ],
         [
-          50.65,
-          1.5
+          51.0,
+          1.4667
+        ],
+        [
+          50.6667,
+          1.4667
         ],
         [
           50.0,
-          0.0
+          -0.25
         ],
         [
-          49.75,
+          50.0,
           -1.5
         ]
       ]
@@ -4821,7 +4760,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK intercept sectors",
-      "description": "Wales, the West Country, the western Channel and the South West approaches. One of eight sectors that together cover the whole UK FIR.",
+      "description": "Wales, the West Country, the western Channel and the South West approaches. One of eight notional sectors cut from the official FIR boundaries; together they cover the whole UK FIR exactly once.",
       "tags": [
         "QRA",
         "CAP",
@@ -4834,15 +4773,15 @@
           -1.5
         ],
         [
-          49.75,
+          50.0,
           -1.5
         ],
         [
-          49.5,
-          -3.0
+          50.0,
+          -2.0
         ],
         [
-          48.5,
+          48.8333,
           -8.0
         ],
         [
@@ -4850,12 +4789,12 @@
           -8.0
         ],
         [
-          52.0,
+          52.3333,
           -5.5
         ],
         [
           53.0,
-          -5.429
+          -5.5
         ]
       ]
     },
@@ -4989,7 +4928,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Over and east of Shetland. Combat air patrol station.",
+      "description": "Over and east of Shetland. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5019,7 +4958,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Orkney and the Pentland Firth. Combat air patrol station.",
+      "description": "Orkney and the Pentland Firth. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5049,7 +4988,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Moray Firth, covering Lossiemouth and Kinloss. Combat air patrol station.",
+      "description": "Moray Firth, covering Lossiemouth and Kinloss. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5079,7 +5018,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Firth of Forth, Edinburgh and Rosyth. Combat air patrol station.",
+      "description": "Firth of Forth, Edinburgh and Rosyth. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5109,7 +5048,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Outer Hebrides and the Minches. Combat air patrol station.",
+      "description": "Outer Hebrides and the Minches. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5139,7 +5078,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Clyde, Faslane and Coulport. Combat air patrol station.",
+      "description": "Clyde, Faslane and Coulport. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5169,7 +5108,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Northern Ireland and Belfast. Combat air patrol station.",
+      "description": "Northern Ireland and Belfast. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5199,7 +5138,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Newcastle, Boulmer and Spadeadam. Combat air patrol station.",
+      "description": "Newcastle, Boulmer and Spadeadam. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5229,7 +5168,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Humber estuary and Yorkshire coast. Combat air patrol station.",
+      "description": "Humber estuary and Yorkshire coast. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5259,7 +5198,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Coningsby, Waddington and the Wash. Combat air patrol station.",
+      "description": "Coningsby, Waddington and the Wash. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5289,7 +5228,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Marham, Lakenheath and Mildenhall. Combat air patrol station.",
+      "description": "Marham, Lakenheath and Mildenhall. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5319,7 +5258,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "London and the Thames Estuary. Combat air patrol station.",
+      "description": "London and the Thames Estuary. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5349,7 +5288,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "The Dover Strait and Kent coast. Combat air patrol station.",
+      "description": "The Dover Strait and Kent coast. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5379,7 +5318,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Portsmouth, Southampton and the Solent. Combat air patrol station.",
+      "description": "Portsmouth, Southampton and the Solent. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5409,7 +5348,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Plymouth, Devonport and Culdrose. Combat air patrol station.",
+      "description": "Plymouth, Devonport and Culdrose. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5439,7 +5378,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "South Wales and Bristol. Combat air patrol station.",
+      "description": "South Wales and Bristol. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5469,7 +5408,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "Irish Sea, Isle of Man and Liverpool Bay. Combat air patrol station.",
+      "description": "Irish Sea, Isle of Man and Liverpool Bay. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5499,7 +5438,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK CAP stations",
-      "description": "RAF Valley and North Wales. Combat air patrol station.",
+      "description": "RAF Valley and North Wales. Notional combat air patrol station.",
       "tags": [
         "CAP",
         "UK"
@@ -5529,7 +5468,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK AEW and tankers",
-      "description": "E-7 / E-3 orbit east of Aberdeen covering the northern approaches.",
+      "description": "Notional E-7 / E-3 orbit east of Aberdeen covering the northern approaches.",
       "tags": [
         "AEW",
         "orbit",
@@ -5560,7 +5499,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK AEW and tankers",
-      "description": "Orbit off the Norfolk / Lincolnshire coast covering the southern North Sea.",
+      "description": "Notional orbit off the Norfolk / Lincolnshire coast covering the southern North Sea.",
       "tags": [
         "AEW",
         "orbit",
@@ -5591,7 +5530,7 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK AEW and tankers",
-      "description": "Orbit over the Minches covering the Atlantic approaches.",
+      "description": "Notional orbit over the Minches covering the Atlantic approaches.",
       "tags": [
         "AEW",
         "orbit",
@@ -5617,126 +5556,505 @@
       ]
     },
     {
-      "id": "uk_tanker_east_scotland",
-      "name": "Tanker track - east of Scotland",
+      "id": "uk_aara_1",
+      "name": "AARA 1 - Scottish Highlands",
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK AEW and tankers",
-      "description": "Air-to-air refuelling track off the Aberdeenshire coast.",
+      "description": "Air-to-air refuelling area 1 (Scottish Highlands), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
       "tags": [
         "tanker",
         "AAR",
-        "UK"
+        "AARA",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          57.3,
-          -1.5
+          58.2,
+          -4.5
         ],
         [
-          57.3,
-          0.8
+          56.35,
+          -4.5
         ],
         [
-          56.9,
-          0.8
+          56.35,
+          -5.0833
         ],
         [
-          56.9,
-          -1.5
+          58.2,
+          -5.0833
         ]
       ]
     },
     {
-      "id": "uk_tanker_north_sea",
-      "name": "Tanker track - North Sea (Yorkshire)",
+      "id": "uk_aara_2",
+      "name": "AARA 2 - north of Orkney",
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK AEW and tankers",
-      "description": "Air-to-air refuelling track off the Yorkshire coast.",
+      "description": "Air-to-air refuelling area 2 (north of Orkney), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
       "tags": [
         "tanker",
         "AAR",
-        "UK"
+        "AARA",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          54.9,
-          0.5
+          59.3167,
+          -0.5167
         ],
         [
-          54.9,
-          2.6
+          59.4667,
+          0.0667
         ],
         [
-          54.5,
-          2.6
+          58.2167,
+          1.25
         ],
         [
-          54.5,
-          0.5
+          58.0667,
+          0.6833
         ]
       ]
     },
     {
-      "id": "uk_tanker_west_scotland",
-      "name": "Tanker track - west of Scotland",
+      "id": "uk_aara_3",
+      "name": "AARA 3 - central North Sea, east of Aberdeen",
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK AEW and tankers",
-      "description": "Air-to-air refuelling track west of Mull and Tiree.",
+      "description": "Air-to-air refuelling area 3 (central North Sea, east of Aberdeen), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
       "tags": [
         "tanker",
         "AAR",
-        "UK"
+        "AARA",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          56.8,
-          -8.6
+          57.8833,
+          0.8333
         ],
         [
-          56.8,
-          -6.8
+          58.0167,
+          1.4
         ],
         [
-          56.4,
-          -6.8
+          56.4167,
+          2.7667
         ],
         [
-          56.4,
-          -8.6
+          56.2833,
+          2.2167
         ]
       ]
     },
     {
-      "id": "uk_tanker_celtic_sea",
-      "name": "Tanker track - Celtic Sea",
+      "id": "uk_aara_4",
+      "name": "AARA 4 - off the Moray Firth and Aberdeenshire",
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK AEW and tankers",
-      "description": "Air-to-air refuelling track south of Ireland.",
+      "description": "Air-to-air refuelling area 4 (off the Moray Firth and Aberdeenshire), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
       "tags": [
         "tanker",
         "AAR",
-        "UK"
+        "AARA",
+        "UK",
+        "official"
       ],
       "points": [
+        [
+          58.2667,
+          0.0167
+        ],
+        [
+          57.9667,
+          0.25
+        ],
+        [
+          57.5833,
+          -1.4833
+        ],
+        [
+          57.8833,
+          -1.7167
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_5",
+      "name": "AARA 5 - off the Firth of Forth",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 5 (off the Firth of Forth), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          56.05,
+          -0.25
+        ],
+        [
+          56.0333,
+          1.6667
+        ],
+        [
+          55.7,
+          1.65
+        ],
+        [
+          55.7167,
+          -0.2667
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_6",
+      "name": "AARA 6 - off Northumberland and North Yorkshire",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 6 (off Northumberland and North Yorkshire), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          55.2667,
+          0.1833
+        ],
+        [
+          54.6833,
+          -0.8833
+        ],
+        [
+          54.4,
+          -0.4167
+        ],
+        [
+          55.0,
+          0.6167
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_7",
+      "name": "AARA 7 - central North Sea, east of Teesside",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 7 (central North Sea, east of Teesside), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          55.4333,
+          1.2667
+        ],
+        [
+          55.0,
+          2.9833
+        ],
+        [
+          54.7,
+          2.75
+        ],
+        [
+          55.1333,
+          1.0333
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_8",
+      "name": "AARA 8 - off Lincolnshire and north Norfolk",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 8 (off Lincolnshire and north Norfolk), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          53.6,
+          0.7167
+        ],
+        [
+          53.45,
+          2.5
+        ],
+        [
+          53.1167,
+          2.4333
+        ],
+        [
+          53.2667,
+          0.65
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_9",
+      "name": "AARA 9 - off East Anglia",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 9 (off East Anglia), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          52.6667,
+          1.8333
+        ],
+        [
+          52.35,
+          1.8333
+        ],
+        [
+          52.35,
+          2.6667
+        ],
+        [
+          52.6667,
+          2.9333
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_10e",
+      "name": "AARA 10E - Devon, Somerset and the Bristol Channel",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 10 (EAST) (Devon, Somerset and the Bristol Channel), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          51.2833,
+          -2.3833
+        ],
         [
           51.0,
-          -7.5
+          -2.0833
         ],
         [
-          51.0,
-          -5.5
+          50.4661,
+          -3.9789
         ],
         [
-          50.6,
-          -5.5
+          50.8661,
+          -3.89
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_10w",
+      "name": "AARA 10W - off Cornwall and south Devon",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 10 (WEST) (off Cornwall and south Devon), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          50.8661,
+          -3.89
         ],
         [
-          50.6,
-          -7.5
+          50.4661,
+          -3.9789
+        ],
+        [
+          49.6125,
+          -6.7286
+        ],
+        [
+          49.9311,
+          -6.9564
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_11",
+      "name": "AARA 11 - west of the Scilly Isles",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 11 (west of the Scilly Isles), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          50.3756,
+          -5.6736
+        ],
+        [
+          50.0511,
+          -5.5553
+        ],
+        [
+          49.6997,
+          -7.7431
+        ],
+        [
+          50.0214,
+          -7.8753
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_12",
+      "name": "AARA 12 - Celtic Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 12 (Celtic Sea), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          50.48,
+          -7.9167
+        ],
+        [
+          50.98,
+          -5.5817
+        ],
+        [
+          51.1133,
+          -4.9167
+        ],
+        [
+          50.795,
+          -4.7617
+        ],
+        [
+          50.6667,
+          -5.4217
+        ],
+        [
+          50.1667,
+          -7.7433
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_13",
+      "name": "AARA 13 - Irish Sea, around the Isle of Man",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 13 (Irish Sea, around the Isle of Man), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          53.9833,
+          -3.7167
+        ],
+        [
+          54.7,
+          -4.1167
+        ],
+        [
+          54.6333,
+          -4.4
+        ],
+        [
+          53.9333,
+          -3.9833
+        ]
+      ]
+    },
+    {
+      "id": "uk_aara_14",
+      "name": "AARA 14 - west of Scotland and the Hebrides",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling area 14 (west of Scotland and the Hebrides), activated by NOTAM and controlled by Swanwick (Mil). Official boundary: UK AIP ENR 5.2, AIRAC 2026-10-29.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "AARA",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          57.3167,
+          -6.4833
+        ],
+        [
+          55.7667,
+          -7.2833
+        ],
+        [
+          55.8667,
+          -7.8833
+        ],
+        [
+          57.4167,
+          -7.0833
         ]
       ]
     },
@@ -5746,28 +6064,46 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "RAF Spadeadam: Europe's EW tactics range, simulated SAM and radar threats.",
+      "description": "RAF Spadeadam: Europe's EW tactics range with simulated SAM and radar threats. Official boundary (EGD510A, EGD510B, EGD510C): UK AIP ENR 5.1, AIRAC 2026-10-29.",
       "tags": [
         "training",
         "range",
-        "UK"
+        "danger area",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          55.15,
-          -2.75
+          55.0814,
+          -2.2953
+        ],
+        [
+          55.0714,
+          -2.2881
+        ],
+        [
+          55.035,
+          -2.2778
+        ],
+        [
+          55.0,
+          -2.4644
+        ],
+        [
+          55.0,
+          -2.7097
         ],
         [
           55.15,
-          -2.35
+          -3.0
         ],
         [
-          54.95,
-          -2.35
+          55.25,
+          -2.9
         ],
         [
-          54.95,
-          -2.75
+          55.25,
+          -2.6642
         ]
       ]
     },
@@ -5777,28 +6113,46 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "Tain air weapons range on the Dornoch Firth.",
+      "description": "Tain air weapons range on the Dornoch Firth. Official boundary (EGD703): UK AIP ENR 5.1, AIRAC 2026-10-29.",
       "tags": [
         "training",
         "range",
-        "UK"
+        "danger area",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          57.9,
-          -4.0
+          57.8733,
+          -3.5
         ],
         [
-          57.9,
-          -3.75
-        ],
-        [
-          57.75,
-          -3.75
+          57.8483,
+          -3.775
         ],
         [
           57.75,
-          -4.0
+          -3.9167
+        ],
+        [
+          57.75,
+          -4.0483
+        ],
+        [
+          57.86,
+          -4.1367
+        ],
+        [
+          58.0567,
+          -3.7433
+        ],
+        [
+          58.1167,
+          -3.6167
+        ],
+        [
+          58.05,
+          -3.5
         ]
       ]
     },
@@ -5808,90 +6162,305 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "Live weapons and naval gunfire range at Cape Wrath.",
+      "description": "Live weapons and naval gunfire range at Cape Wrath. Official boundary (EGD801, EGD802): UK AIP ENR 5.1, AIRAC 2026-10-29.",
       "tags": [
         "training",
         "range",
-        "UK"
+        "danger area",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          58.68,
-          -5.15
+          58.5764,
+          -4.5
         ],
         [
-          58.68,
-          -4.75
+          58.5333,
+          -4.7911
         ],
         [
-          58.5,
-          -4.75
+          58.5333,
+          -5.0
         ],
         [
-          58.5,
-          -5.15
+          59.0,
+          -5.0
+        ],
+        [
+          59.0,
+          -4.5
         ]
       ]
     },
     {
       "id": "uk_range_hebrides",
-      "name": "Hebrides missile range",
+      "name": "Hebrides range",
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "MOD Hebrides range off South Uist: missile firings and target drones.",
+      "description": "MOD Hebrides range off South Uist and St Kilda: missile firings and target drones. Outer limit of all its sub-areas. Official boundary (EGD701A, EGD701B, EGD701C, EGD701D, EGD701E, EGD701F, EGD701G, EGD701H, EGD701I, EGD701J, EGD701K, EGD701L, EGD701M, EGD701N, EGD701O, EGD701P, EGD701Q, EGD701R, EGD701S, EGD701T, EGD701U, EGD701V, EGD701W, EGD701X, EGD701Y, EGD704): UK AIP ENR 5.1, AIRAC 2026-10-29.",
       "tags": [
         "training",
         "range",
-        "UK"
+        "danger area",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          57.8,
-          -9.5
+          56.7325,
+          -12.0
         ],
         [
-          57.8,
-          -7.4
+          57.5239,
+          -13.0
         ],
         [
-          56.9,
-          -7.4
+          59.0,
+          -13.0
         ],
         [
-          56.9,
-          -9.5
+          59.5,
+          -12.0
+        ],
+        [
+          59.5,
+          -10.0
+        ],
+        [
+          58.7875,
+          -7.8206
+        ],
+        [
+          58.4236,
+          -7.1431
+        ],
+        [
+          57.8231,
+          -7.25
+        ],
+        [
+          57.6911,
+          -7.6175
+        ],
+        [
+          57.865,
+          -7.7589
+        ],
+        [
+          57.3631,
+          -7.3544
+        ],
+        [
+          57.1822,
+          -7.3814
+        ],
+        [
+          57.1761,
+          -7.5253
+        ],
+        [
+          56.9536,
+          -7.5989
+        ],
+        [
+          56.9664,
+          -7.6667
+        ],
+        [
+          56.7172,
+          -7.6667
+        ],
+        [
+          56.5861,
+          -7.7186
+        ],
+        [
+          56.0608,
+          -7.7375
+        ],
+        [
+          55.8519,
+          -8.0
+        ],
+        [
+          55.6667,
+          -8.0
+        ],
+        [
+          55.6667,
+          -9.4189
+        ],
+        [
+          55.7544,
+          -10.0
+        ],
+        [
+          55.8978,
+          -11.0
+        ],
+        [
+          56.53,
+          -11.7528
         ]
       ]
     },
     {
-      "id": "uk_range_wash",
-      "name": "Wash ranges (Holbeach and Donna Nook)",
+      "id": "uk_range_holbeach",
+      "name": "Holbeach air weapons range",
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "Air weapons ranges at Holbeach and Donna Nook on the Wash.",
+      "description": "Air weapons range on the Wash. Official boundary (EGD207): UK AIP ENR 5.1, AIRAC 2026-10-29.",
       "tags": [
         "training",
         "range",
-        "UK"
+        "danger area",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          53.55,
-          -0.05
+          52.8083,
+          0.2
         ],
         [
-          53.55,
-          0.4
+          52.9,
+          0.1092
         ],
         [
-          52.8,
-          0.4
+          52.9144,
+          0.1311
         ],
         [
-          52.8,
-          -0.05
+          52.9346,
+          0.1865
+        ],
+        [
+          52.9416,
+          0.2502
+        ],
+        [
+          52.9398,
+          0.2825
+        ],
+        [
+          52.9345,
+          0.3138
+        ],
+        [
+          52.9143,
+          0.3691
+        ],
+        [
+          52.9,
+          0.3913
+        ],
+        [
+          52.8833,
+          0.4083
+        ],
+        [
+          52.8083,
+          0.3333
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_donna_nook",
+      "name": "Donna Nook air weapons range",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Air weapons range on the Lincolnshire coast. Official boundary (EGD307): UK AIP ENR 5.1, AIRAC 2026-10-29.",
+      "tags": [
+        "training",
+        "range",
+        "danger area",
+        "UK",
+        "official"
+      ],
+      "points": [
+        [
+          53.3919,
+          0.2317
+        ],
+        [
+          53.4922,
+          0.0842
+        ],
+        [
+          53.5063,
+          0.0911
+        ],
+        [
+          53.5194,
+          0.1024
+        ],
+        [
+          53.5411,
+          0.1357
+        ],
+        [
+          53.549,
+          0.1566
+        ],
+        [
+          53.5577,
+          0.2038
+        ],
+        [
+          53.5581,
+          0.2285
+        ],
+        [
+          53.5514,
+          0.2766
+        ],
+        [
+          53.5444,
+          0.2983
+        ],
+        [
+          53.5241,
+          0.334
+        ],
+        [
+          53.5115,
+          0.3467
+        ],
+        [
+          53.4977,
+          0.3555
+        ],
+        [
+          53.4832,
+          0.3601
+        ],
+        [
+          53.4685,
+          0.3603
+        ],
+        [
+          53.454,
+          0.3562
+        ],
+        [
+          53.4401,
+          0.3478
+        ],
+        [
+          53.4274,
+          0.3355
+        ],
+        [
+          53.4066,
+          0.3007
+        ],
+        [
+          53.3993,
+          0.2793
         ]
       ]
     },
@@ -5901,28 +6470,74 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "Aberporth / Cardigan Bay test range for missiles and drones.",
+      "description": "Aberporth / Cardigan Bay test range for missiles and drones. Outer limit of all its sub-areas. Official boundary (EGD201A, EGD201B, EGD201C, EGD201D, EGD201F, EGD201G, EGD201H, EGD201J, EGD201K): UK AIP ENR 5.1, AIRAC 2026-10-29.",
       "tags": [
         "training",
         "range",
-        "UK"
+        "danger area",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          52.6,
-          -5.2
+          52.1378,
+          -5.3081
         ],
         [
-          52.6,
-          -4.4
+          52.3333,
+          -5.5
         ],
         [
-          52.0,
-          -4.4
+          53.25,
+          -5.5
         ],
         [
-          52.0,
-          -5.2
+          53.3875,
+          -5.1714
+        ],
+        [
+          53.3819,
+          -5.0
+        ],
+        [
+          53.2,
+          -5.0
+        ],
+        [
+          53.1208,
+          -4.8886
+        ],
+        [
+          52.8386,
+          -4.8886
+        ],
+        [
+          52.5544,
+          -4.2
+        ],
+        [
+          52.2667,
+          -4.2
+        ],
+        [
+          52.1667,
+          -4.495
+        ],
+        [
+          52.1467,
+          -4.4844
+        ],
+        [
+          52.1172,
+          -4.6361
+        ],
+        [
+          52.1444,
+          -4.6464
+        ],
+        [
+          52.1033,
+          -4.8167
         ]
       ]
     },
@@ -5932,28 +6547,62 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "Army training area with restricted airspace over Larkhill and Warminster.",
+      "description": "Army live-firing danger areas over Salisbury Plain (Imber, Lavington, Larkhill, Bulford, Everleigh). Official boundary (EGD123, EGD124, EGD125, EGD126, EGD128): UK AIP ENR 5.1, AIRAC 2026-10-29.",
       "tags": [
         "training",
         "range",
-        "UK"
+        "danger area",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          51.32,
-          -2.1
+          51.2131,
+          -1.6331
         ],
         [
-          51.32,
-          -1.6
+          51.2092,
+          -1.6617
         ],
         [
-          51.15,
-          -1.6
+          51.1789,
+          -1.7189
         ],
         [
-          51.15,
-          -2.1
+          51.1831,
+          -1.7781
+        ],
+        [
+          51.1683,
+          -1.9506
+        ],
+        [
+          51.185,
+          -2.1203
+        ],
+        [
+          51.2247,
+          -2.1969
+        ],
+        [
+          51.2544,
+          -2.1608
+        ],
+        [
+          51.2847,
+          -2.0533
+        ],
+        [
+          51.3019,
+          -1.9431
+        ],
+        [
+          51.3144,
+          -1.7042
+        ],
+        [
+          51.2569,
+          -1.6017
         ]
       ]
     },
@@ -5963,28 +6612,38 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "Army live-firing area in Northumberland.",
+      "description": "Army live-firing area in Northumberland. Official boundary (EGD512A, EGD512B): UK AIP ENR 5.1, AIRAC 2026-10-29.",
       "tags": [
         "training",
         "range",
-        "UK"
+        "danger area",
+        "UK",
+        "official"
       ],
       "points": [
         [
-          55.38,
-          -2.45
+          55.1817,
+          -2.2197
         ],
         [
-          55.38,
-          -2.1
+          55.2708,
+          -2.4311
         ],
         [
-          55.2,
-          -2.1
+          55.37,
+          -2.3358
         ],
         [
-          55.2,
-          -2.45
+          55.4072,
+          -2.2319
+        ],
+        [
+          55.2886,
+          -2.06
+        ],
+        [
+          55.2383,
+          -2.0442
         ]
       ]
     },
@@ -5994,10 +6653,10 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "Part of Low Flying Area 7 around Cadair Idris, known for low-level fast-jet training.",
+      "description": "Notional box around the Mach Loop (part of Low Flying Area 7, Cadair Idris), known for low-level fast-jet training.",
       "tags": [
         "training",
-        "range",
+        "low flying",
         "UK"
       ],
       "points": [
@@ -6025,10 +6684,10 @@
       "region": "United Kingdom",
       "kind": "air",
       "subregion": "UK ranges",
-      "description": "Scottish Highlands tactical training area for low-level flying.",
+      "description": "Notional box over the Scottish Highlands used for low-level tactical flying.",
       "tags": [
         "training",
-        "range",
+        "low flying",
         "UK"
       ],
       "points": [
@@ -6056,7 +6715,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - Scotland",
-      "description": "Firth of Clyde: approaches to HM Naval Base Clyde (Faslane) and RNAD Coulport.",
+      "description": "Firth of Clyde: approaches to HM Naval Base Clyde (Faslane) and RNAD Coulport. Approximate exercise area.",
       "tags": [
         "ASW",
         "SSBN",
@@ -6095,7 +6754,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - Scotland",
-      "description": "Strait between Scotland and Northern Ireland: the SSBN transit route from the Clyde.",
+      "description": "Strait between Scotland and Northern Ireland: the SSBN transit route from the Clyde. Approximate exercise area.",
       "tags": [
         "ASW",
         "chokepoint",
@@ -6127,7 +6786,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - Scotland",
-      "description": "Inner waters between the Outer Hebrides and the mainland, including the BUTEC underwater range near Kyle of Lochalsh.",
+      "description": "Inner waters between the Outer Hebrides and the mainland, including the BUTEC underwater range near Kyle of Lochalsh. Approximate exercise area.",
       "tags": [
         "ASW",
         "training",
@@ -6166,7 +6825,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - Scotland",
-      "description": "Moray Firth off Lossiemouth and Kinloss.",
+      "description": "Moray Firth off Lossiemouth and Kinloss. Approximate exercise area.",
       "tags": [
         "ASW",
         "ASuW",
@@ -6201,7 +6860,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - Scotland",
-      "description": "Pentland Firth and Scapa Flow between Orkney and Caithness.",
+      "description": "Pentland Firth and Scapa Flow between Orkney and Caithness. Approximate exercise area.",
       "tags": [
         "chokepoint",
         "ASuW",
@@ -6232,7 +6891,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - Scotland",
-      "description": "Around Shetland and the Sullom Voe oil terminal.",
+      "description": "Around Shetland and the Sullom Voe oil terminal. Approximate exercise area.",
       "tags": [
         "ASuW",
         "ASW",
@@ -6263,7 +6922,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - Scotland",
-      "description": "Firth of Forth: Rosyth dockyard and the approaches to Edinburgh.",
+      "description": "Firth of Forth: Rosyth dockyard and the approaches to Edinburgh. Approximate exercise area.",
       "tags": [
         "ASuW",
         "MCM",
@@ -6294,7 +6953,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - England",
-      "description": "Off Plymouth and Devonport: sea training and the FOST areas.",
+      "description": "Off Plymouth and Devonport: sea training and the FOST areas. Approximate exercise area.",
       "tags": [
         "ASW",
         "ASuW",
@@ -6326,7 +6985,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - England",
-      "description": "Approaches to HM Naval Base Portsmouth and Southampton.",
+      "description": "Approaches to HM Naval Base Portsmouth and Southampton. Approximate exercise area.",
       "tags": [
         "ASuW",
         "MCM",
@@ -6357,7 +7016,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - England",
-      "description": "Approaches to London through the Thames Estuary.",
+      "description": "Approaches to London through the Thames Estuary. Approximate exercise area.",
       "tags": [
         "ASuW",
         "MCM",
@@ -6388,7 +7047,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - England",
-      "description": "Lyme Bay and the Portland areas.",
+      "description": "Lyme Bay and the Portland areas. Approximate exercise area.",
       "tags": [
         "ASW",
         "training",
@@ -6419,7 +7078,7 @@
       "region": "United Kingdom",
       "kind": "sea",
       "subregion": "UK waters - England",
-      "description": "Liverpool Bay and the approaches to the Barrow-in-Furness submarine yard.",
+      "description": "Liverpool Bay and the approaches to the Barrow-in-Furness submarine yard. Approximate exercise area.",
       "tags": [
         "ASW",
         "ASuW",

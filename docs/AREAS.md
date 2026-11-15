@@ -5,18 +5,23 @@ such as the Bay of Biscay, the GIUK gaps, the Baltic, the Strait of Hormuz, the 
 exclusion zone - grouped by region of the globe. Adding one creates an ordinary area (reference points
 `NAME-1`..`NAME-n`) and, if you like, a patrol or support mission on it.
 
-The built-in library has **196 areas** (106 sea, 90 air): Europe 44, United Kingdom 62, Arctic 10, Middle East 14, Africa 8, Asia 26, Oceania 9, North America 13, South America 10.
+The built-in library has **208 areas** (106 sea, 102 air): Europe 44, United Kingdom 74, Arctic 10, Middle East 14, Africa 8, Asia 26, Oceania 9, North America 13, South America 10.
 
 - **Sea areas** - ASW, ASuW and MCM patrol areas, chokepoints and barriers (GIUK, Bear Gap, Gibraltar, Hormuz,
   Bab-el-Mandeb, Malacca, Luzon Strait...), carrier operating areas, bastions and training areas.
 - **Air areas** - CAP boxes and QRA areas (Baltic air policing, NORAD intercept zones, Korean DMZ, Taiwan ADIZ...),
   AEW orbits, tanker tracks and training ranges.
-- **United Kingdom** - a region of its own covering the whole of UK airspace: the UK FIR outline, the QRA North and
-  QRA South areas, eight interception sectors that together tile the whole FIR (every point of UK airspace lies in
-  exactly one), approach zones beyond it (Iceland-Faroes gap, Norwegian Sea, Atlantic, southern North Sea), 18 CAP
-  stations, AEW orbits, tanker tracks, ranges and low-flying areas, and UK naval exercise areas.
+- **United Kingdom** - a region of its own covering the whole of UK airspace. **Official boundaries** from the UK
+  AIP (AIRAC 2026-10-29, tagged `official`): the London and Scottish FIRs (QRA South and QRA North areas) and their
+  union (ENR 2.1); the danger areas of the Spadeadam, Tain, Cape Wrath, Hebrides, Holbeach, Donna Nook, Aberporth,
+  Salisbury Plain and Otterburn ranges (ENR 5.1, arcs and circles included; multi-part ranges as the outer limit of
+  their sub-areas); and the 14 air-to-air refuelling areas AARA 1-14 (ENR 5.2). **Notional** areas, which have no
+  published definition: eight interception sectors cut from the official FIRs (together they cover the whole UK
+  FIR exactly once), approach zones beyond it (Iceland-Faroes gap, Norwegian Sea, Atlantic, southern North Sea),
+  18 CAP stations, AEW orbits, two low-flying areas and UK naval exercise areas.
 
-Shapes are approximate operating boxes drawn for gameplay, not legal or official boundaries. Adjust the corners on
+Outside the UK official boundaries, shapes are approximate operating boxes drawn for gameplay, not legal or
+official boundaries. Adjust the corners on
 the map after adding an area, or edit the library.
 
 ## Using it
@@ -167,13 +172,24 @@ which built-in areas it has already seen in `known_builtins`, so ones you delete
 
 | Area | Sub-region | Size (nm) | Default mission | Tags |
 | --- | --- | --- | --- | --- |
+| **AARA 1 - Scottish Highlands** (`uk_aara_1`) | UK AEW and tankers | 19 x 111 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 10E - Devon, Somerset and the Bristol Channel** (`uk_aara_10e`) | UK AEW and tankers | 72 x 49 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 10W - off Cornwall and south Devon** (`uk_aara_10w`) | UK AEW and tankers | 118 x 75 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 11 - west of the Scilly Isles** (`uk_aara_11`) | UK AEW and tankers | 89 x 41 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 12 - Celtic Sea** (`uk_aara_12`) | UK AEW and tankers | 120 x 57 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 13 - Irish Sea, around the Isle of Man** (`uk_aara_13`) | UK AEW and tankers | 24 x 46 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 14 - west of Scotland and the Hebrides** (`uk_aara_14`) | UK AEW and tankers | 46 x 99 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 2 - north of Orkney** (`uk_aara_2`) | UK AEW and tankers | 55 x 84 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 3 - central North Sea, east of Aberdeen** (`uk_aara_3`) | UK AEW and tankers | 63 x 104 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 4 - off the Moray Firth and Aberdeenshire** (`uk_aara_4`) | UK AEW and tankers | 63 x 41 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 5 - off the Firth of Forth** (`uk_aara_5`) | UK AEW and tankers | 65 x 21 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 6 - off Northumberland and North Yorkshire** (`uk_aara_6`) | UK AEW and tankers | 52 x 52 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 7 - central North Sea, east of Teesside** (`uk_aara_7`) | UK AEW and tankers | 67 x 44 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 8 - off Lincolnshire and north Norfolk** (`uk_aara_8`) | UK AEW and tankers | 66 x 29 | Support | tanker, AAR, AARA, UK, official |
+| **AARA 9 - off East Anglia** (`uk_aara_9`) | UK AEW and tankers | 40 x 19 | Support | tanker, AAR, AARA, UK, official |
 | **AEW orbit - northern North Sea** (`uk_aew_north_sea_north`) | UK AEW and tankers | 63 x 36 | Support | AEW, orbit, UK |
 | **AEW orbit - southern North Sea** (`uk_aew_north_sea_south`) | UK AEW and tankers | 64 x 30 | Support | AEW, orbit, UK |
 | **AEW orbit - west of Scotland** (`uk_aew_west_scotland`) | UK AEW and tankers | 52 x 36 | Support | AEW, orbit, UK |
-| **Tanker track - Celtic Sea** (`uk_tanker_celtic_sea`) | UK AEW and tankers | 76 x 24 | Support | tanker, AAR, UK |
-| **Tanker track - North Sea (Yorkshire)** (`uk_tanker_north_sea`) | UK AEW and tankers | 73 x 24 | Support | tanker, AAR, UK |
-| **Tanker track - east of Scotland** (`uk_tanker_east_scotland`) | UK AEW and tankers | 75 x 24 | Support | tanker, AAR, UK |
-| **Tanker track - west of Scotland** (`uk_tanker_west_scotland`) | UK AEW and tankers | 59 x 24 | Support | tanker, AAR, UK |
 | **CAP Anglesey / North Wales** (`uk_cap_anglesey`) | UK CAP stations | 50 x 42 | CAP | CAP, UK |
 | **CAP Bristol Channel / South Wales** (`uk_cap_bristol_channel`) | UK CAP stations | 90 x 36 | CAP | CAP, UK |
 | **CAP Clyde** (`uk_cap_clyde`) | UK CAP stations | 54 x 54 | CAP | CAP, UK |
@@ -192,31 +208,32 @@ which built-in areas it has already seen in `known_builtins`, so ones you delete
 | **CAP Solent / Portsmouth** (`uk_cap_solent`) | UK CAP stations | 49 x 33 | CAP | CAP, UK |
 | **CAP Thames Estuary / London** (`uk_cap_thames`) | UK CAP stations | 82 x 42 | CAP | CAP, UK |
 | **CAP The Wash / Lincolnshire** (`uk_cap_wash`) | UK CAP stations | 58 x 42 | CAP | CAP, UK |
-| **QRA North area (Scottish FIR)** (`uk_qra_north`) | UK air defence | 482 x 414 | CAP | QRA, CAP, UK |
-| **QRA South area (London FIR)** (`uk_qra_south`) | UK air defence | 483 x 390 | CAP | QRA, CAP, UK |
-| **UK airspace (London and Scottish FIRs)** (`uk_fir`) | UK air defence | 519 x 751 | CAP | QRA, CAP, UK |
+| **QRA North area (Scottish FIR)** (`uk_qra_north`) | UK air defence | 483 x 425 | CAP | QRA, CAP, UK, official |
+| **QRA South area (London FIR)** (`uk_qra_south`) | UK air defence | 481 x 370 | CAP | QRA, CAP, UK, official |
+| **UK airspace (London and Scottish FIRs)** (`uk_fir`) | UK air defence | 517 x 730 | CAP | QRA, CAP, UK, official |
 | **Eastern approach - southern North Sea** (`uk_approach_southern_north_sea`) | UK approaches | 122 x 162 | CAP | QRA, intercept, UK |
 | **Northern approach - Iceland-Faroes gap** (`uk_approach_faroes_iceland`) | UK approaches | 329 x 210 | CAP | QRA, intercept, UK |
 | **Northern approach - Norwegian Sea** (`uk_approach_norwegian_sea`) | UK approaches | 245 x 240 | CAP | QRA, intercept, UK |
 | **Western approach - Atlantic (Shanwick)** (`uk_approach_atlantic_west`) | UK approaches | 268 x 480 | CAP | QRA, intercept, UK |
-| **Intercept sector - London and the South East** (`uk_sector_south_east`) | UK intercept sectors | 135 x 111 | CAP | QRA, CAP, intercept, UK |
-| **Intercept sector - Midlands and East Anglia** (`uk_sector_east_anglia`) | UK intercept sectors | 153 x 84 | CAP | QRA, CAP, intercept, UK |
+| **Intercept sector - London and the South East** (`uk_sector_south_east`) | UK intercept sectors | 136 x 96 | CAP | QRA, CAP, intercept, UK |
+| **Intercept sector - Midlands and East Anglia** (`uk_sector_east_anglia`) | UK intercept sectors | 176 x 84 | CAP | QRA, CAP, intercept, UK |
 | **Intercept sector - North East England / central North Sea** (`uk_sector_ne_england`) | UK intercept sectors | 247 x 120 | CAP | QRA, CAP, intercept, UK |
-| **Intercept sector - North West England and Irish Sea** (`uk_sector_nw_england`) | UK intercept sectors | 127 x 110 | CAP | QRA, CAP, intercept, UK |
-| **Intercept sector - Northern Isles** (`uk_sector_north`) | UK intercept sectors | 370 x 150 | CAP | QRA, CAP, intercept, UK |
-| **Intercept sector - Scotland East / northern North Sea** (`uk_sector_scot_east`) | UK intercept sectors | 281 x 238 | CAP | QRA, CAP, intercept, UK |
-| **Intercept sector - Scotland West and Northern Ireland** (`uk_sector_scot_west`) | UK intercept sectors | 216 x 264 | CAP | QRA, CAP, intercept, UK |
-| **Intercept sector - South West, Wales and Western Approaches** (`uk_sector_south_west`) | UK intercept sectors | 247 x 270 | CAP | QRA, CAP, intercept, UK |
-| **Cape Wrath range (Garvie Island)** (`uk_range_cape_wrath`) | UK ranges | 13 x 11 | CAP | training, range, UK |
-| **Cardigan Bay range (Aberporth)** (`uk_range_aberporth`) | UK ranges | 29 x 36 | CAP | training, range, UK |
-| **Hebrides missile range** (`uk_range_hebrides`) | UK ranges | 68 x 54 | CAP | training, range, UK |
-| **Highlands tactical training area** (`uk_lfa_highlands`) | UK ranges | 52 x 60 | CAP | training, range, UK |
-| **Mach Loop low-flying area (Wales)** (`uk_lfa_mach_loop`) | UK ranges | 11 x 12 | CAP | training, range, UK |
-| **Otterburn training area** (`uk_range_otterburn`) | UK ranges | 12 x 11 | CAP | training, range, UK |
-| **Salisbury Plain training area** (`uk_range_salisbury_plain`) | UK ranges | 19 x 10 | CAP | training, range, UK |
-| **Spadeadam electronic warfare range** (`uk_range_spadeadam`) | UK ranges | 14 x 12 | CAP | training, range, UK |
-| **Tain air weapons range** (`uk_range_tain`) | UK ranges | 8 x 9 | CAP | training, range, UK |
-| **Wash ranges (Holbeach and Donna Nook)** (`uk_range_wash`) | UK ranges | 16 x 45 | CAP | training, range, UK |
+| **Intercept sector - North West England and Irish Sea** (`uk_sector_nw_england`) | UK intercept sectors | 124 x 120 | CAP | QRA, CAP, intercept, UK |
+| **Intercept sector - Northern Isles** (`uk_sector_north`) | UK intercept sectors | 378 x 150 | CAP | QRA, CAP, intercept, UK |
+| **Intercept sector - Scotland East / northern North Sea** (`uk_sector_scot_east`) | UK intercept sectors | 280 x 210 | CAP | QRA, CAP, intercept, UK |
+| **Intercept sector - Scotland West and Northern Ireland** (`uk_sector_scot_west`) | UK intercept sectors | 217 x 275 | CAP | QRA, CAP, intercept, UK |
+| **Intercept sector - South West, Wales and Western Approaches** (`uk_sector_south_west`) | UK intercept sectors | 246 x 250 | CAP | QRA, CAP, intercept, UK |
+| **Cape Wrath range (Garvie Island)** (`uk_range_cape_wrath`) | UK ranges | 16 x 28 | CAP | training, range, danger area, UK, official |
+| **Cardigan Bay range (Aberporth)** (`uk_range_aberporth`) | UK ranges | 47 x 77 | CAP | training, range, danger area, UK, official |
+| **Donna Nook air weapons range** (`uk_range_donna_nook`) | UK ranges | 10 x 10 | CAP | training, range, danger area, UK, official |
+| **Hebrides range** (`uk_range_hebrides`) | UK ranges | 188 x 230 | CAP | training, range, danger area, UK, official |
+| **Highlands tactical training area** (`uk_lfa_highlands`) | UK ranges | 52 x 60 | CAP | training, low flying, UK |
+| **Holbeach air weapons range** (`uk_range_holbeach`) | UK ranges | 11 x 8 | CAP | training, range, danger area, UK, official |
+| **Mach Loop low-flying area (Wales)** (`uk_lfa_mach_loop`) | UK ranges | 11 x 12 | CAP | training, low flying, UK |
+| **Otterburn training area** (`uk_range_otterburn`) | UK ranges | 13 x 14 | CAP | training, range, danger area, UK, official |
+| **Salisbury Plain training area** (`uk_range_salisbury_plain`) | UK ranges | 22 x 9 | CAP | training, range, danger area, UK, official |
+| **Spadeadam electronic warfare range** (`uk_range_spadeadam`) | UK ranges | 25 x 15 | CAP | training, range, danger area, UK, official |
+| **Tain air weapons range** (`uk_range_tain`) | UK ranges | 20 x 22 | CAP | training, range, danger area, UK, official |
 
 
 ### Arctic

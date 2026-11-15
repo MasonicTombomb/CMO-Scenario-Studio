@@ -292,7 +292,7 @@ lot.
 ## Patrol area library
 
 **Tools > Add patrol area from library** (Ctrl+Shift+A), the map's **Patrol areas...** button, right-click on the
-map, or **From library...** on the Areas tab opens 196 predefined sea and air areas grouped
+map, or **From library...** on the Areas tab opens 208 predefined sea and air areas grouped
 by region: Europe, United Kingdom, Arctic, Middle East, Africa, Asia, Oceania, North America and South America. Sea areas cover
 patrol areas, chokepoints and barriers (Bay of Biscay, GIUK gaps, Baltic, Mediterranean, Hormuz, Taiwan Strait,
 South China Sea, Falklands TEZ...); air areas cover CAP and QRA boxes, AEW orbits, tanker tracks and ranges.
@@ -314,8 +314,10 @@ intelligence sites, nuclear sites, munitions depots and garrisons. Search "lossi
 real site** ticked and press Place - the whole base appears where it really is, grouped. Untick it to use the layout
 somewhere else. See [TEMPLATES.md](TEMPLATES.md#uk-real-world-sites) for every site and its counts.
 
-For UK airspace, the area library's **United Kingdom** region has the QRA North and South areas, eight interception
-sectors that together cover the whole UK FIR, approach zones, CAP stations, AEW orbits, tanker tracks and ranges.
+For UK airspace, the area library's **United Kingdom** region uses the official UK AIP boundaries for the London
+and Scottish FIRs (the QRA South and North areas), the danger areas of the main ranges and the air-to-air
+refuelling areas AARA 1-14 (tagged *official*), plus notional areas with no published definition: eight
+interception sectors that together cover the whole UK FIR, approach zones, CAP stations and AEW orbits.
 
 ## Unit templates
 

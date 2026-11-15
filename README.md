@@ -25,11 +25,12 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Search everything** (Ctrl+K) — jump to any unit, mission, event, area, formation, script line or command.
 - **Edit many units at once** — tick the fields to change across a selection: rename patterns (`Escort {nn}`),
   side, group, proficiency, EMCON, hold, heading, speed, altitude, base, loadout and more, in one undo step.
-- **Patrol area library** — 196 predefined sea and air patrol areas by region (Europe, United Kingdom,
+- **Patrol area library** — 208 predefined sea and air patrol areas by region (Europe, United Kingdom,
   Arctic, Middle East, Africa, Asia, Oceania, North and South America): Bay of Biscay, GIUK gaps, Baltic, Hormuz, Taiwan Strait, South
   China Sea, Falklands TEZ, CAP boxes, AEW orbits, tanker tracks and more. Add one (or several) with a patrol or
-  support mission ready to staff. The UK set covers the whole of UK airspace: QRA North/South areas, eight
-  interception sectors tiling the UK FIR, approach zones, CAP stations, AEW orbits, tanker tracks and ranges.
+  support mission ready to staff. The UK set covers the whole of UK airspace with official UK AIP boundaries
+  for the London and Scottish FIRs (QRA South/North), the ranges' danger areas and air-to-air refuelling areas
+  AARA 1-14, plus eight interception sectors tiling the FIR, approach zones, CAP stations and AEW orbits.
   Editable JSON library; save your own areas into it.
 - **UK military sites** — 101 real UK sites at their actual positions (1575 units): 46 air bases laid
   out from OpenStreetMap with every mapped runway at its real heading and length (82 runways), 108 hardened

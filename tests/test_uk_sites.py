@@ -232,7 +232,24 @@ def test_dry_run_builds_uk_sites(lib, lua_dll):
         t = lib.template(tid)
         place_template(p, t, None, sid, *t.location, heading=t.heading)
     areas = default_areas()
-    for aid in ("uk_qra_north", "uk_sector_east_anglia", "uk_tanker_north_sea"):
+    for aid in ("uk_qra_north", "uk_sector_east_anglia", "uk_aara_6"):
         add_area(p, areas.area(aid), sid, mission=suggested_mission(areas.area(aid)))
     res = dry_run_build(p, lua_dll)
     assert res.ok, res.output
+
+
+def test_official_uk_boundaries():
+    areas = default_areas()
+    # Scottish / London FIR boundary: 55N east of 5 30W (UK AIP ENR 2.1)
+    north = areas.area("uk_qra_north").points
+    south = areas.area("uk_qra_south").points
+    def has(poly, lat, lon):
+        return any(abs(p[0] - lat) < 1e-3 and abs(p[1] - lon) < 1e-3 for p in poly)
+    assert has(north, 55.0, 5.0) and has(south, 55.0, 5.0)
+    assert has(north, 55.0, -5.5) and has(south, 55.0, -5.5)
+    assert has(north, 61.0, -10.0) and has(south, 48 + 50 / 60, -8.0)
+    for a in (areas.area("uk_fir"), areas.area("uk_range_tain"), areas.area("uk_aara_1")):
+        assert "official" in a.tags and "UK AIP" in a.description
+    aaras = [a for a in areas.areas if a.id.startswith("uk_aara_")]
+    assert len(aaras) == 15
+    assert "notional" in areas.area("uk_cap_moray").description.lower()
