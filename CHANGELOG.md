@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.6.0 — 2026-11-15
 
 - **Windows installer** (`CMO-Scenario-Studio-<version>-setup.exe`, Inno Setup): installs into Program Files with
   Start-menu shortcuts, optional desktop icon, `.cmoproj` file association and an uninstaller; upgrades replace the
