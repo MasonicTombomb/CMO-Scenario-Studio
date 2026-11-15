@@ -4,6 +4,7 @@
 src/cmo_studio/
   app.py                 entry point (GUI and headless --export / --dry-run)
   settings.py            QSettings wrapper, CMO install detection, tile sources
+  updater.py             GitHub release check, verified installer download and hand-over
   geo.py                 coordinate parsing, distances, Web Mercator
   model/
     project.py           dataclasses for the whole project + JSON (de)serialisation
@@ -46,6 +47,7 @@ src/cmo_studio/
     bulk_edit.py         edit fields on many units at once
     callsigns_ui.py      assign-callsigns dialog and callsign library editor
     templates_ui.py      template placer, preview and template library editor
+    update_ui.py         update check, release notes dialog, download progress
     areas_library_ui.py  patrol area browser with map preview and area library editor
     forms.py             UnitForm, RPForm, ZoneForm (shared by map and pages)
     widgets.py           code editor, highlighters, pickers, key/value table...

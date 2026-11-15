@@ -24,6 +24,7 @@ files that live happily in git.
 - [Exporting](#exporting)
 - [Importing an existing scenario](#importing-an-existing-scenario)
 - [Keyboard shortcuts](#keyboard-shortcuts)
+- [Installing and updating](#installing-and-updating)
 - [Troubleshooting](#troubleshooting)
 
 ## The window
@@ -457,6 +458,22 @@ reinforcements, areas and missions. Events and runtime scripts are not imported.
 | F5 | Dry-run build |
 | F7 | Validate |
 | Map: Esc / Delete / + / − | Cancel tool or deselect / delete selection / zoom |
+
+## Installing and updating
+
+- **Installer** (`...-setup.exe`): installs into `C:\Program Files\CMO Scenario Studio` for all users (Windows asks
+  for administrator permission), with Start-menu shortcuts (studio, user guide, example projects, uninstall), an
+  optional desktop icon and an option to open `.cmoproj` files with the studio. Uninstall from *Settings > Apps* or
+  the Start menu.
+- **Updates**: the installed studio checks GitHub for a newer release a few seconds after it starts (turn this off in
+  *File > Settings*), and **Help > Check for updates** checks at any time. *Download and install* shows the release
+  notes, downloads the setup, verifies it against the release's SHA-256 checksum, asks you to save changes, then
+  closes, updates and starts again. *Skip this version* stops the reminder for that version.
+- **Where your files are**: the program and its built-in libraries are in Program Files and are replaced by updates.
+  Your own libraries, settings, export backups and the map tile cache are in your user profile (`%APPDATA%` /
+  `%LOCALAPPDATA%`), and projects wherever you save them - updates and uninstalling never touch them. The examples
+  are read-only in Program Files: saving an opened example asks where to save your copy.
+- **Portable zip**: works the same but cannot update itself; *Check for updates* opens the release page.
 
 ## Troubleshooting
 

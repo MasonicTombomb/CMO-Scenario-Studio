@@ -107,10 +107,18 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 
 ## Download
 
-Get **`CMO-Scenario-Studio-<version>-win64.zip`** from the
-[Releases page](https://github.com/MasonicTombomb/CMO-Scenario-Studio/releases), unzip it anywhere and run
-`CMO-Scenario-Studio.exe`; no Python needed. Windows may show a SmartScreen warning because the exe is not
-code-signed (*More info > Run anyway*).
+From the [Releases page](https://github.com/MasonicTombomb/CMO-Scenario-Studio/releases):
+
+- **`CMO-Scenario-Studio-<version>-setup.exe`** - the installer. Installs into `C:\Program Files\CMO Scenario
+  Studio` with Start-menu shortcuts, an optional desktop icon, `.cmoproj` file association and an uninstaller.
+  The studio then **updates itself from GitHub**: it checks for a new release at start-up (or *Help > Check for
+  updates*), downloads the setup, verifies its SHA-256 checksum and installs it.
+- **`CMO-Scenario-Studio-<version>-win64.zip`** - portable: unzip anywhere and run `CMO-Scenario-Studio.exe`.
+
+No Python needed. Your settings, libraries and projects live in your user profile, not in Program Files, so
+updates and uninstalling never touch them. Until releases are code-signed, Windows SmartScreen may warn about an
+unknown publisher (*More info > Run anyway*). See [docs/RELEASING.md](docs/RELEASING.md) for where files go,
+how updates work and code signing.
 
 To run from source instead, see [Quick start](#quick-start).
 
@@ -176,6 +184,7 @@ See [`examples/output`](examples/output) for a real export.
 - [Callsign library](docs/CALLSIGNS.md) — the JSON format, roles and allocation rules
 - [Database access](docs/DATABASE.md) — which DB3000 tables are read and how
 - [Architecture](docs/ARCHITECTURE.md) — code layout for contributors
+- [Building, signing and releasing](docs/RELEASING.md) — installer, updates, code signing
 - [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
 
 ## Command line
@@ -193,8 +202,9 @@ pip install -e .[dev] pyinstaller
 python packaging/build_release.py
 ```
 
-This writes `release/CMO-Scenario-Studio-<version>-win64.zip` and its `.sha256`, after a smoke test of the frozen
-exe. Pushing a tag such as `v1.0.0` makes GitHub Actions build the same zip and publish a release with the notes in
+This writes `release/CMO-Scenario-Studio-<version>-setup.exe` (needs [Inno Setup 6](https://jrsoftware.org/isinfo.php))
+and `-win64.zip` with their `.sha256`, after smoke tests of the frozen exe and of a silent install/uninstall, and
+signs everything when a code-signing certificate is configured - see [docs/RELEASING.md](docs/RELEASING.md). Pushing a tag such as `v1.0.0` makes GitHub Actions build the same zip and publish a release with the notes in
 `docs/releases/<version>.md`. That is the only workflow: ordinary pushes run nothing, so run `pytest` locally first
 (the release job runs it once more before building).
 

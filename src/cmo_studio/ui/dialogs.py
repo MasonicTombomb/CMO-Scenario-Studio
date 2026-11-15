@@ -6,8 +6,9 @@ from pathlib import Path
 
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import (QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout, QLabel,
-                             QLineEdit, QPushButton, QSpinBox, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
+from PyQt6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout,
+                             QLabel, QLineEdit, QPushButton, QSpinBox, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
+                             QWidget)
 
 from .. import APP_NAME, __version__
 from ..db.database import find_databases
@@ -45,6 +46,9 @@ class SettingsDialog(QDialog):
         self.tile_url = QLineEdit(settings.custom_tile_url)
         self.tile_url.setPlaceholderText("https://example.com/{z}/{x}/{y}.png")
         f.addRow("Custom map tiles:", self.tile_url)
+        self.updates = QCheckBox("Check GitHub for a new version when the studio starts")
+        self.updates.setChecked(settings.check_updates)
+        f.addRow("Updates:", self.updates)
         lay.addLayout(f)
         lay.addWidget(hint_label("The CMO folder is the one containing Command.exe, DB\\, Lua\\ and Scenarios\\. "
                                  "The studio reads the databases read-only and only writes into Lua\\<folder> and "
@@ -80,6 +84,7 @@ class SettingsDialog(QDialog):
         self.s.cmo_dir = self.cmo.text().strip()
         self.s.autosave_minutes = self.autosave.value()
         self.s.custom_tile_url = self.tile_url.text().strip()
+        self.s.check_updates = self.updates.isChecked()
         self.accept()
 
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -10,10 +11,11 @@ from PyQt6.QtGui import QAction, QCloseEvent, QDesktopServices, QGuiApplication,
 from PyQt6.QtWidgets import (QDockWidget, QFileDialog, QLabel, QMainWindow, QMessageBox, QTabWidget)
 
 from .. import APP_NAME, __version__
+from ..updater import RELEASES_PAGE
 from ..db.database import DBEntry, latest_database
 from ..importers.legacy_lua import import_legacy_build
 from ..model.project import PROJECT_SUFFIX, Project, Unit, new_project
-from ..paths import docs_dir, examples_dir
+from ..paths import docs_dir, examples_dir, is_frozen
 from ..settings import AppSettings
 from .db_browser import DBBrowser, DBManager
 from .dialogs import AboutDialog, IssuesPanel, NewProjectDialog, SettingsDialog
@@ -136,6 +138,13 @@ class MainWindow(QMainWindow):
         # would wait forever (this hung the GitHub Actions test runs).
         if not cmo and QGuiApplication.platformName() != "offscreen":
             QTimer.singleShot(300, self._first_run)
+        from .update_ui import Updater
+        self.updater = Updater(self)
+        self._quitting_for_update = False
+        # Look for a new release a few seconds after start (packaged builds; never on a headless display).
+        if (self.settings.check_updates and is_frozen() and QGuiApplication.platformName() != "offscreen"
+                and not os.environ.get("CMO_STUDIO_NO_UPDATE_CHECK")):
+            QTimer.singleShot(4000, lambda: self.updater.check(manual=False))
 
     # ------------------------------------------------------------------ menus
     def _action(self, menu, text, slot, shortcut=None, tip=""):
@@ -205,6 +214,9 @@ class MainWindow(QMainWindow):
 
         h = mb.addMenu("&Help")
         self._action(h, "User guide (docs folder)", self._open_docs, "F1")
+        self._action(h, "Check for updates...", lambda: self.updater.check(manual=True))
+        self._action(h, "Release notes (GitHub)", lambda: QDesktopServices.openUrl(QUrl(RELEASES_PAGE)))
+        h.addSeparator()
         self._action(h, "About", lambda: AboutDialog(self).exec())
 
     def _fill_recent(self):
@@ -289,15 +301,26 @@ class MainWindow(QMainWindow):
                 self.dbm.open(path)
 
     def _project_dir(self) -> str:
-        if self.doc.path:
+        if self.doc.path and _writable_dir(self.doc.path.parent):
             return str(self.doc.path.parent)
-        return self.settings.value("project_dir", str(Path.home()))
+        d = self.settings.value("project_dir", "")
+        if d and Path(d).is_dir() and _writable_dir(Path(d)):
+            return d
+        docs = Path.home() / "Documents"
+        return str(docs if docs.is_dir() else Path.home())
 
     def save_project(self) -> bool:
         if not self.doc.path:
             return self.save_project_as()
+        if not _writable_dir(self.doc.path.parent):
+            QMessageBox.information(self, "Save", f"{self.doc.path.parent} cannot be written to (for example the "
+                                                  "program folder in Program Files). Choose where to save it.")
+            return self.save_project_as()
         try:
             self.doc.save()
+        except PermissionError:
+            QMessageBox.information(self, "Save", f"No permission to write {self.doc.path}. Choose another place.")
+            return self.save_project_as()
         except OSError as exc:
             QMessageBox.critical(self, "Save", str(exc))
             return False
@@ -663,10 +686,34 @@ class MainWindow(QMainWindow):
             self.doc.select(oid)
 
     # ------------------------------------------------------------------ close
+    def ask_save_before(self, what: str) -> bool:
+        """Before an update: save or discard changes; False if the user cancels."""
+        return self._confirm_discard()
+
+    def quit_for_update(self) -> None:
+        """The installer has started: close without asking again so it can replace the program files."""
+        self._quitting_for_update = True
+        self.settings.set_value("window_state", self.saveState())
+        self.settings.set_value("window_geometry", self.saveGeometry())
+        from PyQt6.QtWidgets import QApplication
+        QApplication.instance().quit()
+
     def closeEvent(self, e: QCloseEvent):
-        if not self._confirm_discard():
+        if not self._quitting_for_update and not self._confirm_discard():
             e.ignore()
             return
         self.settings.set_value("window_state", self.saveState())
         self.settings.set_value("window_geometry", self.saveGeometry())
         e.accept()
+
+
+def _writable_dir(d: Path) -> bool:
+    """Can files be created in ``d``? (os.access is unreliable on Windows for Program Files.)"""
+    import tempfile
+    try:
+        if not d.is_dir():
+            return False
+        with tempfile.NamedTemporaryFile(dir=d, prefix=".cmo-studio-", delete=True):
+            return True
+    except OSError:
+        return False

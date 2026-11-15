@@ -1,7 +1,11 @@
 name: release
 
-# The only workflow: push a tag like v1.2.0 to build the Windows exe and publish a GitHub release with the zip
-# attached. Ordinary pushes run nothing. The test step takes seconds and stops a broken build being published.
+# The only workflow: push a tag like v1.2.0 to build the Windows installer and portable zip and publish a GitHub
+# release with them attached. Ordinary pushes run nothing. The test step takes seconds and stops a broken build
+# being published.
+#
+# Code signing is optional: add the repository secrets SIGN_PFX_BASE64 (the .pfx certificate, base64-encoded) and
+# SIGN_PFX_PASSWORD and the exe, setup and uninstaller are signed. Without them the build is unsigned.
 on:
   push:
     tags: ["v*"]
@@ -13,9 +17,11 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       QT_QPA_PLATFORM: offscreen
+      SIGN_PFX_BASE64: ${{ secrets.SIGN_PFX_BASE64 }}
+      SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,11 +29,29 @@ jobs:
           python-version: "3.12"
       - name: Install
         run: pip install -e .[dev] pyinstaller
+      - name: Inno Setup
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
+            choco install innosetup --no-progress -y
+          }
       - name: Test
         timeout-minutes: 5
         run: pytest -q
-      - name: Build exe and zip
+      - name: Signing certificate
+        if: env.SIGN_PFX_BASE64 != ''
+        shell: pwsh
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP "codesign.pfx"
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:SIGN_PFX_BASE64))
+          "CMO_SIGN_PFX=$pfx" >> $env:GITHUB_ENV
+          "CMO_SIGN_PFX_PASSWORD=$env:SIGN_PFX_PASSWORD" >> $env:GITHUB_ENV
+      - name: Build exe, installer and zip
         run: python packaging/build_release.py
+      - name: Remove certificate
+        if: always() && env.SIGN_PFX_BASE64 != ''
+        shell: pwsh
+        run: Remove-Item -Force -ErrorAction SilentlyContinue (Join-Path $env:RUNNER_TEMP "codesign.pfx")
       - name: Version
         id: version
         shell: bash
@@ -43,5 +67,6 @@ jobs:
           name: CMO Scenario Studio ${{ steps.version.outputs.version }}
           body_path: docs/releases/${{ steps.version.outputs.version }}.md
           files: |
+            release/*-setup.exe
             release/*.zip
             release/*.sha256

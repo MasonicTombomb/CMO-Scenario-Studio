@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- **Windows installer** (`CMO-Scenario-Studio-<version>-setup.exe`, Inno Setup): installs into Program Files with
+  Start-menu shortcuts, optional desktop icon, `.cmoproj` file association and an uninstaller; upgrades replace the
+  old program files cleanly. User data stays in the profile. The portable zip is still published.
+- **Updates from GitHub**: the installed studio checks the latest GitHub release at start-up (optional) and from
+  Help > Check for updates, shows the release notes, downloads the setup, verifies its SHA-256 checksum (and the
+  publisher's signature once releases are signed), installs it and restarts. Portable copies link to the release
+  page.
+- **Code signing support**: the build signs the exe, setup and uninstaller when a certificate is configured
+  (`CMO_SIGN_PFX` / `CMO_SIGN_ARGS`, or the `SIGN_PFX_BASE64` / `SIGN_PFX_PASSWORD` secrets in GitHub Actions).
+- Saving a project into a read-only folder (such as an example in Program Files) asks where to save instead of
+  failing; Save As defaults to Documents.
+
 ## 1.5.2 — 2026-11-15
 
 - **UK military sites**: 101 templates of real UK sites at their actual positions (1575 units). 46 air bases

@@ -144,6 +144,22 @@ class AppSettings:
         self.q.setValue("autosave_minutes", int(v))
 
     @property
+    def check_updates(self) -> bool:
+        return self._get("check_updates", True, bool)
+
+    @check_updates.setter
+    def check_updates(self, v: bool) -> None:
+        self.q.setValue("check_updates", bool(v))
+
+    @property
+    def skipped_version(self) -> str:
+        return self._get("skipped_version", "") or ""
+
+    @skipped_version.setter
+    def skipped_version(self, v: str) -> None:
+        self.q.setValue("skipped_version", v)
+
+    @property
     def export_dir(self) -> str:
         return self._get("export_dir", "")
 
