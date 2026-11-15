@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+- **UK military sites**: 101 templates of real UK sites at their actual positions (1575 units). 46 air bases
+  laid out from OpenStreetMap - 82 runways at their real position, heading and length, 108 hardened aircraft
+  shelters, 286 hangars, aprons, control towers, radars, fuel farms and munitions bunkers - plus naval bases
+  (Faslane, Coulport, Devonport, Portsmouth, Rosyth, Barrow...), radar heads and Fylingdales, Air Command,
+  Northwood, comms and intelligence sites, AWE, munitions depots and garrisons. The placer's **At the real site**
+  puts a site where it really is.
+- **UK airspace areas**: a new *United Kingdom* region with 62 areas - the UK FIR outline, QRA North and South
+  areas, eight interception sectors that tile the whole FIR, approach zones, 18 CAP stations, AEW orbits, tanker
+  tracks, ranges and UK sea exercise areas.
+- Templates: real-world `location`, `heading` and `site`; per-part `hdg` (crossing runways) and real runway
+  `length`; bundled packs (`templates_*.json`). Save-as-template keeps each unit's heading.
+- New built-in templates and areas are merged into your own library files after an update (deleted ones stay
+  deleted).
+
 ## 1.5.1 — 2026-11-14
 
 - **Patrol area library**: 134 predefined sea and air patrol areas (94 sea, 40 air) in eight regions -

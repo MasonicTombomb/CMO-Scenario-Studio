@@ -39,7 +39,7 @@ def test_roundtrip(lib, tmp_path):
     path = tmp_path / "t.json"
     lib.save(path)
     again, source = load_library(path)
-    assert source == str(path) and again.to_dict() == lib.to_dict()
+    assert source == str(path) and again.to_dict()["templates"] == lib.to_dict()["templates"]
 
 
 def test_every_component_resolves_in_db3000(lib, database):

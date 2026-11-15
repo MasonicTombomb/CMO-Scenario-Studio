@@ -1,7 +1,11 @@
 """Unit templates: pre-grouped sites (airfields, command posts, barracks...) placed in one go.
 
-The library is a standalone JSON file. The studio ships ``cmo_studio/data/templates.json``; a user copy
-(written by the Template Library editor or by hand) replaces it when present.
+The library is a standalone JSON file. The studio ships ``cmo_studio/data/templates.json`` plus optional packs
+(``templates_*.json``, e.g. the UK real-world sites); a user copy (written by the Template Library editor or by
+hand) replaces them when present, and built-in templates added by later updates are merged into it.
+
+A template may carry a real-world ``location`` and ``heading``: its components are then laid out exactly as the
+real site (x east, y north when the heading is 0) and the placer puts it there by default.
 
 A template is a list of components, each naming a database entry and one or more positions in metres
 (x to the right of the site's orientation, y ahead of it). Placing a template creates the units and a
@@ -36,6 +40,8 @@ class TemplateComponent:
     host: bool = False
     radar: bool = False
     hold: bool = False
+    hdg: float = 0.0                    # heading relative to the site orientation (e.g. a crossing runway)
+    length: float = 0.0                 # real length in metres (runways; preview and docs only)
 
     def to_dict(self) -> dict:
         db = {"type": self.db_type, "name": self.db_name}
@@ -48,6 +54,10 @@ class TemplateComponent:
             d["x"], d["y"] = self.positions[0]
         else:
             d["at"] = [list(p) for p in self.positions]
+        if self.hdg:
+            d["hdg"] = round(float(self.hdg) % 360.0, 1)
+        if self.length:
+            d["length"] = round(float(self.length))
         for flag in ("host", "radar", "hold"):
             if getattr(self, flag):
                 d[flag] = True
@@ -60,7 +70,8 @@ class TemplateComponent:
         return cls(label=str(d.get("label", "Unit")), db_type=str(db.get("type", "Facility")),
                    db_name=str(db.get("name", "")), dbid=int(db.get("dbid") or 0), search=str(db.get("search", "")),
                    positions=[[float(p[0]), float(p[1])] for p in at],
-                   host=bool(d.get("host")), radar=bool(d.get("radar")), hold=bool(d.get("hold")))
+                   host=bool(d.get("host")), radar=bool(d.get("radar")), hold=bool(d.get("hold")),
+                   hdg=float(d.get("hdg") or 0.0), length=float(d.get("length") or 0.0))
 
 
 @dataclass
@@ -71,21 +82,34 @@ class UnitTemplate:
     description: str = ""
     tags: list[str] = field(default_factory=list)
     components: list[TemplateComponent] = field(default_factory=list)
+    location: Optional[list[float]] = None      # [lat, lon] of a real-world site
+    heading: float = 0.0                        # orientation the layout is drawn in at that location
+    site: str = ""                              # default site name used to name the units
 
     @property
     def unit_count(self) -> int:
         return sum(len(c.positions) for c in self.components)
 
     def to_dict(self) -> dict:
-        return {"id": self.id, "name": self.name, "category": self.category, "description": self.description,
-                "tags": list(self.tags), "components": [c.to_dict() for c in self.components]}
+        d = {"id": self.id, "name": self.name, "category": self.category, "description": self.description,
+             "tags": list(self.tags)}
+        if self.location:
+            d["location"] = [round(float(self.location[0]), 6), round(float(self.location[1]), 6)]
+            d["heading"] = round(float(self.heading), 1)
+        if self.site:
+            d["site"] = self.site
+        d["components"] = [c.to_dict() for c in self.components]
+        return d
 
     @classmethod
     def from_dict(cls, d: dict) -> "UnitTemplate":
+        loc = d.get("location")
         return cls(id=str(d.get("id") or d.get("name", "template")), name=str(d.get("name", "Template")),
                    category=str(d.get("category", "Custom")), description=str(d.get("description", "")),
                    tags=[str(t) for t in d.get("tags", [])],
-                   components=[TemplateComponent.from_dict(c) for c in d.get("components", [])])
+                   components=[TemplateComponent.from_dict(c) for c in d.get("components", [])],
+                   location=[float(loc[0]), float(loc[1])] if loc else None,
+                   heading=float(d.get("heading") or 0.0), site=str(d.get("site", "")))
 
 
 @dataclass
@@ -93,17 +117,22 @@ class TemplateLibrary:
     templates: list[UnitTemplate]
     categories: list[str] = field(default_factory=list)
     about: str = ""
+    known_builtins: list[str] = field(default_factory=list)   # built-in ids this file has already seen
 
     @classmethod
     def from_dict(cls, d: dict) -> "TemplateLibrary":
         if d.get("format") not in (None, FORMAT_ID):
             raise ValueError(f"Not a template library (format={d.get('format')!r})")
         return cls(templates=[UnitTemplate.from_dict(t) for t in d.get("templates", [])],
-                   categories=[str(c) for c in d.get("categories", [])], about=str(d.get("about", "")))
+                   categories=[str(c) for c in d.get("categories", [])], about=str(d.get("about", "")),
+                   known_builtins=[str(i) for i in d.get("known_builtins", [])])
 
     def to_dict(self) -> dict:
-        return {"format": FORMAT_ID, "version": 1, "about": self.about, "categories": self.all_categories(),
-                "templates": [t.to_dict() for t in self.templates]}
+        d = {"format": FORMAT_ID, "version": 1, "about": self.about, "categories": self.all_categories(),
+             "templates": [t.to_dict() for t in self.templates]}
+        if self.known_builtins:
+            d["known_builtins"] = list(self.known_builtins)
+        return d
 
     def all_categories(self) -> list[str]:
         cats = list(self.categories)
@@ -144,17 +173,48 @@ def default_library_text() -> str:
     return resources.files("cmo_studio").joinpath("data", "templates.json").read_text(encoding="utf-8")
 
 
+def pack_texts() -> list[tuple[str, str]]:
+    """(file name, text) of the bundled template packs, ``data/templates_*.json``, in name order."""
+    data = resources.files("cmo_studio").joinpath("data")
+    files = sorted((f for f in data.iterdir() if f.name.startswith("templates_") and f.name.endswith(".json")),
+                   key=lambda f: f.name)
+    return [(f.name, f.read_text(encoding="utf-8")) for f in files]
+
+
 def default_library() -> TemplateLibrary:
-    return TemplateLibrary.from_dict(json.loads(default_library_text()))
+    lib = TemplateLibrary.from_dict(json.loads(default_library_text()))
+    for _name, text in pack_texts():
+        pack = TemplateLibrary.from_dict(json.loads(text))
+        ids = {t.id for t in lib.templates}
+        lib.templates += [t for t in pack.templates if t.id not in ids]
+        lib.categories += [c for c in pack.all_categories() if c not in lib.categories]
+    return lib
+
+
+def merge_new_builtins(lib: TemplateLibrary, builtin: TemplateLibrary) -> int:
+    """Add built-in templates the user's library has never seen (new in an update); returns how many."""
+    seen = set(lib.known_builtins)
+    have = {t.id for t in lib.templates}
+    new = [t for t in builtin.templates if t.id not in seen and t.id not in have]
+    lib.templates += copy.deepcopy(new)
+    lib.categories += [c for c in builtin.all_categories() if c not in lib.categories and
+                       any(t.category == c for t in new)]
+    lib.known_builtins = [t.id for t in builtin.templates]
+    return len(new)
 
 
 def load_library(user_path: Optional[str | Path] = None) -> tuple[TemplateLibrary, str]:
+    builtin = default_library()
     if user_path and Path(user_path).is_file():
         try:
-            return TemplateLibrary.load(user_path), str(user_path)
-        except (ValueError, OSError, KeyError, TypeError):
+            lib = TemplateLibrary.load(user_path)
+        except (ValueError, OSError, KeyError, TypeError, IndexError):
             pass
-    return default_library(), "built-in default"
+        else:
+            merge_new_builtins(lib, builtin)
+            return lib, str(user_path)
+    builtin.known_builtins = [t.id for t in builtin.templates]
+    return builtin, "built-in default"
 
 
 # =============================================================================== database resolution
@@ -218,7 +278,7 @@ def unique_formation_name(project: Project, base: str) -> str:
 def place_template(project: Project, tpl: UnitTemplate, db, side: str, lat: float, lon: float,
                    heading: float = 0.0, site_name: str = "", group: bool = True) -> PlaceResult:
     """Create the template's units (and a grouping formation) in ``project``. Does not touch undo."""
-    site = (site_name or tpl.name).strip()
+    site = (site_name or tpl.site or tpl.name).strip()
     units: list[Unit] = []
     offsets: list[tuple[float, float]] = []
     hosts: list[bool] = []
@@ -238,8 +298,9 @@ def place_template(project: Project, tpl: UnitTemplate, db, side: str, lat: floa
                 name, k = f"{base} ({k})", k + 1
             taken.add(name)
             u = Unit(side=side, type=comp.db_type, dbid=res.dbid, db_name=res.name, name=name,
-                     lat=round(plat, 6), lon=round(plon, 6), heading=float(heading) % 360.0,
+                     lat=round(plat, 6), lon=round(plon, 6),
                      radar_active=comp.radar, hold_position=comp.hold, group=site)
+            u.heading = float(heading + comp.hdg) % 360.0
             units.append(u)
             offsets.append((x, y))
             hosts.append(comp.host)
@@ -283,13 +344,15 @@ def template_from_units(project: Project, unit_ids: list[str], name: str, catego
         label = u.name
         if u.group and label.startswith(u.group + " "):
             label = label[len(u.group) + 1:]
-        key = (u.type, int(u.dbid), label, u.radar_active, u.hold_position)
+        rel_hdg = round((float(u.heading or 0.0) - heading) % 360.0, 1)
+        rel_hdg = 0.0 if rel_hdg in (0.0, 360.0) else rel_hdg
+        key = (u.type, int(u.dbid), label, u.radar_active, u.hold_position, rel_hdg)
         if key in comps:
             comps[key].positions.append([x, y])
         else:
             comps[key] = TemplateComponent(label=label, db_type=u.type, db_name=u.db_name, dbid=int(u.dbid),
                                            positions=[[x, y]], radar=u.radar_active, hold=u.hold_position,
-                                           host=bool(project.hosted_by(u.id)))
+                                           host=bool(project.hosted_by(u.id)), hdg=rel_hdg)
     tid = lib.unique_id(name) if lib else name.lower().replace(" ", "_")
     return UnitTemplate(id=tid, name=name, category=category or "Custom",
                         description=description or f"Saved from {len(units)} unit(s).", components=list(comps.values()))

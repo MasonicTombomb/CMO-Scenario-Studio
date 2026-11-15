@@ -14,6 +14,7 @@ files that live happily in git.
 - [Search everything](#search-everything)
 - [Editing many units at once](#editing-many-units-at-once)
 - [Patrol area library](#patrol-area-library)
+- [UK military sites](#uk-military-sites)
 - [Unit templates](#unit-templates)
 - [Callsigns](#callsigns)
 - [Loadout Viewer](#loadout-viewer)
@@ -291,8 +292,8 @@ lot.
 ## Patrol area library
 
 **Tools > Add patrol area from library** (Ctrl+Shift+A), the map's **Patrol areas...** button, right-click on the
-map, or **From library...** on the Areas tab opens 134 predefined sea and air areas (94 sea, 40 air) grouped
-by region: Europe, Arctic, Middle East, Africa, Asia, Oceania, North America and South America. Sea areas cover
+map, or **From library...** on the Areas tab opens 196 predefined sea and air areas grouped
+by region: Europe, United Kingdom, Arctic, Middle East, Africa, Asia, Oceania, North America and South America. Sea areas cover
 patrol areas, chokepoints and barriers (Bay of Biscay, GIUK gaps, Baltic, Mediterranean, Hormuz, Taiwan Strait,
 South China Sea, Falklands TEZ...); air areas cover CAP and QRA boxes, AEW orbits, tanker tracks and ranges.
 
@@ -302,6 +303,19 @@ Ctrl/Shift-click adds several at once. Ctrl+K search finds library areas by name
 
 **Tools > Area library** edits the list (corners in a table or dragged on the map), saved as your own `areas.json`;
 **Save to area library...** on an area keeps one you drew. See [AREAS.md](AREAS.md) for the format and full list.
+
+## UK military sites
+
+Tools > Place unit template (Ctrl+T) also holds **101 UK sites at their real positions** in the *UK - ...*
+categories: 46 air bases (RAF, Fleet Air Arm, Army Air Corps and USAF bases in the UK, plus relief landing
+grounds) built from OpenStreetMap with every runway, hardened aircraft shelter, hangar, apron, control tower,
+radar, fuel farm and munitions bunker that is mapped; and naval bases, radar heads, headquarters, comms and
+intelligence sites, nuclear sites, munitions depots and garrisons. Search "lossiemouth" or "faslane", leave **At the
+real site** ticked and press Place - the whole base appears where it really is, grouped. Untick it to use the layout
+somewhere else. See [TEMPLATES.md](TEMPLATES.md#uk-real-world-sites) for every site and its counts.
+
+For UK airspace, the area library's **United Kingdom** region has the QRA North and South areas, eight interception
+sectors that together cover the whole UK FIR, approach zones, CAP stations, AEW orbits, tanker tracks and ranges.
 
 ## Unit templates
 

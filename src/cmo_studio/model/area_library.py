@@ -24,7 +24,8 @@ from .project import Mission, Project, Zone
 FORMAT_ID = "cmo-studio-areas"
 KINDS = ("sea", "air")
 KIND_LABELS = {"sea": "Sea", "air": "Air"}
-DEFAULT_REGIONS = ["Europe", "Arctic", "Middle East", "Africa", "Asia", "Oceania", "North America", "South America"]
+DEFAULT_REGIONS = ["Europe", "United Kingdom", "Arctic", "Middle East", "Africa", "Asia", "Oceania", "North America",
+                   "South America"]
 #: map colours used for library areas (sea / air)
 KIND_COLORS = {"sea": "#3fa7ff", "air": "#ffb347"}
 
@@ -82,17 +83,22 @@ class AreaLibrary:
     areas: list[AreaEntry]
     regions: list[str] = field(default_factory=lambda: list(DEFAULT_REGIONS))
     about: str = ""
+    known_builtins: list[str] = field(default_factory=list)   # built-in ids this file has already seen
 
     @classmethod
     def from_dict(cls, d: dict) -> "AreaLibrary":
         if d.get("format") not in (None, FORMAT_ID):
             raise ValueError(f"Not an area library (format={d.get('format')!r})")
         return cls(areas=[AreaEntry.from_dict(a) for a in d.get("areas", [])],
-                   regions=[str(r) for r in d.get("regions", DEFAULT_REGIONS)], about=str(d.get("about", "")))
+                   regions=[str(r) for r in d.get("regions", DEFAULT_REGIONS)], about=str(d.get("about", "")),
+                   known_builtins=[str(i) for i in d.get("known_builtins", [])])
 
     def to_dict(self) -> dict:
-        return {"format": FORMAT_ID, "version": 1, "about": self.about, "regions": self.all_regions(),
-                "areas": [a.to_dict() for a in self.areas]}
+        d = {"format": FORMAT_ID, "version": 1, "about": self.about, "regions": self.all_regions(),
+             "areas": [a.to_dict() for a in self.areas]}
+        if self.known_builtins:
+            d["known_builtins"] = list(self.known_builtins)
+        return d
 
     def all_regions(self) -> list[str]:
         regs = list(self.regions)
@@ -143,13 +149,31 @@ def default_library() -> AreaLibrary:
     return AreaLibrary.from_dict(json.loads(default_library_text()))
 
 
+def merge_new_builtins(lib: AreaLibrary, builtin: AreaLibrary) -> int:
+    """Add built-in areas the user's library has never seen (new in an update); returns how many."""
+    seen = set(lib.known_builtins)
+    have = {a.id for a in lib.areas}
+    new = [a for a in builtin.areas if a.id not in seen and a.id not in have]
+    lib.areas += copy.deepcopy(new)
+    for r in builtin.all_regions():
+        if r not in lib.regions and any(a.region == r for a in new):
+            lib.regions.insert(min(builtin.all_regions().index(r), len(lib.regions)), r)
+    lib.known_builtins = [a.id for a in builtin.areas]
+    return len(new)
+
+
 def load_library(user_path: Optional[str | Path] = None) -> tuple[AreaLibrary, str]:
+    builtin = default_library()
     if user_path and Path(user_path).is_file():
         try:
-            return AreaLibrary.load(user_path), str(user_path)
+            lib = AreaLibrary.load(user_path)
         except (ValueError, OSError, KeyError, TypeError, IndexError):
             pass
-    return default_library(), "built-in default"
+        else:
+            merge_new_builtins(lib, builtin)
+            return lib, str(user_path)
+    builtin.known_builtins = [a.id for a in builtin.areas]
+    return builtin, "built-in default"
 
 
 # =============================================================================== into the scenario

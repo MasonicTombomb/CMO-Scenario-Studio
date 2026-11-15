@@ -4,6 +4,7 @@
   "about": "Predefined patrol areas for CMO Scenario Studio. 'kind' is 'sea' (naval/ASW patrol areas) or 'air' (CAP, AEW orbits, tanker tracks, training ranges). Points are [latitude, longitude] corners in order. Shapes are approximate operating boxes, not legal boundaries. Edit, add or remove areas; the studio uses your own copy of this file when it exists.",
   "regions": [
     "Europe",
+    "United Kingdom",
     "Arctic",
     "Middle East",
     "Africa",
@@ -4246,6 +4247,2200 @@
         [
           5.0,
           -61.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_fir",
+      "name": "UK airspace (London and Scottish FIRs)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK air defence",
+      "description": "Approximate outline of the UK flight information regions (London and Scottish FIR/UIR): the whole area the UK air defence system polices. Simplified, not the AIP boundary.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          61.0,
+          -10.0
+        ],
+        [
+          61.0,
+          0.0
+        ],
+        [
+          60.0,
+          1.5
+        ],
+        [
+          58.0,
+          2.5
+        ],
+        [
+          56.5,
+          3.5
+        ],
+        [
+          55.0,
+          5.0
+        ],
+        [
+          53.5,
+          3.0
+        ],
+        [
+          52.75,
+          2.5
+        ],
+        [
+          51.5,
+          2.0
+        ],
+        [
+          51.1,
+          1.5
+        ],
+        [
+          50.65,
+          1.5
+        ],
+        [
+          50.0,
+          0.0
+        ],
+        [
+          49.5,
+          -3.0
+        ],
+        [
+          48.5,
+          -8.0
+        ],
+        [
+          51.0,
+          -8.0
+        ],
+        [
+          52.0,
+          -5.5
+        ],
+        [
+          53.4,
+          -5.4
+        ],
+        [
+          54.42,
+          -5.6
+        ],
+        [
+          54.1,
+          -6.3
+        ],
+        [
+          54.4,
+          -7.6
+        ],
+        [
+          55.2,
+          -7.3
+        ],
+        [
+          55.35,
+          -8.25
+        ],
+        [
+          56.0,
+          -10.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_qra_north",
+      "name": "QRA North area (Scottish FIR)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK air defence",
+      "description": "Northern half of UK airspace, covered by Quick Reaction Alert (North) from RAF Lossiemouth: Scotland, Northern Ireland, the northern North Sea and the Atlantic approaches.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          55.0,
+          5.0
+        ],
+        [
+          55.0,
+          -1.5
+        ],
+        [
+          54.6,
+          -2.75
+        ],
+        [
+          54.5,
+          -4.0
+        ],
+        [
+          54.42,
+          -5.6
+        ],
+        [
+          54.1,
+          -6.3
+        ],
+        [
+          54.4,
+          -7.6
+        ],
+        [
+          55.2,
+          -7.3
+        ],
+        [
+          55.35,
+          -8.25
+        ],
+        [
+          56.0,
+          -10.0
+        ],
+        [
+          61.0,
+          -10.0
+        ],
+        [
+          61.0,
+          0.0
+        ],
+        [
+          60.0,
+          1.5
+        ],
+        [
+          58.0,
+          2.5
+        ],
+        [
+          56.5,
+          3.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_qra_south",
+      "name": "QRA South area (London FIR)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK air defence",
+      "description": "Southern half of UK airspace, covered by Quick Reaction Alert (South) from RAF Coningsby: England, Wales, the southern North Sea, the Channel and the South West approaches.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          55.0,
+          5.0
+        ],
+        [
+          53.5,
+          3.0
+        ],
+        [
+          52.75,
+          2.5
+        ],
+        [
+          51.5,
+          2.0
+        ],
+        [
+          51.1,
+          1.5
+        ],
+        [
+          50.65,
+          1.5
+        ],
+        [
+          50.0,
+          0.0
+        ],
+        [
+          49.5,
+          -3.0
+        ],
+        [
+          48.5,
+          -8.0
+        ],
+        [
+          51.0,
+          -8.0
+        ],
+        [
+          52.0,
+          -5.5
+        ],
+        [
+          53.4,
+          -5.4
+        ],
+        [
+          54.42,
+          -5.6
+        ],
+        [
+          54.5,
+          -4.0
+        ],
+        [
+          54.6,
+          -2.75
+        ],
+        [
+          55.0,
+          -1.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_sector_north",
+      "name": "Intercept sector - Northern Isles",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK intercept sectors",
+      "description": "Shetland, Orkney, the Faroes-Shetland gap and the far north of Scotland. Usually the first UK sector reached by aircraft coming round the North Cape. One of eight sectors that together cover the whole UK FIR.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          58.5,
+          -10.0
+        ],
+        [
+          61.0,
+          -10.0
+        ],
+        [
+          61.0,
+          0.0
+        ],
+        [
+          60.0,
+          1.5
+        ],
+        [
+          58.5,
+          2.25
+        ]
+      ]
+    },
+    {
+      "id": "uk_sector_scot_east",
+      "name": "Intercept sector - Scotland East / northern North Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK intercept sectors",
+      "description": "Moray Firth to the Firth of Forth and the northern North Sea oil and gas fields. One of eight sectors that together cover the whole UK FIR.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          55.0,
+          5.0
+        ],
+        [
+          55.0,
+          -1.5
+        ],
+        [
+          54.6,
+          -2.75
+        ],
+        [
+          54.54,
+          -3.5
+        ],
+        [
+          58.5,
+          -3.5
+        ],
+        [
+          58.5,
+          2.25
+        ],
+        [
+          58.0,
+          2.5
+        ],
+        [
+          56.5,
+          3.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_sector_scot_west",
+      "name": "Intercept sector - Scotland West and Northern Ireland",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK intercept sectors",
+      "description": "The Hebrides, Minches, Clyde (Faslane and Coulport), the North Channel and Northern Ireland. One of eight sectors that together cover the whole UK FIR.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          54.54,
+          -3.5
+        ],
+        [
+          54.5,
+          -4.0
+        ],
+        [
+          54.42,
+          -5.6
+        ],
+        [
+          54.1,
+          -6.3
+        ],
+        [
+          54.4,
+          -7.6
+        ],
+        [
+          55.2,
+          -7.3
+        ],
+        [
+          55.35,
+          -8.25
+        ],
+        [
+          56.0,
+          -10.0
+        ],
+        [
+          58.5,
+          -10.0
+        ],
+        [
+          58.5,
+          -3.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_sector_ne_england",
+      "name": "Intercept sector - North East England / central North Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK intercept sectors",
+      "description": "Northumberland to the Humber and the central North Sea, including the Yorkshire radar and air bases. One of eight sectors that together cover the whole UK FIR.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          55.0,
+          5.0
+        ],
+        [
+          53.5,
+          3.0
+        ],
+        [
+          53.0,
+          2.667
+        ],
+        [
+          53.0,
+          -2.0
+        ],
+        [
+          54.84,
+          -2.0
+        ],
+        [
+          55.0,
+          -1.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_sector_nw_england",
+      "name": "Intercept sector - North West England and Irish Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK intercept sectors",
+      "description": "Cumbria, Lancashire, the Isle of Man and the Irish Sea. One of eight sectors that together cover the whole UK FIR.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          53.0,
+          -2.0
+        ],
+        [
+          53.0,
+          -5.429
+        ],
+        [
+          53.4,
+          -5.4
+        ],
+        [
+          54.42,
+          -5.6
+        ],
+        [
+          54.5,
+          -4.0
+        ],
+        [
+          54.6,
+          -2.75
+        ],
+        [
+          54.84,
+          -2.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_sector_east_anglia",
+      "name": "Intercept sector - Midlands and East Anglia",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK intercept sectors",
+      "description": "East Midlands, Lincolnshire, East Anglia and the southern North Sea: the main fast-jet and USAF bases. One of eight sectors that together cover the whole UK FIR.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          53.0,
+          -1.5
+        ],
+        [
+          53.0,
+          2.667
+        ],
+        [
+          52.75,
+          2.5
+        ],
+        [
+          51.6,
+          2.04
+        ],
+        [
+          51.6,
+          -1.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_sector_south_east",
+      "name": "Intercept sector - London and the South East",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK intercept sectors",
+      "description": "London, the Thames, Kent, the Dover Strait and the eastern Channel. One of eight sectors that together cover the whole UK FIR.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          51.6,
+          -1.5
+        ],
+        [
+          51.6,
+          2.04
+        ],
+        [
+          51.5,
+          2.0
+        ],
+        [
+          51.1,
+          1.5
+        ],
+        [
+          50.65,
+          1.5
+        ],
+        [
+          50.0,
+          0.0
+        ],
+        [
+          49.75,
+          -1.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_sector_south_west",
+      "name": "Intercept sector - South West, Wales and Western Approaches",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK intercept sectors",
+      "description": "Wales, the West Country, the western Channel and the South West approaches. One of eight sectors that together cover the whole UK FIR.",
+      "tags": [
+        "QRA",
+        "CAP",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          53.0,
+          -1.5
+        ],
+        [
+          49.75,
+          -1.5
+        ],
+        [
+          49.5,
+          -3.0
+        ],
+        [
+          48.5,
+          -8.0
+        ],
+        [
+          51.0,
+          -8.0
+        ],
+        [
+          52.0,
+          -5.5
+        ],
+        [
+          53.0,
+          -5.429
+        ]
+      ]
+    },
+    {
+      "id": "uk_approach_faroes_iceland",
+      "name": "Northern approach - Iceland-Faroes gap",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK approaches",
+      "description": "Where QRA North meets long-range aviation heading south through the Iceland-Faroes gap, usually with a tanker in support.",
+      "tags": [
+        "QRA",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          64.5,
+          -16.0
+        ],
+        [
+          64.5,
+          -4.0
+        ],
+        [
+          61.0,
+          -4.0
+        ],
+        [
+          61.0,
+          -16.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_approach_norwegian_sea",
+      "name": "Northern approach - Norwegian Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK approaches",
+      "description": "The Norwegian Sea north-east of Shetland, where aircraft rounding Norway approach UK airspace.",
+      "tags": [
+        "QRA",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          65.0,
+          -4.0
+        ],
+        [
+          65.0,
+          5.0
+        ],
+        [
+          61.0,
+          5.0
+        ],
+        [
+          61.0,
+          -4.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_approach_atlantic_west",
+      "name": "Western approach - Atlantic (Shanwick)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK approaches",
+      "description": "Oceanic airspace west of Ireland and the Hebrides used by aircraft skirting the UK to the west.",
+      "tags": [
+        "QRA",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          60.0,
+          -18.0
+        ],
+        [
+          60.0,
+          -10.0
+        ],
+        [
+          52.0,
+          -10.0
+        ],
+        [
+          52.0,
+          -18.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_approach_southern_north_sea",
+      "name": "Eastern approach - southern North Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK approaches",
+      "description": "International airspace between UK and Dutch/German FIRs over the southern North Sea.",
+      "tags": [
+        "QRA",
+        "intercept",
+        "UK"
+      ],
+      "points": [
+        [
+          56.0,
+          3.0
+        ],
+        [
+          56.0,
+          6.5
+        ],
+        [
+          53.3,
+          6.5
+        ],
+        [
+          53.3,
+          3.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_shetland",
+      "name": "CAP Shetland",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Over and east of Shetland. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          61.0,
+          -2.5
+        ],
+        [
+          61.0,
+          0.5
+        ],
+        [
+          59.6,
+          0.5
+        ],
+        [
+          59.6,
+          -2.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_orkney",
+      "name": "CAP Orkney / Pentland Firth",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Orkney and the Pentland Firth. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          59.4,
+          -4.5
+        ],
+        [
+          59.4,
+          -1.8
+        ],
+        [
+          58.5,
+          -1.8
+        ],
+        [
+          58.5,
+          -4.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_moray",
+      "name": "CAP Moray Firth",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Moray Firth, covering Lossiemouth and Kinloss. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          58.3,
+          -4.2
+        ],
+        [
+          58.3,
+          -1.8
+        ],
+        [
+          57.5,
+          -1.8
+        ],
+        [
+          57.5,
+          -4.2
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_forth",
+      "name": "CAP Firth of Forth",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Firth of Forth, Edinburgh and Rosyth. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          56.6,
+          -3.2
+        ],
+        [
+          56.6,
+          -1.2
+        ],
+        [
+          55.8,
+          -1.2
+        ],
+        [
+          55.8,
+          -3.2
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_hebrides",
+      "name": "CAP Hebrides",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Outer Hebrides and the Minches. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          58.6,
+          -8.0
+        ],
+        [
+          58.6,
+          -5.8
+        ],
+        [
+          56.8,
+          -5.8
+        ],
+        [
+          56.8,
+          -8.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_clyde",
+      "name": "CAP Clyde",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Clyde, Faslane and Coulport. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          56.3,
+          -5.8
+        ],
+        [
+          56.3,
+          -4.2
+        ],
+        [
+          55.4,
+          -4.2
+        ],
+        [
+          55.4,
+          -5.8
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_northern_ireland",
+      "name": "CAP Northern Ireland",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Northern Ireland and Belfast. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          55.3,
+          -7.8
+        ],
+        [
+          55.3,
+          -5.4
+        ],
+        [
+          54.1,
+          -5.4
+        ],
+        [
+          54.1,
+          -7.8
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_northumberland",
+      "name": "CAP Northumberland",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Newcastle, Boulmer and Spadeadam. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          55.6,
+          -2.2
+        ],
+        [
+          55.6,
+          -0.8
+        ],
+        [
+          54.7,
+          -0.8
+        ],
+        [
+          54.7,
+          -2.2
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_humber",
+      "name": "CAP Humber / Yorkshire coast",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Humber estuary and Yorkshire coast. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          54.5,
+          -1.0
+        ],
+        [
+          54.5,
+          0.8
+        ],
+        [
+          53.4,
+          0.8
+        ],
+        [
+          53.4,
+          -1.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_wash",
+      "name": "CAP The Wash / Lincolnshire",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Coningsby, Waddington and the Wash. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          53.4,
+          -0.6
+        ],
+        [
+          53.4,
+          1.0
+        ],
+        [
+          52.7,
+          1.0
+        ],
+        [
+          52.7,
+          -0.6
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_east_anglia",
+      "name": "CAP East Anglia",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Marham, Lakenheath and Mildenhall. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          52.9,
+          0.2
+        ],
+        [
+          52.9,
+          1.9
+        ],
+        [
+          52.0,
+          1.9
+        ],
+        [
+          52.0,
+          0.2
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_thames",
+      "name": "CAP Thames Estuary / London",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "London and the Thames Estuary. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          51.9,
+          -0.6
+        ],
+        [
+          51.9,
+          1.6
+        ],
+        [
+          51.2,
+          1.6
+        ],
+        [
+          51.2,
+          -0.6
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_dover",
+      "name": "CAP Dover Strait",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "The Dover Strait and Kent coast. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          51.4,
+          0.8
+        ],
+        [
+          51.4,
+          1.9
+        ],
+        [
+          50.8,
+          1.9
+        ],
+        [
+          50.8,
+          0.8
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_solent",
+      "name": "CAP Solent / Portsmouth",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Portsmouth, Southampton and the Solent. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          50.95,
+          -1.9
+        ],
+        [
+          50.95,
+          -0.6
+        ],
+        [
+          50.4,
+          -0.6
+        ],
+        [
+          50.4,
+          -1.9
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_plymouth",
+      "name": "CAP Plymouth / Cornwall",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Plymouth, Devonport and Culdrose. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          50.6,
+          -5.8
+        ],
+        [
+          50.6,
+          -3.8
+        ],
+        [
+          49.9,
+          -3.8
+        ],
+        [
+          49.9,
+          -5.8
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_bristol_channel",
+      "name": "CAP Bristol Channel / South Wales",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "South Wales and Bristol. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          51.7,
+          -5.2
+        ],
+        [
+          51.7,
+          -2.8
+        ],
+        [
+          51.1,
+          -2.8
+        ],
+        [
+          51.1,
+          -5.2
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_irish_sea",
+      "name": "CAP Irish Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "Irish Sea, Isle of Man and Liverpool Bay. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          54.4,
+          -5.4
+        ],
+        [
+          54.4,
+          -3.2
+        ],
+        [
+          53.3,
+          -3.2
+        ],
+        [
+          53.3,
+          -5.4
+        ]
+      ]
+    },
+    {
+      "id": "uk_cap_anglesey",
+      "name": "CAP Anglesey / North Wales",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK CAP stations",
+      "description": "RAF Valley and North Wales. Combat air patrol station.",
+      "tags": [
+        "CAP",
+        "UK"
+      ],
+      "points": [
+        [
+          53.5,
+          -4.8
+        ],
+        [
+          53.5,
+          -3.4
+        ],
+        [
+          52.8,
+          -3.4
+        ],
+        [
+          52.8,
+          -4.8
+        ]
+      ]
+    },
+    {
+      "id": "uk_aew_north_sea_north",
+      "name": "AEW orbit - northern North Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "E-7 / E-3 orbit east of Aberdeen covering the northern approaches.",
+      "tags": [
+        "AEW",
+        "orbit",
+        "UK"
+      ],
+      "points": [
+        [
+          58.4,
+          -0.5
+        ],
+        [
+          58.4,
+          1.5
+        ],
+        [
+          57.8,
+          1.5
+        ],
+        [
+          57.8,
+          -0.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_aew_north_sea_south",
+      "name": "AEW orbit - southern North Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Orbit off the Norfolk / Lincolnshire coast covering the southern North Sea.",
+      "tags": [
+        "AEW",
+        "orbit",
+        "UK"
+      ],
+      "points": [
+        [
+          53.9,
+          1.0
+        ],
+        [
+          53.9,
+          2.8
+        ],
+        [
+          53.4,
+          2.8
+        ],
+        [
+          53.4,
+          1.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_aew_west_scotland",
+      "name": "AEW orbit - west of Scotland",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Orbit over the Minches covering the Atlantic approaches.",
+      "tags": [
+        "AEW",
+        "orbit",
+        "UK"
+      ],
+      "points": [
+        [
+          57.6,
+          -7.6
+        ],
+        [
+          57.6,
+          -6.0
+        ],
+        [
+          57.0,
+          -6.0
+        ],
+        [
+          57.0,
+          -7.6
+        ]
+      ]
+    },
+    {
+      "id": "uk_tanker_east_scotland",
+      "name": "Tanker track - east of Scotland",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling track off the Aberdeenshire coast.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "UK"
+      ],
+      "points": [
+        [
+          57.3,
+          -1.5
+        ],
+        [
+          57.3,
+          0.8
+        ],
+        [
+          56.9,
+          0.8
+        ],
+        [
+          56.9,
+          -1.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_tanker_north_sea",
+      "name": "Tanker track - North Sea (Yorkshire)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling track off the Yorkshire coast.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "UK"
+      ],
+      "points": [
+        [
+          54.9,
+          0.5
+        ],
+        [
+          54.9,
+          2.6
+        ],
+        [
+          54.5,
+          2.6
+        ],
+        [
+          54.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_tanker_west_scotland",
+      "name": "Tanker track - west of Scotland",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling track west of Mull and Tiree.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "UK"
+      ],
+      "points": [
+        [
+          56.8,
+          -8.6
+        ],
+        [
+          56.8,
+          -6.8
+        ],
+        [
+          56.4,
+          -6.8
+        ],
+        [
+          56.4,
+          -8.6
+        ]
+      ]
+    },
+    {
+      "id": "uk_tanker_celtic_sea",
+      "name": "Tanker track - Celtic Sea",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK AEW and tankers",
+      "description": "Air-to-air refuelling track south of Ireland.",
+      "tags": [
+        "tanker",
+        "AAR",
+        "UK"
+      ],
+      "points": [
+        [
+          51.0,
+          -7.5
+        ],
+        [
+          51.0,
+          -5.5
+        ],
+        [
+          50.6,
+          -5.5
+        ],
+        [
+          50.6,
+          -7.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_spadeadam",
+      "name": "Spadeadam electronic warfare range",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "RAF Spadeadam: Europe's EW tactics range, simulated SAM and radar threats.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          55.15,
+          -2.75
+        ],
+        [
+          55.15,
+          -2.35
+        ],
+        [
+          54.95,
+          -2.35
+        ],
+        [
+          54.95,
+          -2.75
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_tain",
+      "name": "Tain air weapons range",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Tain air weapons range on the Dornoch Firth.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          57.9,
+          -4.0
+        ],
+        [
+          57.9,
+          -3.75
+        ],
+        [
+          57.75,
+          -3.75
+        ],
+        [
+          57.75,
+          -4.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_cape_wrath",
+      "name": "Cape Wrath range (Garvie Island)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Live weapons and naval gunfire range at Cape Wrath.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          58.68,
+          -5.15
+        ],
+        [
+          58.68,
+          -4.75
+        ],
+        [
+          58.5,
+          -4.75
+        ],
+        [
+          58.5,
+          -5.15
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_hebrides",
+      "name": "Hebrides missile range",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "MOD Hebrides range off South Uist: missile firings and target drones.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          57.8,
+          -9.5
+        ],
+        [
+          57.8,
+          -7.4
+        ],
+        [
+          56.9,
+          -7.4
+        ],
+        [
+          56.9,
+          -9.5
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_wash",
+      "name": "Wash ranges (Holbeach and Donna Nook)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Air weapons ranges at Holbeach and Donna Nook on the Wash.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          53.55,
+          -0.05
+        ],
+        [
+          53.55,
+          0.4
+        ],
+        [
+          52.8,
+          0.4
+        ],
+        [
+          52.8,
+          -0.05
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_aberporth",
+      "name": "Cardigan Bay range (Aberporth)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Aberporth / Cardigan Bay test range for missiles and drones.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          52.6,
+          -5.2
+        ],
+        [
+          52.6,
+          -4.4
+        ],
+        [
+          52.0,
+          -4.4
+        ],
+        [
+          52.0,
+          -5.2
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_salisbury_plain",
+      "name": "Salisbury Plain training area",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Army training area with restricted airspace over Larkhill and Warminster.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          51.32,
+          -2.1
+        ],
+        [
+          51.32,
+          -1.6
+        ],
+        [
+          51.15,
+          -1.6
+        ],
+        [
+          51.15,
+          -2.1
+        ]
+      ]
+    },
+    {
+      "id": "uk_range_otterburn",
+      "name": "Otterburn training area",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Army live-firing area in Northumberland.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          55.38,
+          -2.45
+        ],
+        [
+          55.38,
+          -2.1
+        ],
+        [
+          55.2,
+          -2.1
+        ],
+        [
+          55.2,
+          -2.45
+        ]
+      ]
+    },
+    {
+      "id": "uk_lfa_mach_loop",
+      "name": "Mach Loop low-flying area (Wales)",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Part of Low Flying Area 7 around Cadair Idris, known for low-level fast-jet training.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          52.75,
+          -4.0
+        ],
+        [
+          52.75,
+          -3.7
+        ],
+        [
+          52.55,
+          -3.7
+        ],
+        [
+          52.55,
+          -4.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_lfa_highlands",
+      "name": "Highlands tactical training area",
+      "region": "United Kingdom",
+      "kind": "air",
+      "subregion": "UK ranges",
+      "description": "Scottish Highlands tactical training area for low-level flying.",
+      "tags": [
+        "training",
+        "range",
+        "UK"
+      ],
+      "points": [
+        [
+          57.6,
+          -5.6
+        ],
+        [
+          57.6,
+          -4.0
+        ],
+        [
+          56.6,
+          -4.0
+        ],
+        [
+          56.6,
+          -5.6
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_clyde",
+      "name": "Clyde exercise areas (Faslane approaches)",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - Scotland",
+      "description": "Firth of Clyde: approaches to HM Naval Base Clyde (Faslane) and RNAD Coulport.",
+      "tags": [
+        "ASW",
+        "SSBN",
+        "UK"
+      ],
+      "points": [
+        [
+          56.05,
+          -5.0
+        ],
+        [
+          55.9,
+          -4.75
+        ],
+        [
+          55.3,
+          -4.9
+        ],
+        [
+          55.2,
+          -5.4
+        ],
+        [
+          55.6,
+          -5.6
+        ],
+        [
+          55.95,
+          -5.3
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_north_channel",
+      "name": "North Channel",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - Scotland",
+      "description": "Strait between Scotland and Northern Ireland: the SSBN transit route from the Clyde.",
+      "tags": [
+        "ASW",
+        "chokepoint",
+        "SSBN",
+        "UK"
+      ],
+      "points": [
+        [
+          55.5,
+          -6.4
+        ],
+        [
+          55.4,
+          -5.6
+        ],
+        [
+          54.6,
+          -5.3
+        ],
+        [
+          54.65,
+          -5.9
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_minches",
+      "name": "The Minches and Sea of the Hebrides",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - Scotland",
+      "description": "Inner waters between the Outer Hebrides and the mainland, including the BUTEC underwater range near Kyle of Lochalsh.",
+      "tags": [
+        "ASW",
+        "training",
+        "UK"
+      ],
+      "points": [
+        [
+          58.4,
+          -6.2
+        ],
+        [
+          58.4,
+          -5.2
+        ],
+        [
+          57.2,
+          -5.7
+        ],
+        [
+          56.6,
+          -6.4
+        ],
+        [
+          56.7,
+          -7.4
+        ],
+        [
+          57.6,
+          -7.0
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_moray_firth",
+      "name": "Moray Firth",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - Scotland",
+      "description": "Moray Firth off Lossiemouth and Kinloss.",
+      "tags": [
+        "ASW",
+        "ASuW",
+        "UK"
+      ],
+      "points": [
+        [
+          58.2,
+          -3.9
+        ],
+        [
+          58.1,
+          -2.5
+        ],
+        [
+          57.65,
+          -1.8
+        ],
+        [
+          57.65,
+          -3.6
+        ],
+        [
+          57.5,
+          -4.2
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_pentland",
+      "name": "Pentland Firth and Scapa Flow",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - Scotland",
+      "description": "Pentland Firth and Scapa Flow between Orkney and Caithness.",
+      "tags": [
+        "chokepoint",
+        "ASuW",
+        "UK"
+      ],
+      "points": [
+        [
+          58.95,
+          -3.6
+        ],
+        [
+          58.95,
+          -2.6
+        ],
+        [
+          58.55,
+          -2.8
+        ],
+        [
+          58.6,
+          -3.6
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_shetland",
+      "name": "Shetland waters and Sullom Voe",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - Scotland",
+      "description": "Around Shetland and the Sullom Voe oil terminal.",
+      "tags": [
+        "ASuW",
+        "ASW",
+        "UK"
+      ],
+      "points": [
+        [
+          60.9,
+          -1.9
+        ],
+        [
+          60.9,
+          -0.4
+        ],
+        [
+          59.8,
+          -0.9
+        ],
+        [
+          59.8,
+          -1.8
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_forth",
+      "name": "Firth of Forth (Rosyth)",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - Scotland",
+      "description": "Firth of Forth: Rosyth dockyard and the approaches to Edinburgh.",
+      "tags": [
+        "ASuW",
+        "MCM",
+        "UK"
+      ],
+      "points": [
+        [
+          56.08,
+          -3.45
+        ],
+        [
+          56.15,
+          -2.6
+        ],
+        [
+          56.0,
+          -2.2
+        ],
+        [
+          55.98,
+          -3.2
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_plymouth",
+      "name": "Plymouth exercise areas",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - England",
+      "description": "Off Plymouth and Devonport: sea training and the FOST areas.",
+      "tags": [
+        "ASW",
+        "ASuW",
+        "training",
+        "UK"
+      ],
+      "points": [
+        [
+          50.35,
+          -4.6
+        ],
+        [
+          50.3,
+          -3.6
+        ],
+        [
+          49.7,
+          -3.6
+        ],
+        [
+          49.8,
+          -4.8
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_solent",
+      "name": "Solent and Portsmouth approaches",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - England",
+      "description": "Approaches to HM Naval Base Portsmouth and Southampton.",
+      "tags": [
+        "ASuW",
+        "MCM",
+        "UK"
+      ],
+      "points": [
+        [
+          50.82,
+          -1.6
+        ],
+        [
+          50.82,
+          -0.9
+        ],
+        [
+          50.6,
+          -0.85
+        ],
+        [
+          50.55,
+          -1.6
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_thames",
+      "name": "Thames Estuary approaches",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - England",
+      "description": "Approaches to London through the Thames Estuary.",
+      "tags": [
+        "ASuW",
+        "MCM",
+        "UK"
+      ],
+      "points": [
+        [
+          51.65,
+          0.6
+        ],
+        [
+          51.7,
+          1.7
+        ],
+        [
+          51.35,
+          1.6
+        ],
+        [
+          51.4,
+          0.7
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_lyme_bay",
+      "name": "Lyme Bay and Portland exercise areas",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - England",
+      "description": "Lyme Bay and the Portland areas.",
+      "tags": [
+        "ASW",
+        "training",
+        "UK"
+      ],
+      "points": [
+        [
+          50.7,
+          -3.4
+        ],
+        [
+          50.62,
+          -2.4
+        ],
+        [
+          50.3,
+          -2.4
+        ],
+        [
+          50.35,
+          -3.4
+        ]
+      ]
+    },
+    {
+      "id": "uk_sea_liverpool_bay",
+      "name": "Liverpool Bay and Barrow approaches",
+      "region": "United Kingdom",
+      "kind": "sea",
+      "subregion": "UK waters - England",
+      "description": "Liverpool Bay and the approaches to the Barrow-in-Furness submarine yard.",
+      "tags": [
+        "ASW",
+        "ASuW",
+        "UK"
+      ],
+      "points": [
+        [
+          54.15,
+          -3.6
+        ],
+        [
+          54.0,
+          -3.0
+        ],
+        [
+          53.4,
+          -3.1
+        ],
+        [
+          53.45,
+          -4.0
         ]
       ]
     }

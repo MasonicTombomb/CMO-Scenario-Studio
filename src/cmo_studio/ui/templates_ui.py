@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QDialog, Q
 
 from ..model.templates import (TemplateComponent, TemplateLibrary, UnitTemplate, default_library, load_library,
                                place_template, resolve, template_from_units)
+from ..geo import format_latlon, parse_latlon
 from .widgets import CoordEdit, IdCombo, hint_label
 
 
@@ -59,13 +60,18 @@ class TemplatePreview(QWidget):
         def rot(x, y):
             return x * math.cos(h) + y * math.sin(h), -x * math.sin(h) + y * math.cos(h)
 
+        def ends(comp, x, y, rl):
+            a = math.radians(comp.hdg)
+            dx, dy = math.sin(a) * rl / 2, math.cos(a) * rl / 2
+            return rot(x + dx, y + dy), rot(x - dx, y - dy)
+
         pts = []
         for comp in self.tpl.components:
-            rl = _runway_length(comp.db_name)
+            rl = comp.length or _runway_length(comp.db_name)
             for x, y in comp.positions:
                 pts.append(rot(x, y))
                 if rl:
-                    pts += [rot(x, y + rl / 2), rot(x, y - rl / 2)]
+                    pts += list(ends(comp, x, y, rl))
         extent = max([abs(a) for a, _ in pts] + [abs(b) for _, b in pts] + [100.0])
         margin = 30
         scale = (min(self.width(), self.height()) / 2 - margin) / (extent * 1.05)
@@ -75,7 +81,8 @@ class TemplatePreview(QWidget):
             return QPointF(cx + e * scale, cy - n * scale)
 
         p.setPen(QPen(QColor(90, 120, 150, 70), 1, Qt.PenStyle.DashLine))
-        step = next(s for s in (50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000) if extent / s <= 5)
+        step = next((s for s in (50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 50000)
+                     if extent / s <= 5), 100000)
         r = step
         while r <= extent * 1.05:
             p.drawEllipse(QPointF(cx, cy), r * scale, r * scale)
@@ -91,14 +98,17 @@ class TemplatePreview(QWidget):
         colors = ["#3d8bfd", "#30a46c", "#f5a524", "#e5484d", "#8e4ec6", "#12a594", "#d6409f", "#c8ccd4"]
         for k, comp in enumerate(self.tpl.components):
             col = QColor(colors[k % len(colors)])
-            rl = _runway_length(comp.db_name)
+            rl = comp.length or _runway_length(comp.db_name)
             for i, (x, y) in enumerate(comp.positions):
                 e, n = rot(x, y)
                 q = px(e, n)
                 if rl:
-                    a, b = px(*rot(x, y + rl / 2)), px(*rot(x, y - rl / 2))
+                    a, b = (px(*v) for v in ends(comp, x, y, rl))
                     p.setPen(QPen(QColor("#c8ccd4"), max(3.0, 45 * scale)))
                     p.drawLine(a, b)
+                    if comp.length:
+                        p.setPen(QColor("#e6e8ec"))
+                        p.drawText(QPointF(b.x() + 4, b.y() + 4), comp.label.replace("Runway ", ""))
                     continue
                 p.setPen(QPen(QColor("#0b0b0b"), 1))
                 p.setBrush(QBrush(col))
@@ -132,6 +142,8 @@ class TemplatePlacerDialog(QDialog):
         if lat is None or lon is None:
             lat, lon = (w.map_page.map.center() if w is not None and hasattr(w, "map_page") else (0.0, 0.0))
         self.lat, self.lon = lat, lon
+        self.free_pos = (lat, lon)         # where a template without a real location goes
+        self._last_site_default = ""
         lay = QHBoxLayout(self)
         split = QSplitter(Qt.Orientation.Horizontal)
         lay.addWidget(split)
@@ -181,10 +193,16 @@ class TemplatePlacerDialog(QDialog):
         if w is not None and hasattr(w, "map_page"):
             self.side.set_current_id(w.map_page.current_side())
         g.addRow("Side:", self.side)
+        self.real = QCheckBox("At the real site")
+        self.real.setToolTip("Real-world templates: place them at their actual position and orientation")
+        self.real.toggled.connect(self._real_toggled)
         self.coords = CoordEdit()
         self.coords.set_coords(lat, lon)
         self.coords.coordsEdited.connect(self._coords)
-        g.addRow("Position:", self.coords)
+        prow = QHBoxLayout()
+        prow.addWidget(self.coords, 1)
+        prow.addWidget(self.real)
+        g.addRow("Position:", prow)
         self.heading = QDoubleSpinBox()
         self.heading.setRange(0, 359.9)
         self.heading.setWrapping(True)
@@ -220,7 +238,7 @@ class TemplatePlacerDialog(QDialog):
         self.tree.clear()
         for cat in self.lib.all_categories():
             items = [t for t in self.lib.templates if t.category == cat and
-                     all(w in f"{t.name} {t.description} {' '.join(t.tags)} {cat}".lower() for w in words)]
+                     all(w in f"{t.name} {t.site} {t.description} {' '.join(t.tags)} {cat}".lower() for w in words)]
             if not items:
                 continue
             head = QTreeWidgetItem([cat, str(len(items))])
@@ -255,9 +273,17 @@ class TemplatePlacerDialog(QDialog):
         if t is None:
             return
         self.title.setText(f"{t.name}  ({t.unit_count} units)")
-        self.desc.setText(t.description)
-        if not self.site.isModified():
-            self.site.setText(t.name)
+        self.desc.setText(t.description + (f"\nReal site: {format_latlon(*t.location)}, layout drawn at "
+                                           f"{t.heading:g}°." if t.location else ""))
+        if not self.site.isModified() or self.site.text() == self._last_site_default:
+            self._last_site_default = t.site or t.name
+            self.site.setText(self._last_site_default)
+            self.site.setModified(False)
+        self.real.blockSignals(True)
+        self.real.setEnabled(bool(t.location))
+        self.real.setChecked(bool(t.location))
+        self.real.blockSignals(False)
+        self._real_toggled(bool(t.location))
         db = self.ctx.db
         self.parts.setRowCount(0)
         for comp in t.components:
@@ -279,6 +305,18 @@ class TemplatePlacerDialog(QDialog):
 
     def _coords(self, lat, lon):
         self.lat, self.lon = lat, lon
+        if not self.real.isChecked():
+            self.free_pos = (lat, lon)
+
+    def _real_toggled(self, on: bool):
+        t = self._tpl()
+        if on and t is not None and t.location:
+            self.lat, self.lon = t.location
+            self.heading.setValue(t.heading)
+        else:
+            self.lat, self.lon = self.free_pos
+        self.coords.set_coords(self.lat, self.lon)
+        self.coords.setEnabled(not (on and t is not None and t.location))
 
     def _place(self):
         t = self._tpl()
@@ -306,7 +344,8 @@ class TemplatePlacerDialog(QDialog):
 
 
 # =============================================================================== library editor
-COMP_COLS = ["Label", "Type", "Database name", "DBID", "Positions (x,y m; ...)", "Host", "Radar", "Hold", "Search"]
+COMP_COLS = ["Label", "Type", "Database name", "DBID", "Positions (x,y m; ...)", "Host", "Radar", "Hold", "Search",
+             "Heading"]
 
 
 class TemplateLibraryDialog(QDialog):
@@ -370,6 +409,10 @@ class TemplateLibraryDialog(QDialog):
         self.description.setMaximumHeight(60)
         self.description.textChanged.connect(self._fields)
         f.addRow("Description:", self.description)
+        self.location = QLineEdit()
+        self.location.setPlaceholderText("optional: lat, lon of a real site (decimal or DMS); empty = place anywhere")
+        self.location.editingFinished.connect(self._location_edited)
+        f.addRow("Real location:", self.location)
         rl.addLayout(f)
         row = QHBoxLayout()
         for text, fn in (("Add component", self._add_comp), ("Remove", self._remove_comp),
@@ -457,11 +500,12 @@ class TemplateLibraryDialog(QDialog):
 
     def _load(self):
         t = self._t()
-        for w in (self.name, self.category, self.tags, self.description, self.comps):
+        for w in (self.name, self.category, self.tags, self.description, self.comps, self.location):
             w.setEnabled(t is not None)
         if t is None:
             return
-        for w, v in ((self.name, t.name), (self.tags, ", ".join(t.tags))):
+        loc = f"{t.location[0]:.6f}, {t.location[1]:.6f}" if t.location else ""
+        for w, v in ((self.name, t.name), (self.tags, ", ".join(t.tags)), (self.location, loc)):
             w.blockSignals(True)
             w.setText(v)
             w.blockSignals(False)
@@ -490,6 +534,7 @@ class TemplateLibraryDialog(QDialog):
                 it.setCheckState(Qt.CheckState.Checked if flag else Qt.CheckState.Unchecked)
                 self.comps.setItem(r, c, it)
             self.comps.setItem(r, 8, QTableWidgetItem(comp.search))
+            self.comps.setItem(r, 9, QTableWidgetItem(f"{comp.hdg:g}" if comp.hdg else ""))
         self.comps.blockSignals(False)
         self.comps.resizeColumnsToContents()
         self.preview.show_template(t)
@@ -506,6 +551,19 @@ class TemplateLibraryDialog(QDialog):
             self._touch()
             if regroup:
                 self._fill()
+
+    def _location_edited(self):
+        t = self._t()
+        if not t:
+            return
+        text = self.location.text().strip()
+        loc = parse_latlon(text) if text else None
+        new_loc = [round(loc[0], 6), round(loc[1], 6)] if loc else None
+        if text and loc is None:
+            QMessageBox.warning(self, "Real location", "Write the location as 'lat, lon' (decimal or DMS).")
+        elif new_loc != (t.location and [round(t.location[0], 6), round(t.location[1], 6)]):
+            t.location = new_loc
+            self._touch()
 
     def _comp_edited(self, item: QTableWidgetItem):
         t = self._t()
@@ -537,6 +595,11 @@ class TemplateLibraryDialog(QDialog):
             setattr(comp, {5: "host", 6: "radar", 7: "hold"}[c], item.checkState() == Qt.CheckState.Checked)
         elif c == 8:
             comp.search = text
+        elif c == 9:
+            try:
+                comp.hdg = float(text or 0) % 360.0
+            except ValueError:
+                QMessageBox.warning(self, "Heading", "Heading is degrees relative to the site orientation.")
         self._touch()
         self.preview.show_template(t)
 

@@ -25,10 +25,17 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Search everything** (Ctrl+K) — jump to any unit, mission, event, area, formation, script line or command.
 - **Edit many units at once** — tick the fields to change across a selection: rename patterns (`Escort {nn}`),
   side, group, proficiency, EMCON, hold, heading, speed, altitude, base, loadout and more, in one undo step.
-- **Patrol area library** — 134 predefined sea and air patrol areas by region (Europe, Arctic, Middle East,
-  Africa, Asia, Oceania, North and South America): Bay of Biscay, GIUK gaps, Baltic, Hormuz, Taiwan Strait, South
+- **Patrol area library** — 196 predefined sea and air patrol areas by region (Europe, United Kingdom,
+  Arctic, Middle East, Africa, Asia, Oceania, North and South America): Bay of Biscay, GIUK gaps, Baltic, Hormuz, Taiwan Strait, South
   China Sea, Falklands TEZ, CAP boxes, AEW orbits, tanker tracks and more. Add one (or several) with a patrol or
-  support mission ready to staff. Editable JSON library; save your own areas into it.
+  support mission ready to staff. The UK set covers the whole of UK airspace: QRA North/South areas, eight
+  interception sectors tiling the UK FIR, approach zones, CAP stations, AEW orbits, tanker tracks and ranges.
+  Editable JSON library; save your own areas into it.
+- **UK military sites** — 101 real UK sites at their actual positions (1575 units): 46 air bases laid
+  out from OpenStreetMap with every mapped runway at its real heading and length (82 runways), 108 hardened
+  aircraft shelters, 286 hangars, aprons, control towers, radars, fuel and munitions storage; plus naval bases,
+  radar heads, command centres, comms and intelligence sites, depots and garrisons. Place a whole base at its real
+  location in one go.
 - **Unit templates** — 80 pre-grouped sites (670 units in all) dropped in one go: airfields of every size,
   hardened and dispersed air bases, FARPs, command posts and C3 bunkers, communications, SIGINT and EW sites, radar
   and SAM sites, barracks, FOBs, depots, ports and naval bases, missile sites and civil infrastructure. Name it,
@@ -82,6 +89,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 | Patrol area library | Areas added on the map |
 | --- | --- |
 | ![Area library](docs/images/areas_library.png) | ![Areas on map](docs/images/areas_map.png) |
+
+| UK air base at its real site | UK interception sectors |
+| --- | --- |
+| ![UK base](docs/images/uk_base.png) | ![UK sectors](docs/images/uk_sectors.png) |
 
 | Place a unit template | Placed on the map |
 | --- | --- |
@@ -160,7 +171,7 @@ See [`examples/output`](examples/output) for a real export.
 - [Export format and Lua runtime](docs/EXPORT_FORMAT.md) — what each file does, the `Studio*` Lua API
 - [Project file format](docs/PROJECT_FORMAT.md) — the `.cmoproj` JSON schema
 - [Patrol area library](docs/AREAS.md) — format and full list of areas
-- [Unit templates](docs/TEMPLATES.md) — format and catalogue
+- [Unit templates](docs/TEMPLATES.md) — format, catalogue and the UK real-world sites
 - [Callsign library](docs/CALLSIGNS.md) — the JSON format, roles and allocation rules
 - [Database access](docs/DATABASE.md) — which DB3000 tables are read and how
 - [Architecture](docs/ARCHITECTURE.md) — code layout for contributors
@@ -202,5 +213,7 @@ databases are their property; this tool reads them from your own installation an
 data. Map tiles are provided by their respective services under their terms.
 
 ## License
+
+The UK air base layouts in `templates_uk.json` are derived from OpenStreetMap (© OpenStreetMap contributors, ODbL) - see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 MIT — see [LICENSE](LICENSE).

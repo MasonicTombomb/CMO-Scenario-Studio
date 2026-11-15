@@ -67,7 +67,7 @@ def build() -> Path:
          str(WORK), str(HERE / "cmo_studio.spec")])
     out = DIST / APP
     # User-facing files next to the exe
-    for name in ("README.md", "LICENSE", "CHANGELOG.md"):
+    for name in ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md"):
         shutil.copy2(ROOT / name, out / name)
     shutil.copytree(ROOT / "docs", out / "docs", dirs_exist_ok=True)
     ex = out / "examples"

@@ -29,6 +29,7 @@ src/cmo_studio/
   data/
     callsigns.json       the default callsign library
     templates.json       the default unit templates
+    templates_uk.json    UK real-world sites pack (templates_*.json files are merged in as packs)
     areas.json           the default patrol areas
   importers/
     lua_table.py         tolerant Lua table literal reader

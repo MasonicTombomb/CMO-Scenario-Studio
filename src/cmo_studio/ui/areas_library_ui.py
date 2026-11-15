@@ -737,6 +737,8 @@ def guess_region(lat: float, lon: float) -> str:
     """A rough region for a position (used to preselect the region when saving an area)."""
     if lat >= 66:
         return "Arctic"
+    if 49.8 <= lat <= 61.0 and -10.5 <= lon <= 2.0 and not (lat < 51.0 and lon > -2.0):
+        return "United Kingdom"
     if -170 <= lon <= -30:
         return "North America" if lat >= 12 else "South America"
     if (lon > 110 and lat < -5) or lon > 150 or lon < -170 or (lon > 140 and lat < 20):

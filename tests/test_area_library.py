@@ -48,7 +48,7 @@ def test_roundtrip_and_bad_user_file(lib, tmp_path):
     path = tmp_path / "areas.json"
     lib.save(path)
     again, source = load_library(path)
-    assert source == str(path) and again.to_dict() == lib.to_dict()
+    assert source == str(path) and again.to_dict()["areas"] == lib.to_dict()["areas"]
     path.write_text('{"format": "something-else"}', encoding="utf-8")
     fallback, source = load_library(path)
     assert source == "built-in default" and len(fallback.areas) == len(lib.areas)
