@@ -1,0 +1,95 @@
+
+name: Support / Question
+description: Ask a question or request help with the application.
+title: "[QUESTION] "
+labels:
+  - question
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Support / Question
+
+        Need help or have a question?
+
+        Please provide as much information as possible so we
+        can understand your situation and provide an appropriate answer.
+
+        If you believe you have discovered a bug, please use the
+        Bug Report template instead.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question / Problem
+      description: Clearly explain what you need help with.
+      placeholder: |
+        I'm trying to...
+        I'm having difficulty with...
+        I would like to know...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: What Are You Trying to Achieve?
+      description: Describe what you are attempting to do and what the intended outcome is.
+      placeholder: Explain what you are trying to accomplish...
+    validations:
+      required: true
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What Have You Tried So Far?
+      description: |
+        Describe any steps you have already taken,
+        including workarounds or troubleshooting.
+      placeholder: List the steps you have already tried...
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include relevant application and software versions, if applicable.
+      value: |
+        Application:
+        Application Version:
+        Build Number:
+        Editor Version:
+        Lua Version:
+        Operating System:
+    validations:
+      required: false
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Messages / Logs
+      description: Paste any relevant error messages, console output or logs.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Screenshots / Supporting Files
+      description: |
+        Drag and drop screenshots, example files or other
+        supporting material that might help explain your question.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Anything else that might be useful in answering your question.
+    validations:
+      required: false

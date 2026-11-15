@@ -1,0 +1,22 @@
+{
+  "generator": "CMO Scenario Studio 1.1.0",
+  "written": "2026-11-14T15:57:29",
+  "files": [
+    "Lua/Baltic Sentinel/Build_PLAY_NATO.lua",
+    "Lua/Baltic Sentinel/Build_PLAY_RUSSIA.lua",
+    "Lua/Baltic Sentinel/Build_Scenario.lua",
+    "Lua/Baltic Sentinel/Helpers.lua",
+    "Lua/Baltic Sentinel/LuaInit.lua",
+    "Lua/Baltic Sentinel/README.txt",
+    "Lua/Baltic Sentinel/Studio_Runtime.lua",
+    "Lua/Baltic Sentinel/Tick.lua",
+    "Lua/Baltic Sentinel/project.cmoproj",
+    "README.md",
+    "Scenarios/Baltic Sentinel/BalticSentinel_Briefing_NATO.html",
+    "Scenarios/Baltic Sentinel/BalticSentinel_Briefing_RU.html",
+    "Scenarios/Baltic Sentinel/BalticSentinel_Desc.html",
+    "Scenarios/Baltic Sentinel/BalticSentinel_Desc_PLAY_NATO.html",
+    "Scenarios/Baltic Sentinel/BalticSentinel_Desc_PLAY_RUSSIA.html",
+    "Scenarios/Baltic Sentinel/briefing_style_dark.css"
+  ]
+}
