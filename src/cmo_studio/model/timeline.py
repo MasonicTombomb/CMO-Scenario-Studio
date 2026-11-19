@@ -175,26 +175,25 @@ def event_detail(p: Project, e: Event) -> str:
 
 
 def course_rows(p: Project, start: int, end: int) -> list[Row]:
-    """A row per unit with a plotted course: a diamond where it takes off or sets off."""
-    from ..geo import distance_km
-    from .project import COURSE_FINISH
+    """A row per unit with a plotted course: a diamond where it takes off or sets off, then a bar while it is
+    (by estimate) on its route."""
+    from .course_plan import hms, plan_course
     rows = []
     for u in p.units:
-        c = u.course
-        if c is None or not c.waypoints:
+        plan = plan_course(p, u)
+        if plan is None:
             continue
-        t = start + 60 * max(0, int(c.depart_minutes or 0))
-        origin = p.unit(u.host) if u.host else u
-        pts = [(origin.lat, origin.lon)] + [(w.lat, w.lon) for w in c.waypoints]
-        nm = sum(distance_km(a[0], a[1], b[0], b[1]) for a, b in zip(pts, pts[1:])) / 1.852
-        verb = f"takes off from {origin.name}" if u.host else "sets off"
-        finish = COURSE_FINISH.get(c.finish, c.finish)
-        if c.finish == "land" and p.unit(c.land_at):
-            finish = f"Lands at {p.unit(c.land_at).name}"
+        t = start + plan.depart_s
+        verb = f"takes off from {plan.origin}" if plan.hosted else "sets off"
+        waits = sum(lg.wait for lg in plan.legs)
         r = Row("course", u.id, u.display_name(), active=True, once=True,
-                marks=[Mark(POINT, t, label=verb.split(" from ")[0])],
+                marks=[Mark(POINT, t, label=verb.split(" from ")[0]),
+                       Mark(BAND, t, start + plan.end_s, label="en route (estimate)" + (", then repeats" if plan.repeat
+                                                                                        else ""))],
                 detail=f"{u.display_name()} ({p.side_name(u.side)})\n{verb.capitalize()} at {fmt_time(t, start)}, "
-                       f"{len(c.waypoints)} waypoint(s), {nm:,.0f} nm\nAt the end: {finish}"
+                       f"{len(u.course.waypoints)} waypoint(s), {plan.total_nm:,.0f} nm, about "
+                       f"{hms(plan.end_s - plan.depart_s)} h" + (f" including {waits} min waiting" if waits else "")
+                       + f"\nAt the end: {plan.finish}"
                        + ("\nA reinforcement: the course starts once it has arrived" if u.reserve else ""))
         if t > end:
             r.issues.append(f"Departs at {fmt_time(t, start)}, after the scenario ends.")

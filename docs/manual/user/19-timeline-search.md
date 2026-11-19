@@ -16,8 +16,9 @@ the end a dashed red line. Each row is an event (blue), a mission (green) or a u
 | Dotted line | Happens on a condition (a unit destroyed, an area entered, a score...), so it could be at any time |
 | Grey row | An inactive event, or a mission that starts switched off |
 
-Missions switched on or off by a timed event show a diamond where that happens. A course row has one diamond: when
-the unit takes off from its base or sets off.
+Missions switched on or off by a timed event show a diamond where that happens. A course row has a diamond where the
+unit takes off from its base or sets off, then a bar for the time it should spend on its route (an estimate from the
+leg speeds and waits, Chapter 14).
 
 Controls along the top:
 

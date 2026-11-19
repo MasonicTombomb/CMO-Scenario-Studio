@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+- **The course window.** Courses now open in their own window (**Edit course...** in the inspector, **Course...**
+  on the map toolbar, or right-click a unit) instead of a box in the inspector:
+  - a map to plot, insert, drag, reorder and reverse waypoints, with the selected waypoint ringed;
+  - a table of legs with the altitude, speed, radar and weapons in force, waits, leg length and estimated arrival;
+  - a **flight profile**: altitude and speed along the route, with radar, jammer (or sonar) and weapons strips,
+    waypoint numbers, waits and signals; click a leg to select it;
+  - **settings for each leg**: name, altitude, speed, radar, sonar, jammers, weapons free / tight / hold, whether to
+    leave the course to attack, a **wait** (circle the waypoint for some minutes) and a **signal** (a flag set on
+    arrival that events can react to); **Same for every leg** copies one leg's settings to all;
+  - OK keeps the course as one undoable change; Cancel throws it away.
+- In CMO the course event applies each leg's settings as the leg starts (altitude, speed, EMCON, weapon control,
+  attack behaviour), circles at waypoints with a wait, and sets signals on arrival. The dry-run plays this through.
+- The inspector's Course box is now a one-line summary with **Edit course...** and **Clear**. The Timeline,
+  inspector and Issues panel use the same estimates; new checks for signal names and altitudes on ships.
+
 ## 1.7.0 — 2026-11-19
 
 - **Plotted courses.** Give any unit a route to follow, waypoint by waypoint, to script a computer side's

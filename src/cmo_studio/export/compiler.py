@@ -437,6 +437,28 @@ def unit_names(u: Unit) -> list[str]:
 ROUTE_EVENT_ID = "e_studio_courses"
 
 
+def route_waypoint(w) -> dict:
+    """One waypoint for STUDIO.ROUTES: position plus only the leg settings that are set."""
+    from ..model.project import ENGAGE_SETTING, SENSOR_SETTING, WEAPONS_SETTING
+    d: dict[str, Any] = {"lat": round(float(w.lat), 6), "lon": round(float(w.lon), 6)}
+    if w.altitude is not None:
+        d["alt"] = float(w.altitude)
+    if w.speed:
+        d["spd"] = float(w.speed)
+    if w.name:
+        d["name"] = w.name
+    for key, val, allowed in (("radar", w.radar, SENSOR_SETTING), ("sonar", w.sonar, SENSOR_SETTING),
+                              ("ecm", w.ecm, SENSOR_SETTING), ("wcs", w.weapons, WEAPONS_SETTING),
+                              ("engage", w.engage, ENGAGE_SETTING)):
+        if val and val in allowed:
+            d[key] = val
+    if w.wait_minutes and int(w.wait_minutes) > 0:
+        d["wait"] = int(w.wait_minutes)
+    if w.signal.strip():
+        d["flag"] = w.signal.strip()
+    return d
+
+
 def compile_routes(project: Project) -> list[dict]:
     """Plotted courses for the runtime route manager (STUDIO.ROUTES in LuaInit.lua)."""
     from ..model.project import COURSE_FINISH
@@ -448,9 +470,8 @@ def compile_routes(project: Project) -> list[dict]:
             continue
         r: dict[str, Any] = {
             "id": u.id, "side": project.side_name(u.side), "names": unit_names(u),
-            "wps": [[round(float(w.lat), 6), round(float(w.lon), 6),
-                     float(w.altitude) if w.altitude is not None else False,
-                     float(w.speed) if w.speed is not None else False] for w in c.waypoints],
+            "kind": u.type,
+            "wps": [route_waypoint(w) for w in c.waypoints],
             "depart": start + 60 * max(0, int(c.depart_minutes or 0)),
             "finish": c.finish if c.finish in COURSE_FINISH else "stop",
         }

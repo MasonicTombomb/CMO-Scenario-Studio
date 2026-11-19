@@ -472,7 +472,10 @@ local function buildKeyValues()
   try(ScenEdit_SetKeyValue, 'STUDIO_VARIANT', VARIANT_KEY or '')
   for _, e in ipairs(D.EVENTS) do try(ScenEdit_SetKeyValue, 'STUDIO_EVT_' .. e.key, '') end
   for _, r in ipairs((STUDIO and STUDIO.ROUTES) or {}) do
-    for n = 1, #(r.names or {}) do try(ScenEdit_SetKeyValue, 'STUDIO_RT_' .. r.id .. '_' .. n, '') end
+    for n = 1, #(r.names or {}) do
+      local k = 'STUDIO_RT_' .. r.id .. '_' .. n
+      try(ScenEdit_SetKeyValue, k, ''); try(ScenEdit_SetKeyValue, k .. '_leg', ''); try(ScenEdit_SetKeyValue, k .. '_until', '')
+    end
   end
 end
 

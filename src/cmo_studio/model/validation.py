@@ -345,6 +345,11 @@ def _check_courses(p: Project, db, add) -> None:
         for i, w in enumerate(c.waypoints, 1):
             if not (-90 <= w.lat <= 90 and -180 <= w.lon <= 180):
                 add(ERROR, "Courses", f"{label}: waypoint {i} is off the map.", u.id)
+            if w.signal.strip() and not re.fullmatch(r"[A-Za-z0-9_]+", w.signal.strip()):
+                add(WARNING, "Courses", f"{label}: waypoint {i} signal '{w.signal}' should use only letters, digits "
+                                        "and _ so events can test it.", u.id)
+            if w.altitude is not None and u.type != "Aircraft":
+                add(INFO, "Courses", f"{label}: waypoint {i} has an altitude, which only aircraft use.", u.id)
         if c.depart_minutes and total_min and c.depart_minutes >= total_min:
             add(WARNING, "Courses", f"{label}: departs {c.depart_minutes} min after the start, after the scenario "
                                     f"ends ({total_min} min).", u.id)

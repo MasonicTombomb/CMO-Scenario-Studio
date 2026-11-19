@@ -86,45 +86,82 @@ than stopping the build.
 ## Courses: a route without a mission
 
 A mission lets CMO decide where its units go. A **course** is the other way round: you draw the exact route a unit
-takes, waypoint by waypoint. Use it to script a computer side's movements: a bomber stream on a set track, a convoy
-along a coast, a pair of fighters that take off from one base, fly a route and land somewhere else.
+takes, waypoint by waypoint, and say what it does on each leg. Use it to script a computer side's movements: a
+bomber stream on a set track, a convoy along a coast, or a strike package that takes off from one base, meets a
+tanker, goes in low and fast with radars off and weapons free, then lands somewhere else.
+
+### Opening the course window
+
+Select the unit and do one of these:
+
+- click **Edit course...** (or **Plot a course...**) in the **Course** box of the unit inspector;
+- click **Course...** on the map toolbar;
+- right-click the unit on the map > **Plot course...** (or **Edit course...**).
 
 ![The Course box in the unit inspector](img/unit_course.png)
 
-### Plotting a course
+The **Course** box sums the course up: where the unit sets off from and when, the number of waypoints, the
+distance, the time it takes and what it does at the end. **Clear** removes the whole course. Aircraft and boats in
+a base are on the Units tab rather than the map; select them there.
 
-1. Select the unit on the map.
-2. Click **Plot course** on the map toolbar (or right-click the unit > **Plot course...**, or click **Plot on map**
-   in the inspector's **Course** box).
-3. Click the map once for each waypoint, in order. A dashed preview follows the mouse.
-4. Finish with a double-click or [[Enter]]. [[Backspace]] removes the last waypoint; [[Esc]] cancels.
+### The course window
 
-The course is drawn as a dashed line from the unit (or from its base) through numbered waypoints. Select the unit
-and drag a waypoint's white square to move it. Plotting again adds waypoints to the end of the course. Untick
-**Courses** on the map toolbar to hide all courses.
+![The course window](img/dialog_course.png)
 
-### The Course box
+1. **The map**: the route, as a dashed line from the unit (or its base) through numbered waypoints. The selected
+   waypoint has a yellow ring. Drag a waypoint's white square to move it; click one to select its leg. A dotted
+   last leg shows the way home, to the landing base, or back to the start of a loop.
+2. **Route tools**: **Add waypoints** (click the map once for each waypoint, then double-click or press [[Enter]];
+   [[Backspace]] removes the last; new waypoints go at the end). **Insert** adds a waypoint half-way along the leg
+   to the selected one. **Remove** (or [[Delete]]), **Up** and **Down** remove and reorder. **Reverse** flies the
+   course the other way round. **Clear** removes every waypoint. **Fit** zooms the map to the route.
+3. **The legs**: one row per leg, with the altitude, speed, radar and weapons in force, any wait, the leg's length
+   and when the unit should arrive (*H+h:mm* after the scenario starts). Grey values are carried over from an
+   earlier leg or estimated. The last row (→) is the way home or to the landing base.
+4. **The selected leg**: everything about the leg flown *to* this waypoint (table below).
+5. **Sensors and weapons** for the leg.
+6. **On arrival**: what happens when the unit reaches the waypoint.
+7. **The profile**: the route from start to end, left to right. The blue area is the altitude (aircraft), the amber
+   line the speed (dotted where it is an estimate). Waypoint numbers run along the top, with waits and signals.
+   The strips underneath show radar, jammers (sonar for ships and submarines) and weapons on each leg: green on,
+   grey off, dark unchanged; weapons red free, amber tight, green hold. Click a leg to select it; hover for details.
+8. **Depart**: when the unit sets off, in minutes after the scenario starts. *at the start* means straight away.
+9. **At the end** and **Land at**: what the unit does after the last waypoint (second table below).
+10. **The summary**: departure, waypoints, distance, time and the end of the course.
 
-The **Course** box in the unit inspector shows and edits the course:
+Click **OK** to keep the course. **Cancel** closes the window and throws the changes away (it asks first). Either
+way, the course is one change on the main window, so [[Ctrl+Z]] undoes it.
 
-1. **The waypoint table**: the latitude and longitude of each waypoint, in order. Type in **Altitude (m)** or
-   **Speed (kn)** to set the altitude or speed for the leg to that waypoint; leave them empty to let the unit
-   choose.
-2. **Plot on map**: add waypoints by clicking the map.
-3. **Remove**, **Up**, **Down**: remove or reorder the selected waypoint. **Reverse** flies the course the other
-   way round. **Clear** removes the whole course.
-4. **Depart**: when the unit sets off, in minutes after the scenario starts. *at the start* means straight away.
-5. **At the end**: what the unit does after the last waypoint (table below).
-6. **Land at**: for **Land at another base**, the base to land at. Only bases of the unit's own side are offered.
+### Leg settings
 
-The line above the table shows the number of waypoints and the length of the route in nautical miles.
+A setting applies on the leg flown *to* its waypoint, and stays in force on later legs until one of them changes
+it. *No change* keeps whatever the unit already has.
+
+| Setting | What it does |
+| --- | --- |
+| Name | A name for the waypoint, shown on the map, in the table and in CMO (*IP*, *Tanker*, *Target*). |
+| Lat, lon | The waypoint's position; type it exactly or drag the waypoint on the map. |
+| Altitude | Aircraft only. The altitude for the leg, in metres (feet shown beside it). |
+| Speed | The speed for the leg, in knots. |
+| Radar / Sonar / Jammers | Switch them on (active) or off (passive) for the leg. Off is quieter: harder to detect, but the unit sees less. |
+| Weapons | **Free**: fire at anything not friendly. **Tight**: only at targets identified as hostile. **Hold**: only in self-defence. |
+| Targets | **Leave the course to attack**: the unit may break off to attack what it finds. **Stay on the course**: it keeps to the route. |
+| Wait there | On arrival, circle the waypoint this long before going on (a holding point, a tanker track, a time on target). |
+| Signal there | On arrival, set a flag (a key value, for example `STRIKE_AT_IP`) to true. An event with a *Regular time* trigger and the condition **Flag is set** can then react: a message, a score, a mission switched on (Chapter 15). |
+
+**Same for every leg** copies the selected leg's altitude, speed, sensors, weapons and targets setting to every
+leg.
 
 | At the end | What happens |
 | --- | --- |
 | Carry on (no further orders) | The unit keeps going; CMO's normal behaviour takes over. |
 | Return to its base | The aircraft or boat returns to the base it came from. |
-| Land at another base | The unit is assigned to the chosen base and lands there. That becomes its new home base. |
+| Land at another base | The unit is assigned to the chosen base and lands there. That becomes its new home base. Only bases of its own side are offered. |
 | Fly the course again (loop) | The unit flies the whole course again, for ever. Good for patrol tracks and shipping lanes. |
+
+!!! note "Times are estimates"
+    Arrival times use each leg's speed, or the unit's starting speed, or a typical speed for its type (450 kn for
+    aircraft, 15 kn for ships). Take-off, climb, wind and fights change them in CMO.
 
 ### Taking off from a base
 
@@ -132,13 +169,20 @@ Aircraft that start **in a base** (their **Starts at** is a base, Chapter 10) wa
 **Depart** time, then take off, fly the course and do what **At the end** says. A squadron with **Count** 4
 launches all four aircraft, and each one flies the course.
 
-!!! example "Take off from Lossiemouth, fly a route, land at Coningsby"
+!!! example "Take off from Lossiemouth, strike, land at Coningsby"
     1. Place the Lossiemouth and Coningsby templates (Chapter 12).
     2. Add two Typhoons to a Lossiemouth hangar (**Count** 2) and choose a loadout.
-    3. Select them and click **Plot course**. Click three waypoints over the North Sea and press [[Enter]].
-    4. In the **Course** box set **Depart** to 30 minutes, **At the end** to **Land at another base** and
-       **Land at** to a Coningsby hangar.
-    5. In CMO the pair takes off 30 minutes into the scenario, flies the route and lands at Coningsby.
+    3. Select them on the Units tab and click **Plot a course...**. Click four waypoints over the North Sea and
+       press [[Enter]].
+    4. Waypoint 1: **Altitude** 9000 m, **Speed** 450 kn, **Radar** on, **Weapons** tight.
+    5. Waypoint 2: **Wait there** 15 min (a tanker), **Name** `Tanker`.
+    6. Waypoint 3: **Name** `IP`, **Altitude** 150 m, **Speed** 540 kn, **Radar** off, **Jammers** on, **Weapons**
+       free, **Signal there** `STRIKE_AT_IP`.
+    7. Waypoint 4: **Altitude** 6000 m, **Radar** on, **Weapons** tight.
+    8. **Depart** 30 minutes, **At the end** **Land at another base**, **Land at** a Coningsby hangar. **OK**.
+    9. In CMO the pair takes off at H+30, climbs out, holds at the tanker, runs in low with radars off, climbs out
+       and lands at Coningsby. An event with a *Regular time* trigger and the condition **Flag is set** `STRIKE_AT_IP` can
+       announce the strike.
 
 Units that are already moving at the start (aircraft in the air, ships, submarines, ground units) are given their
 course when the scenario is built, or at their **Depart** time. Reinforcements are given theirs once they arrive.
@@ -147,13 +191,15 @@ course when the scenario is built, or at their **Depart** time. Reinforcements a
 
 The studio exports the courses with the scenario and adds an event, **Studio: unit courses**, that runs every
 minute of game time. It launches aircraft when their time comes, gives each unit its course once it is in the air
-or under way, and carries out the end-of-course order. Each unit's progress is saved with the scenario, so saving
-and loading a game part way through is fine. The Timeline (Chapter 19) shows when each unit departs.
+or under way, applies each leg's settings as the leg starts, raises signals and holds waits as waypoints are
+reached, and carries out the end-of-course order. Each unit's progress is saved with the scenario, so saving and
+loading a game part way through is fine. The Timeline (Chapter 19) shows when each unit departs.
 
 !!! warning "A course or a mission, not both"
     Units on a mission follow the mission and ignore the course. Give a unit one or the other. The Issues panel
     warns about units with both, about formation members (they follow their lead), about facilities (they cannot
-    move), about departures after the scenario ends, and about landing bases that cannot take the aircraft.
+    move), about departures after the scenario ends, about landing bases that cannot take the aircraft, and about
+    signals with spaces or punctuation.
 
 !!! tip "Players can still change it"
     A course is the unit's starting orders. On a side a player controls, the player can give the unit new orders

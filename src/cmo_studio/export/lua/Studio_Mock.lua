@@ -33,6 +33,11 @@ function ScenEdit_SetSidePosture(a, b, p)
 end
 function ScenEdit_SetDoctrine(sel, d)
   if sel.side then need(MOCK.sides[sel.side], 'SetDoctrine: no side ' .. tostring(sel.side)) end
+  if sel.guid or sel.unitname then
+    need(MOCK.units[sel.guid or ''] or ScenEdit_GetUnit({ name = sel.unitname }), 'SetDoctrine: unknown unit')
+    MOCK.unitdoctrine = MOCK.unitdoctrine or {}
+    for k, v in pairs(d) do MOCK.unitdoctrine[#MOCK.unitdoctrine + 1] = (sel.unitname or sel.guid) .. ' ' .. k .. '=' .. tostring(v) end
+  end
   return true
 end
 function ScenEdit_SetScore(side, v) need(MOCK.sides[side], 'SetScore: no side ' .. tostring(side)); MOCK.score[side] = v end
@@ -131,13 +136,19 @@ function ScenEdit_SetUnit(t)
     u.condition_v, u.isOperating = 'Airborne', true
     MOCK.launched = (MOCK.launched or 0) + 1
   end
+  if t.manualAltitude ~= nil then u.manualAltitude = t.manualAltitude end
+  if t.manualSpeed ~= nil then u.manualSpeed = t.manualSpeed end
   if t.base ~= nil and t.base ~= false then
     need(MOCK.units[t.base] or ScenEdit_GetUnit({ name = t.base }), 'SetUnit: base not found: ' .. tostring(t.base))
     u.base = t.base
   end
   return u
 end
-function ScenEdit_SetEMCON(kind, id, s) need(MOCK.units[id] or MOCK.sides[id], 'SetEMCON: unknown ' .. tostring(id)); return true end
+function ScenEdit_SetEMCON(kind, id, s)
+  need(MOCK.units[id] or MOCK.sides[id], 'SetEMCON: unknown ' .. tostring(id))
+  if MOCK.units[id] then MOCK.units[id].emcon = s end
+  return true
+end
 function ScenEdit_DeleteUnit(t) MOCK.units[t.guid] = nil end
 
 local CLASSES = { patrol = true, strike = true, support = true, ferry = true, mining = true, mineclearing = true, cargo = true }

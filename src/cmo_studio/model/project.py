@@ -133,10 +133,29 @@ class Side:
 
 @dataclass
 class Waypoint:
+    """A point on a course. Its settings apply on the leg flown *to* it (waypoint 1: from departure)."""
     lat: float = 0.0
     lon: float = 0.0
     altitude: Optional[float] = None   # metres (aircraft); None = keep the unit's own
     speed: Optional[float] = None      # knots; None = keep the unit's own
+    name: str = ""
+    radar: str = ""                    # see SENSOR_SETTING: '' no change | 'active' | 'passive'
+    sonar: str = ""
+    ecm: str = ""                      # jammers (OECM)
+    weapons: str = ""                  # see WEAPONS_SETTING: '' | 'free' | 'tight' | 'hold'
+    engage: str = ""                   # see ENGAGE_SETTING: '' | 'leave' | 'stay'
+    wait_minutes: int = 0              # on arrival: circle here this long before going on
+    signal: str = ""                   # on arrival: set this flag (key value) so events can react
+
+
+#: per-leg sensor settings (radar, sonar, jammers)
+SENSOR_SETTING: dict[str, str] = {"": "No change", "active": "On (active)", "passive": "Off (passive)"}
+#: per-leg weapon control status
+WEAPONS_SETTING: dict[str, str] = {"": "No change", "free": "Weapons free", "tight": "Weapons tight",
+                                   "hold": "Weapons hold"}
+#: per-leg behaviour when a target turns up
+ENGAGE_SETTING: dict[str, str] = {"": "No change", "leave": "Leave the course to attack",
+                                  "stay": "Stay on the course"}
 
 
 #: what a unit does at the end of its course

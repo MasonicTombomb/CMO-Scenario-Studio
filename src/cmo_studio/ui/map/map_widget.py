@@ -41,6 +41,7 @@ class MapWidget(QWidget):
     zoneFinished = pyqtSignal(list)                    # [[lat, lon], ...]
     courseFinished = pyqtSignal(str, list)             # unit id, new waypoints [[lat, lon], ...]
     waypointMoved = pyqtSignal(str, int, float, float)  # unit id, waypoint index, lat, lon
+    waypointClicked = pyqtSignal(str, int)              # unit id, waypoint index
     contextRequested = pyqtSignal(float, float, str, object)   # lat, lon, hit id, global QPoint
     cursorMoved = pyqtSignal(float, float)
     deleteRequested = pyqtSignal(str)
@@ -66,6 +67,7 @@ class MapWidget(QWidget):
         self.show_grid = False
         self.show_courses = True
         self.course_unit = ""             # unit whose course the Course tool extends
+        self.highlight_wp = -1            # waypoint of the selected unit's course to ring (the course window)
         self.attribution = ""
         self.place_label = ""
         self._drag_start: Optional[QPointF] = None
@@ -439,8 +441,13 @@ class MapWidget(QWidget):
                     p.setPen(QPen(col, 1))
                     p.setBrush(QBrush(col))
                     p.drawEllipse(q, 2.5, 2.5)
+                if sel and i - 1 == self.highlight_wp:
+                    p.setPen(QPen(QColor("#ffd166"), 2.2))
+                    p.setBrush(Qt.BrushStyle.NoBrush)
+                    p.drawEllipse(q, 9, 9)
                 if sel or self.zoom >= 8:
-                    self._label(p, q + QPointF(6, -5), str(i), col)
+                    name = c.waypoints[i - 1].name if sel and i - 1 < len(c.waypoints) else ""
+                    self._label(p, q + QPointF(6, -5), f"{i} {name}" if name else str(i), col)
             p.setBrush(Qt.BrushStyle.NoBrush)
 
     def _paint_draft(self, p: QPainter) -> None:
@@ -617,9 +624,11 @@ class MapWidget(QWidget):
     def _click(self, pos: QPointF) -> None:
         lat, lon = self.to_latlon(pos)
         if self.tool == Tool.SELECT:
-            kind, oid, _ = self.hit(pos)
+            kind, oid, vertex = self.hit(pos)
             self.selected = oid
             self.objectClicked.emit(oid)
+            if kind == "waypoint":
+                self.waypointClicked.emit(oid, vertex)
         elif self.tool == Tool.PLACE:
             self.placeRequested.emit(lat, lon)
         elif self.tool == Tool.RP:

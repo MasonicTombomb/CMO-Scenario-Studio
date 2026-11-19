@@ -21,7 +21,9 @@ of the studio load.
                  "altitude", "depth", "heading", "speed",            // null = default
                  "host", "loadout", "radar_active", "sonar_active", "hold_position", "autodetectable",
                  "proficiency", "reserve", "group", "notes", "extra": { },
-                 "course": null | { "waypoints": [ { "lat", "lon", "altitude", "speed" } ],   // m, kn; null = unit's own
+                 "course": null | { "waypoints": [ { "lat", "lon", "altitude", "speed",   // m, kn; null = no change
+                                                     "name", "radar", "sonar", "ecm", "weapons", "engage",
+                                                     "wait_minutes", "signal" } ],
                                     "depart_minutes", "finish": "stop|rtb|land|repeat", "land_at": unitId } } ],
   "reference_points": [ { "id", "side", "name", "lat", "lon", "highlighted", "all_sides" } ],
   "zones":   [ { "id", "side", "name", "points": [[lat, lon], ...], "color", "all_sides", "notes" } ],
@@ -44,6 +46,9 @@ of the studio load.
 ## Values
 
 - `units[].type`: `Aircraft`, `Ship`, `Submarine`, `Facility`, `GroundUnit`.
+- `units[].course.waypoints[]`: settings apply on the leg flown *to* the waypoint. `radar`, `sonar`, `ecm`:
+  `""` (no change), `active`, `passive`; `weapons`: `""`, `free`, `tight`, `hold`; `engage`: `""`, `leave` (may leave
+  the course to attack), `stay`; `wait_minutes`: circle there on arrival; `signal`: flag set to true on arrival.
 - `units[].course.finish`: `stop` (carry on), `rtb` (return to its base), `land` (land at `land_at`, a base of the
   same side), `repeat` (fly the course again). `depart_minutes` counts from the scenario start.
 - `missions[].mclass`: `patrol` (`aaw asw naval land mixed sead`), `strike` (`air land sea sub`), `support`,

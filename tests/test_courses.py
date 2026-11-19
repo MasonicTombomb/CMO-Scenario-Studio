@@ -55,8 +55,9 @@ def test_routes_table_and_manager_event():
     assert t["names"] == ["TARTAN #1", "TARTAN #2"]
     assert t["depart"] == p.clock.start_epoch() + 30 * 60
     assert t["finish"] == "land" and t["land"]["name"] == con.name
-    assert routes[viper.id]["wps"][0] == [58.5, -1.0, 9000.0, 450.0]
-    assert routes[viper.id]["wps"][1][2:] == [False, False]
+    assert routes[viper.id]["wps"][0] == {"lat": 58.5, "lon": -1.0, "alt": 9000.0, "spd": 450.0}
+    assert routes[viper.id]["wps"][1] == {"lat": 57.0, "lon": 1.0}
+    assert routes[viper.id]["kind"] == "Aircraft"
     lua = Exporter(p).luainit_lua()
     assert "STUDIO.ROUTES = {" in lua and "TARTAN #2" in lua
     events = compile_build_data(p)["EVENTS"]
@@ -149,54 +150,98 @@ def window(tmp_path, monkeypatch):
     w.close()
 
 
-def test_plot_course_on_the_map_and_edit_it(window):
+def test_course_window(window, monkeypatch):
     w, app = window
+    from PyQt6.QtWidgets import QMessageBox
+
+    from cmo_studio.ui.course_dialog import CourseDialog
     from cmo_studio.ui.map.map_widget import Tool
-    p = new_project("UI", "DB3K_519.db3")
-    ship = Unit(side=p.sides[0].id, type="Ship", dbid=752, name="HMS Montrose", lat=60.0, lon=-3.0)
-    p.units.append(ship)
-    w.doc.load(p)
-    mp = w.map_page
-    w.tabs.setCurrentWidget(mp)
-    w.doc.select(ship.id)
-    mp.set_tool(Tool.COURSE)
-    assert mp.map.tool == Tool.COURSE and mp.map.course_unit == ship.id
-    mp.map.courseFinished.emit(ship.id, [[60.5, -2.0], [61.0, -1.0]])
-    u = w.doc.project.unit(ship.id)
-    assert [(wp.lat, wp.lon) for wp in u.course.waypoints] == [(60.5, -2.0), (61.0, -1.0)]
-    assert mp.map.tool == Tool.SELECT or mp.tool_actions[Tool.SELECT].isChecked()
-    mp.map.waypointMoved.emit(ship.id, 1, 61.2, -0.5)
-    assert (u.course.waypoints[1].lat, u.course.waypoints[1].lon) == (61.2, -0.5)
-    form = mp.unit_form
-    form.set_unit(ship.id)
-    assert form.wps.rowCount() == 2 and "2 waypoint(s)" in form.course_info.text()
-    form.wps.item(0, 3).setText("18")                            # speed at waypoint 1
-    assert u.course.waypoints[0].speed == 18.0
-    form.finish.setCurrentIndex(form.finish.findData("repeat"))
-    assert u.course.finish == "repeat"
-    form._wp_reverse()
-    assert u.course.waypoints[0].lat == 61.2
-    w.doc.undo()
-    assert w.doc.project.unit(ship.id).course.waypoints[0].lat == 60.5
-    form._wp_clear()
-    assert w.doc.project.unit(ship.id).course is None
-    mp.map.grab()                                                # draws without errors
-
-
-# ------------------------------------------------------------------ timeline
-def test_timeline_course_rows():
-    from cmo_studio.model.timeline import POINT, build_timeline
     p, viper, tartan, con = scenario()
-    tl = build_timeline(p)
-    rows = {r.obj_id: r for r in tl.rows if r.kind == "course"}
-    assert set(rows) == {viper.id, tartan.id}
-    t = rows[tartan.id]
-    assert t.marks[0].style == POINT and t.marks[0].start == tl.start + 30 * 60
-    assert t.marks[0].label == "takes off" and f"Lands at {con.name}" in t.detail and not t.issues
-    assert rows[viper.id].marks[0].label == "sets off"
-    tartan.course.depart_minutes = 10 ** 6
-    assert any("after the scenario ends" in i for i in {r.obj_id: r for r in build_timeline(p).rows}[tartan.id].issues)
-    assert not [r for r in build_timeline(p, include_courses=False).rows if r.kind == "course"]
+    tartan.course = None
+    w.doc.load(p)
+    dlg = CourseDialog(w, tartan.id)
+    dlg.show()
+    app.processEvents()
+    assert dlg.map.tool == Tool.COURSE and dlg.map.course_unit == tartan.id       # no course yet: plotting
+    assert "no course yet" in dlg.summary.text()
+    dlg.map.courseFinished.emit(tartan.id, [[58.5, -1.0], [57.0, 1.0], [55.0, 0.5]])
+    assert len(dlg.course.waypoints) == 3 and dlg.sel == 0
+    assert w.doc.project.unit(tartan.id).course is None                          # only the copy so far
+    # leg 1: altitude, speed, radar on, weapons tight
+    dlg.alt.setValue(9000)
+    dlg.speed.setValue(450)
+    dlg.radar.setCurrentIndex(dlg.radar.findData("active"))
+    dlg.weapons.setCurrentIndex(dlg.weapons.findData("tight"))
+    assert "29,528 ft" in dlg.alt_ft.text()
+    # leg 2 via the map: click its waypoint, then set a wait and a signal
+    dlg.map.waypointClicked.emit(tartan.id, 1)
+    assert dlg.sel == 1 and dlg.leg_box.title() == "Leg to waypoint 2"
+    dlg.wait.setValue(15)
+    dlg.signal.setText("AT_IP")
+    dlg.signal.textEdited.emit("AT_IP")
+    dlg.weapons.setCurrentIndex(dlg.weapons.findData("free"))
+    legs = dlg.plan.legs
+    assert [lg.alt for lg in legs] == [9000.0, 9000.0, 9000.0]
+    assert [lg.weapons for lg in legs] == ["tight", "free", "free"] and legs[1].wait == 15
+    assert dlg.table.rowCount() == 3 and dlg.table.item(1, 6).text() == "15 min"
+    # land at Coningsby: a 4th row, the leg to the base
+    dlg.finish.setCurrentIndex(dlg.finish.findData("land"))
+    dlg.land_at.set_current_id(con.id)
+    dlg.land_at.currentIndexChanged.emit(dlg.land_at.currentIndex())
+    assert dlg.table.rowCount() == 4 and dlg.plan.legs[-1].n == 0 and "Lands at" in dlg.summary.text()
+    # drag, insert, reorder, remove
+    dlg.map.waypointMoved.emit(tartan.id, 2, 54.5, 0.0)
+    assert (dlg.course.waypoints[2].lat, dlg.course.waypoints[2].lon) == (54.5, 0.0)
+    dlg.select(1)
+    dlg.insert()
+    assert len(dlg.course.waypoints) == 4 and dlg.course.waypoints[2].signal == "AT_IP"
+    dlg.remove()
+    assert len(dlg.course.waypoints) == 3
+    dlg.select(0)
+    dlg.same_for_all()
+    assert all(x.altitude == 9000 for x in dlg.course.waypoints)
+    dlg.chart.grab()
+    dlg.map.grab()
+    # OK: written back as one undoable step
+    dlg.save()
+    c = w.doc.project.unit(tartan.id).course
+    assert c is not None and c.finish == "land" and c.land_at == con.id and c.waypoints[1].wait_minutes == 15
+    w.doc.undo()
+    assert w.doc.project.unit(tartan.id).course is None
+    # Cancel with changes asks first
+    dlg2 = CourseDialog(w, viper.id)
+    dlg2.course.waypoints.pop()
+    asked = []
+    monkeypatch.setattr(QMessageBox, "question",
+                        staticmethod(lambda *a, **k: asked.append(1) or QMessageBox.StandardButton.No))
+    dlg2.show()
+    dlg2.reject()
+    assert asked and dlg2.isVisible()                                         # 'No': stays open
+    monkeypatch.setattr(QMessageBox, "question", staticmethod(lambda *a, **k: QMessageBox.StandardButton.Yes))
+    dlg2.reject()
+    assert not dlg2.isVisible()
+    assert len(w.doc.project.unit(viper.id).course.waypoints) == 3
+
+
+def test_sidebar_course_summary_and_buttons(window, monkeypatch):
+    w, app = window
+    import cmo_studio.ui.course_dialog as cd
+    p, viper, tartan, con = scenario()
+    w.doc.load(p)
+    form = w.map_page.unit_form
+    form.set_unit(tartan.id)
+    assert "Takes off from Lossiemouth Hangar" in form.course_info.text() and "H+0:30" in form.course_info.text()
+    assert form.course_btn.text() == "Edit course..."
+    opened = []
+    monkeypatch.setattr(cd, "edit_course", lambda win, uid: opened.append(uid))
+    form.course_btn.click()
+    w.map_page.set_tool(__import__("cmo_studio.ui.map.map_widget", fromlist=["Tool"]).Tool.COURSE)
+    assert opened[0] == tartan.id
+    form._clear_course()
+    assert w.doc.project.unit(tartan.id).course is None and form.course_btn.text() == "Plot a course..."
+    tower = next(u for u in w.doc.project.units if u.name == "Lossiemouth Control Tower")
+    form.set_unit(tower.id)
+    assert not form.course_btn.isEnabled()
 
 
 def test_show_menu_layers_and_sides(window):
@@ -212,3 +257,82 @@ def test_show_menu_layers_and_sides(window):
     assert [a.text() for a in sides] == [s.name for s in w.doc.project.sides]
     sides[0].setChecked(False)
     assert w.doc.project.sides[0].id in mp.map.hidden_sides
+
+
+# ------------------------------------------------------------------ leg settings
+def leg_scenario():
+    p = new_project("Legs", "DB3K_519.db3")
+    uk = p.sides[0]
+    wps = [Waypoint(58.5, -1.0, 9000, 450, name="IP", radar="active", weapons="tight", engage="stay"),
+           Waypoint(57.0, 1.0, 300, 520, radar="passive", ecm="active", weapons="free", engage="leave",
+                    wait_minutes=10, signal="AT_TARGET"),
+           Waypoint(55.0, 0.5)]
+    viper = Unit(side=uk.id, type="Aircraft", dbid=TYPHOON, name="VIPER 1", lat=57.0, lon=-2.0, altitude=8000,
+                 loadout=METEOR, course=Course(wps, 0, "stop"))
+    p.units.append(viper)
+    return p, viper
+
+
+def test_leg_settings_export():
+    p, viper = leg_scenario()
+    wps = compile_routes(p)[0]["wps"]
+    assert wps[0] == {"lat": 58.5, "lon": -1.0, "alt": 9000.0, "spd": 450.0, "name": "IP", "radar": "active",
+                      "wcs": "tight", "engage": "stay"}
+    assert wps[1]["wait"] == 10 and wps[1]["flag"] == "AT_TARGET" and wps[1]["ecm"] == "active"
+    assert wps[2] == {"lat": 55.0, "lon": 0.5}
+    q = Project.from_json(p.to_json())
+    assert q.unit(viper.id).course.waypoints[1].signal == "AT_TARGET"
+
+
+LEGS = r"""
+local start = MOCK.now
+local u = ScenEdit_GetUnit({ name = 'VIPER 1' })
+local key = 'STUDIO_RT_%(id)s_1'
+local function show(tag)
+  print('LEG ' .. tag .. ' ' .. ScenEdit_GetKeyValue(key) .. ' leg=' .. ScenEdit_GetKeyValue(key .. '_leg')
+        .. ' alt=' .. tostring(u.manualAltitude) .. ' emcon=' .. tostring(u.emcon) .. ' course=' .. #(u.course or {})
+        .. ' flag=' .. ScenEdit_GetKeyValue('AT_TARGET'))
+end
+show('build')
+table.remove(u.course, 1); StudioRoutesTick(); show('passed1')
+u.course = {}; MOCK.now = start + 20 * 60; StudioRoutesTick(); show('arrived2')
+MOCK.now = start + 25 * 60; u.course = {}; StudioRoutesTick(); show('circling')
+MOCK.now = start + 31 * 60; StudioRoutesTick(); show('wait over')
+u.course = {}; StudioRoutesTick(); show('end')
+print('LEG doctrine ' .. table.concat(MOCK.unitdoctrine or {}, ','))
+"""
+
+
+def test_play_through_leg_settings(database, lua_dll):
+    from cmo_studio.tools.lua_engine import dry_run_build
+    p, viper = leg_scenario()
+    res = dry_run_build(p, lua_dll, db=database, after=LEGS % {"id": viper.id})
+    assert res.ok and "MOCK API ERROR" not in res.output, res.output
+    legs = [ln for ln in res.output.splitlines() if ln.startswith("LEG")]
+    assert legs[0] == "LEG build enroute leg=1 alt=9000.0 emcon=Radar=Active course=3 flag="
+    assert legs[1] == "LEG passed1 enroute leg=2 alt=300.0 emcon=Radar=Passive;OECM=Active course=2 flag="
+    assert legs[2] == "LEG arrived2 loiter leg=2 alt=300.0 emcon=Radar=Passive;OECM=Active course=4 flag=true"
+    assert legs[3].startswith("LEG circling loiter leg=2") and legs[3].endswith("course=4 flag=true")
+    assert legs[4].startswith("LEG wait over enroute leg=3") and "course=1" in legs[4]
+    assert legs[5].startswith("LEG end done")
+    doctrine = legs[6]
+    assert "VIPER 1 weapon_control_status_air=1" in doctrine and "VIPER 1 weapon_control_status_air=0" in doctrine
+    assert "ignore_plotted_course=false" in doctrine and "ignore_plotted_course=true" in doctrine
+
+
+def test_course_plan_estimates():
+    from cmo_studio.model.course_plan import plan_course
+    p, viper, tartan, con = scenario()
+    plan = plan_course(p, tartan)
+    assert plan.hosted and plan.air and plan.start_alt == 0.0
+    assert [lg.n for lg in plan.legs] == [1, 2, 3, 0] and plan.legs[-1].label == f"To {con.name}"
+    assert plan.depart_s == 30 * 60 and plan.legs[0].t0 == 30 * 60
+    first = plan.legs[0]
+    assert abs(first.t1 - first.t0 - first.nm / 450 * 3600) < 2          # typical aircraft speed when none is set
+    assert plan.end_s == plan.legs[-1].t1 and abs(plan.total_nm - sum(lg.nm for lg in plan.legs)) < 1e-6
+    p2, v2 = leg_scenario()
+    lp = plan_course(p2, v2)
+    assert [lg.alt for lg in lp.legs] == [9000.0, 300.0, 300.0]          # carried forward
+    assert [lg.radar for lg in lp.legs] == [True, False, False]
+    assert [lg.weapons for lg in lp.legs] == ["tight", "free", "free"]
+    assert lp.legs[2].t0 == lp.legs[1].t1 + 600                           # the 10-minute wait

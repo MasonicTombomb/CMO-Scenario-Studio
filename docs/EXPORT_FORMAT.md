@@ -112,7 +112,10 @@ Units with a plotted course are listed in `LuaInit.lua`:
 ```lua
 STUDIO.ROUTES = {
   { id = '<unit id>', side = 'United Kingdom', names = { 'TARTAN #1', 'TARTAN #2' },
-    wps = { { 58.5, -1.0, 9000, 450 }, { 57.0, 1.0, false, false } },   -- lat, lon, altitude m, speed kn
+    kind = 'Aircraft',
+    wps = { { lat = 58.5, lon = -1.0, alt = 9000, spd = 450, name = 'IP', radar = 'passive', ecm = 'active',
+              wcs = 'free', engage = 'leave', wait = 10, flag = 'STRIKE_AT_IP' },
+            { lat = 57.0, lon = 1.0 } },               -- only lat and lon are always there
     depart = 1904531400,                       -- Unix time (scenario start + Depart minutes)
     finish = 'land',                           -- 'stop' | 'rtb' | 'land' | 'repeat'
     land = { side = 'United Kingdom', name = 'Coningsby Hangar (4x Medium)' } },
@@ -121,17 +124,24 @@ STUDIO.ROUTES = {
 
 When any course exists, the export adds a repeatable event **Studio: unit courses** (*Regular time*, every minute)
 whose action is `StudioRoutesTick()`. For each copy of each unit it keeps a state in the key value
-`STUDIO_RT_<id>_<n>`, so progress survives saving and loading:
+`STUDIO_RT_<id>_<n>`, the waypoint it is heading for in `STUDIO_RT_<id>_<n>_leg` and the end of a wait in
+`STUDIO_RT_<id>_<n>_until`, so progress survives saving and loading:
 
 | State | Meaning and next step |
 | --- | --- |
 | `wait` | Before `depart`. At `depart`: a unit under way is given the course (`enroute`); an aircraft in a base is sent off with `ScenEdit_SetUnit({guid=, launch=true})` (`launched`). |
 | `launched` | Taking off. Once airborne it is given the course (`enroute`). |
-| `enroute` | Flying the course. When `unit.course` is empty the finish order runs and the state becomes `done` (or `enroute` again for `repeat`). |
+| `enroute` | Flying the course. Each tick compares the waypoints left in `unit.course` with the leg it was on: for every waypoint passed it sets the waypoint's `flag`; a waypoint with `wait` starts a `loiter`; otherwise the next leg's settings are applied. When none are left the finish order runs and the state becomes `done` (or `enroute` again for `repeat`). |
+| `loiter` | Circling a waypoint (four points 5 nm round it for aircraft, 0.5 nm for others) until `_until`, then given the rest of the course. |
 | `done` | Nothing more to do. |
 
-The course is given with `ScenEdit_SetUnit({guid=, course={ {latitude=, longitude=, TypeOf='ManualPlottedCourseWaypoint', desiredAltitude=, desiredSpeed=}, ... }})`;
-if CMO refuses the altitude or speed fields, the plain waypoints are used. `land` sets `base=` to the landing base's
+A leg's settings are applied when it starts: `alt` and `spd` with `ScenEdit_SetUnit({guid=, manualAltitude=})`
+and `manualSpeed=`; `radar`, `sonar`, `ecm` with `ScenEdit_SetEMCON('Unit', guid, 'Radar=Active;OECM=Passive')`;
+`wcs` (free 0, tight 1, hold 2, for air, surface, subsurface and land) and `engage` (`ignore_plotted_course`) with
+`ScenEdit_SetDoctrine({side=, unitname=}, {...})`. A setting CMO refuses is logged and the rest go on.
+
+The course is given with `ScenEdit_SetUnit({guid=, course={ {latitude=, longitude=, TypeOf='ManualPlottedCourseWaypoint', desiredAltitude=, desiredSpeed=, name=}, ... }})`;
+if CMO refuses the altitude, speed or name fields, the plain waypoints are used. `land` sets `base=` to the landing base's
 GUID, then `rtb=true`; `rtb` sets `rtb=true`. A unit that is not found (destroyed, or a reinforcement not yet
 arrived) is skipped until it appears.
 

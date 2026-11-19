@@ -39,8 +39,8 @@ class MapPage(Page):
                                 (Tool.RP, "Reference point", "Click to add reference points"),
                                 (Tool.ZONE, "Draw area", "Draw a patrol / trigger area"),
                                 (Tool.MEASURE, "Measure", "Measure distance and bearing"),
-                                (Tool.COURSE, "Plot course", "Select a unit, then click waypoints for the route it "
-                                                             "should fly or sail")):
+                                (Tool.COURSE, "Course...", "Select a unit, then open its course window: plot "
+                                                           "the route and set each leg")):
             a = QAction(text, self, checkable=True)
             a.setToolTip(tip)
             a.triggered.connect(lambda _c, t=tool: self.set_tool(t))
@@ -140,7 +140,6 @@ class MapPage(Page):
         m.placeRequested.connect(self._place)
         m.rpRequested.connect(self._add_rp)
         m.zoneFinished.connect(self._add_zone)
-        m.courseFinished.connect(self._add_waypoints)
         m.waypointMoved.connect(self._waypoint_moved)
         m.contextRequested.connect(self._context)
         m.deleteRequested.connect(self._delete)
@@ -180,10 +179,10 @@ class MapPage(Page):
     def set_tool(self, tool: Tool, label: str = "") -> None:
         if tool == Tool.COURSE:
             u = self.project.unit(self.doc.selection) if self.doc.selection else None
+            self.tool_actions[Tool.SELECT].setChecked(True)
+            self.map.set_tool(Tool.SELECT)
             if u is None:
-                self.ctx.status("Select a unit first, then press 'Plot course' and click its waypoints.")
-                self.tool_actions[Tool.SELECT].setChecked(True)
-                self.map.set_tool(Tool.SELECT)
+                self.ctx.status("Select a unit first, then press 'Course...' to plot its route.")
                 return
             self.plot_course(u.id)
             return
@@ -200,27 +199,12 @@ class MapPage(Page):
         self.set_tool(Tool.PLACE, entry.name)
 
     def plot_course(self, unit_id: str) -> None:
-        """Course tool for this unit: each click adds a waypoint to the end of its course."""
-        u = self.project.unit(unit_id)
-        if u is None:
-            return
-        self.tool_actions[Tool.COURSE].setChecked(True)
-        self.map.start_course(u.id, u.name)
-        self.map.setFocus()
-
-    def _add_waypoints(self, unit_id: str, pts: list) -> None:
-        from ...model.project import Course, Waypoint
-        u = self.project.unit(unit_id)
-        self.tool_actions[Tool.SELECT].setChecked(True)
-        if u is None or not pts:
-            return
-        with self.edit(f"Plot course for {u.name}", "units"):
-            if u.course is None:
-                u.course = Course()
-            u.course.waypoints.extend(Waypoint(round(a, 6), round(b, 6)) for a, b in pts)
-        self.doc.select(u.id, None)
-        self.ctx.status(f"{u.name}: {len(u.course.waypoints)} waypoint(s). Set its departure and what it does at "
-                        f"the end in the inspector.")
+        """Open the course window for this unit."""
+        w = self.ctx.window
+        if w is not None and self.project.unit(unit_id) is not None:
+            from ..course_dialog import edit_course
+            self.doc.select(unit_id, self)
+            edit_course(w, unit_id)
 
     def _waypoint_moved(self, unit_id: str, i: int, lat: float, lon: float) -> None:
         u = self.project.unit(unit_id)
@@ -414,9 +398,9 @@ class MapPage(Page):
             menu.addAction(f"Select '{getattr(obj, 'name', oid)}'", lambda: self.doc.select(oid, self))
             if isinstance(obj, Unit):
                 menu.addAction("Duplicate", lambda: (self.unit_form.set_unit(oid), self.unit_form._duplicate()))
-                menu.addAction("Plot course..." if not (obj.course and obj.course.waypoints) else
-                               "Add waypoints to course...", lambda: (self.doc.select(oid, self),
-                                                                      self.plot_course(oid)))
+                if obj.type != "Facility":
+                    menu.addAction("Plot course..." if not (obj.course and obj.course.waypoints) else
+                                   "Edit course...", lambda: self.plot_course(oid))
                 if obj.course and obj.course.waypoints:
                     menu.addAction("Clear course", lambda: self._clear_course(oid))
                 from ...model.formations import formation_of

@@ -225,7 +225,7 @@ def main():
     tb = w.map_page.findChild(QToolBar)
     shot("map_toolbar", w.map_page, [
         (1, ("action", "Select / move")), (2, ("action", "Place unit")), (3, ("action", "Reference point")),
-        (4, ("action", "Draw area")), (5, ("action", "Measure")), (6, ("action", "Plot course")),
+        (4, ("action", "Draw area")), (5, ("action", "Measure")), (6, ("action", "Course...")),
         (7, w.map_page.side_combo), (8, ("action", "Templates...")), (9, ("action", "Patrol areas...")),
         (10, ("action", "Fit all")), (11, "Show ▾")], crop=QRect(QPoint(0, 0), QPoint(w.map_page.width(),
                                                                                    tb.height() + 4)))
@@ -245,18 +245,37 @@ def main():
     pump(app, 0.5)
     shot("map_airbase_inspector", w.map_page, [(1, ("row", "Name:")), (2, "Hosted units")],
          crop=QRect(w.map_page.unit_form.mapTo(w.map_page, QPoint(0, 0)), w.map_page.unit_form.size()))
-    # 4b. A course: the Course box of a ship with a plotted route (in memory only, removed again)
+    # 4b. The course window: a Typhoon pair from Amari flying a strike route (in memory only, removed again)
     from cmo_studio.model.project import Course, Waypoint
-    w.doc.select(ship.id)
-    ship.course = Course([Waypoint(ship.lat + 0.25, ship.lon + 0.6), Waypoint(ship.lat + 0.1, ship.lon + 1.4, None, 18),
-                          Waypoint(ship.lat - 0.15, ship.lon + 2.0)], 30, "repeat")
-    w.map_page.unit_form.refresh()
+    from cmo_studio.ui.course_dialog import CourseDialog
+    jet = next(u for u in p.units if u.type == "Aircraft" and u.host == amari.id)
+    jet.course = Course([
+        Waypoint(59.05, 25.95, 9000, 450, name="Climb", radar="active", weapons="tight"),
+        Waypoint(59.75, 26.9, 9000, 480, name="Tanker", wait_minutes=15, signal="TANKER_DONE"),
+        Waypoint(59.65, 28.1, 150, 540, name="IP", radar="passive", ecm="active", weapons="free", engage="leave",
+                 signal="STRIKE_AT_IP"),
+        Waypoint(59.35, 27.3, 6000, 480, name="Egress", radar="active", weapons="tight")], 20, "rtb")
+    dlg = CourseDialog(w, jet.id)
+    dlg.resize(1360, 900)
+    dlg.show()
+    pump(app, 0.5)
+    dlg.fit()
+    dlg.select(2)
+    pump(app, 6)
+    shot("dialog_course", dlg, [(1, dlg.map), (2, "Add waypoints"), (3, dlg.table), (4, dlg.leg_box),
+                                (5, ("row", "Weapons:")), (6, ("row", "Wait there:")), (7, dlg.chart),
+                                (8, dlg.depart), (9, dlg.finish), (10, dlg.summary)])
+    dlg._orig = dlg.course     # not dirty: close without asking
+    dlg.reject()
+    form = w.map_page.unit_form
+    w.doc.select(jet.id)
     pump(app, 0.3)
-    cb = w.map_page.unit_form.course_box
-    shot("unit_course", cb, [(1, cb.findChild(QTableWidget)), (2, "Plot on map"), (3, "Remove"), (4, ("row", "Depart:")),
-                             (5, ("row", "At the end:")), (6, ("row", "Land at:"))])
-    ship.course = None
-    w.map_page.unit_form.refresh()
+    cb = form.course_box
+    shot("unit_course", cb, [(1, form.course_info), (2, "Edit course..."), (3, "Clear")])
+    jet.course = None
+    form.refresh()
+    w.doc.select(ship.id)
+    pump(app, 0.2)
 
     # 5. Database dock
     shot("database_dock", w.db_browser, [

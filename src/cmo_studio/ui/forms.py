@@ -235,176 +235,53 @@ class UnitForm(_Scroll):
 
     # ------------------------------------------------------------------ course
     def _build_course_box(self, lay) -> None:
-        from ..model.project import COURSE_FINISH
         g = QGroupBox("Course")
         v = QVBoxLayout(g)
         self.course_info = hint_label("")
         v.addWidget(self.course_info)
-        self.wps = QTableWidget(0, 4)
-        self.wps.setHorizontalHeaderLabels(["Latitude", "Longitude", "Altitude (m)", "Speed (kn)"])
-        self.wps.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        self.wps.setMaximumHeight(160)
-        self.wps.setToolTip("Waypoints in order. Leave altitude or speed empty to keep the unit's own.")
-        self.wps.itemChanged.connect(self._wp_edited)
-        v.addWidget(self.wps)
         row = QHBoxLayout()
-        for text, fn, tip in (("Plot on map", self._plot, "Click waypoints on the map (added to the end)"),
-                              ("Remove", self._wp_remove, "Remove the selected waypoint"),
-                              ("Up", lambda: self._wp_move(-1), ""), ("Down", lambda: self._wp_move(1), ""),
-                              ("Reverse", self._wp_reverse, "Fly the course the other way round"),
-                              ("Clear", self._wp_clear, "Remove the whole course")):
-            btn = QPushButton(text)
-            btn.clicked.connect(fn)
-            if tip:
-                btn.setToolTip(tip)
-            row.addWidget(btn)
+        self.course_btn = QPushButton("Edit course...")
+        self.course_btn.setToolTip("Open the course window: plot the route on a map, set each leg's altitude, speed, "
+                                   "sensors and weapons, and see the profile")
+        self.course_btn.clicked.connect(self._edit_course)
+        self.course_clear = QPushButton("Clear")
+        self.course_clear.setToolTip("Remove the whole course")
+        self.course_clear.clicked.connect(self._clear_course)
+        row.addWidget(self.course_btn, 1)
+        row.addWidget(self.course_clear)
         v.addLayout(row)
-        f = QFormLayout()
-        self.depart = QSpinBox()
-        self.depart.setRange(0, 60 * 24 * 60)
-        self.depart.setSuffix(" min after the start")
-        self.depart.setSpecialValueText("at the start")
-        self.depart.setToolTip("When the unit sets off. Aircraft at a base take off at this time.")
-        self.depart.valueChanged.connect(self._course_fields)
-        f.addRow("Depart:", self.depart)
-        self.finish = QComboBox()
-        for k, label in COURSE_FINISH.items():
-            self.finish.addItem(label, k)
-        self.finish.currentIndexChanged.connect(self._course_fields)
-        f.addRow("At the end:", self.finish)
-        self.land_at = IdCombo()
-        self.land_at.currentIndexChanged.connect(self._course_fields)
-        f.addRow("Land at:", self.land_at)
-        v.addLayout(f)
-        v.addWidget(hint_label("Units on a mission follow the mission instead; give a unit a course or a mission, "
-                               "not both."))
         lay.addWidget(g)
         self.course_box = g
 
     def _load_course(self, u) -> None:
-        from ..geo import distance_km
-        c = u.course
-        wps = c.waypoints if c else []
-        self.wps.blockSignals(True)
-        self.wps.setRowCount(0)
-        for w in wps:
-            r = self.wps.rowCount()
-            self.wps.insertRow(r)
-            for col, val in enumerate((f"{w.lat:.5f}", f"{w.lon:.5f}",
-                                       "" if w.altitude is None else f"{w.altitude:g}",
-                                       "" if w.speed is None else f"{w.speed:g}")):
-                self.wps.setItem(r, col, QTableWidgetItem(val))
-        self.wps.blockSignals(False)
-        bases = [(f"{h.name}  [{h.type}]", h.id) for h in self.project.units
-                 if h.id != u.id and h.type in HOST_TYPES and h.side == u.side and not h.host]
-        for w, val in ((self.depart, c.depart_minutes if c else 0),):
-            w.blockSignals(True)
-            w.setValue(int(val))
-            w.blockSignals(False)
-        self.finish.blockSignals(True)
-        self.finish.setCurrentIndex(max(0, self.finish.findData(c.finish if c else "stop")))
-        self.finish.blockSignals(False)
-        self.land_at.blockSignals(True)
-        self.land_at.set_items(bases, blank="(choose a base)", keep=False)
-        self.land_at.set_current_id(c.land_at if c else "")
-        self.land_at.blockSignals(False)
-        has = bool(wps)
-        for w in (self.depart, self.finish):
-            w.setEnabled(has)
-        self.land_at.setEnabled(has and self.finish.currentData() == "land")
-        if not has:
-            self.course_info.setText("No course. Press 'Plot on map' and click waypoints, or right-click the unit "
-                                     "on the map > Plot course.")
-            return
-        start = self.project.unit(u.host) if u.host else u
-        pts = [(start.lat, start.lon)] + [(w.lat, w.lon) for w in wps]
-        nm = sum(distance_km(a[0], a[1], b[0], b[1]) for a, b in zip(pts, pts[1:])) / 1.852
-        when = "at the start" if not c.depart_minutes else f"{c.depart_minutes} min after the start"
-        how = "takes off from its base" if u.host else "sets off"
-        self.course_info.setText(f"{len(wps)} waypoint(s), {nm:,.0f} nm. {u.name} {how} {when}.")
+        from ..model.course_plan import hms, plan_course
+        plan = plan_course(self.project, u)
+        movable = u.type != "Facility"
+        self.course_btn.setEnabled(movable)
+        self.course_btn.setText("Edit course..." if plan else "Plot a course...")
+        self.course_clear.setEnabled(plan is not None)
+        if not movable:
+            self.course_info.setText("Facilities cannot move.")
+        elif plan is None:
+            self.course_info.setText("No course: the unit follows its mission, or stays where it is.")
+        else:
+            how = f"Takes off from {plan.origin}" if plan.hosted else "Sets off"
+            when = "at the start" if not plan.depart_s else f"at H+{hms(plan.depart_s)}"
+            self.course_info.setText(f"{how} {when}; {len(u.course.waypoints)} waypoint(s), {plan.total_nm:,.0f} nm, "
+                                     f"about {hms(plan.end_s - plan.depart_s)} h. At the end: {plan.finish}.")
 
-    def _course(self, create: bool = False):
-        from ..model.project import Course
-        u = self.project.unit(self.uid)
-        if u is None:
-            return None, None
-        if u.course is None and create:
-            u.course = Course()
-        return u, u.course
-
-    def _plot(self):
+    def _edit_course(self):
         w = self.ctx.window
-        if w is None or not self.uid:
-            return
-        w.tabs.setCurrentWidget(w.map_page)
-        self.doc.select(self.uid)
-        w.map_page.plot_course(self.uid)
+        if w is not None and self.uid:
+            from .course_dialog import edit_course
+            edit_course(w, self.uid)
 
-    def _wp_edited(self, item: QTableWidgetItem):
-        u, c = self._course()
-        r, col = item.row(), item.column()
-        if c is None or r >= len(c.waypoints):
-            return
-        text = item.text().strip().replace(",", ".")
-        try:
-            val = float(text) if text else None
-        except ValueError:
-            self.refresh()
-            return
-        wp = c.waypoints[r]
-        with self.edit("Edit waypoint", "units", merge=f"wp.{u.id}.{r}.{col}"):
-            if col == 0 and val is not None:
-                wp.lat = max(-90.0, min(90.0, val))
-            elif col == 1 and val is not None:
-                wp.lon = max(-180.0, min(180.0, val))
-            elif col == 2:
-                wp.altitude = val
-            elif col == 3:
-                wp.speed = val
-        self._load_course(u)
-
-    def _wp_remove(self):
-        u, c = self._course()
-        r = self.wps.currentRow()
-        if c is not None and 0 <= r < len(c.waypoints):
-            with self.edit("Remove waypoint", "units"):
-                c.waypoints.pop(r)
-                if not c.waypoints:
-                    u.course = None
-            self.refresh()
-
-    def _wp_move(self, d: int):
-        u, c = self._course()
-        r = self.wps.currentRow()
-        if c is not None and 0 <= r < len(c.waypoints) and 0 <= r + d < len(c.waypoints):
-            with self.edit("Reorder waypoints", "units"):
-                c.waypoints[r], c.waypoints[r + d] = c.waypoints[r + d], c.waypoints[r]
-            self.refresh()
-            self.wps.selectRow(r + d)
-
-    def _wp_reverse(self):
-        u, c = self._course()
-        if c is not None and len(c.waypoints) > 1:
-            with self.edit("Reverse course", "units"):
-                c.waypoints.reverse()
-            self.refresh()
-
-    def _wp_clear(self):
-        u, c = self._course()
-        if c is not None:
+    def _clear_course(self):
+        u = self.project.unit(self.uid)
+        if u is not None and u.course is not None:
             with self.edit("Clear course", "units"):
                 u.course = None
             self.refresh()
-
-    def _course_fields(self, *_):
-        u, c = self._course()
-        if c is None:
-            return
-        new = (int(self.depart.value()), self.finish.currentData() or "stop", self.land_at.current_id())
-        if new != (c.depart_minutes, c.finish, c.land_at):
-            with self.edit("Edit course", "units", merge=f"course.{u.id}"):
-                c.depart_minutes, c.finish, c.land_at = new
-        self._load_course(u)
 
     def _fill_loadouts(self, u) -> None:
         self.loadout.blockSignals(True)
