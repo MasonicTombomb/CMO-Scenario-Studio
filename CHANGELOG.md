@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.6.1 — 2026-11-19
 
 - **PDF manuals**: a new 85-page **User Manual** written for complete beginners - installing, a tour of the window,
   a step-by-step first scenario from nothing to playing it in CMO, every tab and dialog with annotated screenshots,
