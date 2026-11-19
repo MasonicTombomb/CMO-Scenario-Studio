@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- **Fixed**: a leg's *Targets* setting (leave the course to attack / stay on it) sent CMO `true`/`false`; it now
+  sends `yes`/`no`, like the Sides tab's *Ignore plotted course* doctrine.
+- Tests: ships, submarines and ground units play a course through the dry-run (departure, leg speed, sensors,
+  weapons, wait and signal), not only aircraft.
+- Docs: README feature list, architecture notes, glossary (course, leg, waypoint, signal), FAQ and keyboard table
+  cover courses; the manual lists which leg settings each kind of unit uses.
+
 ## 1.8.0 — 2026-11-19
 
 - **The course window.** Courses now open in their own window (**Edit course...** in the inspector, **Course...**

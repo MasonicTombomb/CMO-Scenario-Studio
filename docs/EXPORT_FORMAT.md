@@ -137,7 +137,7 @@ whose action is `StudioRoutesTick()`. For each copy of each unit it keeps a stat
 
 A leg's settings are applied when it starts: `alt` and `spd` with `ScenEdit_SetUnit({guid=, manualAltitude=})`
 and `manualSpeed=`; `radar`, `sonar`, `ecm` with `ScenEdit_SetEMCON('Unit', guid, 'Radar=Active;OECM=Passive')`;
-`wcs` (free 0, tight 1, hold 2, for air, surface, subsurface and land) and `engage` (`ignore_plotted_course`) with
+`wcs` (free 0, tight 1, hold 2, for air, surface, subsurface and land) and `engage` (`ignore_plotted_course` = `'yes'` / `'no'`, as on the Sides tab) with
 `ScenEdit_SetDoctrine({side=, unitname=}, {...})`. A setting CMO refuses is logged and the rest go on.
 
 The course is given with `ScenEdit_SetUnit({guid=, course={ {latitude=, longitude=, TypeOf='ManualPlottedCourseWaypoint', desiredAltitude=, desiredSpeed=, name=}, ... }})`;

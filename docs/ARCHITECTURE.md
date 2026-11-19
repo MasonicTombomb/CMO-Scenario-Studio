@@ -10,7 +10,8 @@ src/cmo_studio/
     project.py           dataclasses for the whole project + JSON (de)serialisation
     enums.py             API vocab: unit types, mission classes, trigger/condition/action specs
     formations.py        formation presets, station geometry, apply/move helpers
-    timeline.py          events and missions on the scenario clock, timing problems
+    timeline.py          events, missions and courses on the scenario clock, timing problems
+    course_plan.py       plotted-course estimates: legs, settings in force, timings (window, inspector, timeline)
     callsigns.py         callsign library (JSON), role detection, flight allocation
     templates.py         unit templates (JSON): DB resolution, placement, save-as-template
     area_library.py      predefined patrol areas (JSON): regions, add as zone + mission, save areas back
@@ -50,6 +51,7 @@ src/cmo_studio/
     update_ui.py         update check, release notes dialog, download progress
     areas_library_ui.py  patrol area browser with map preview and area library editor
     forms.py             UnitForm, RPForm, ZoneForm (shared by map and pages)
+    course_dialog.py     course window: route map, leg table and settings, flight profile chart
     widgets.py           code editor, highlighters, pickers, key/value table...
     dialogs.py           settings, new project, about, issues panel
     theme.py             dark Fusion theme

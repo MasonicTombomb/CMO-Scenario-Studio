@@ -19,9 +19,9 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
   finger-four, ladder, wall, ground wedge, coil, SAM dispersal and more, plus custom stations) with spacing,
   orientation, altitude step, mirror and jitter controls and a live preview. Create new units straight into a
   formation from the database, or group existing ones; they are built as CMO groups with formation stations.
-- **Event timeline** — every event and mission on the scenario clock: one-shot moments, random windows, repeating
-  ticks and condition triggers, with problems flagged (outside the scenario, same-minute clashes, missions ending
-  before they start). Double-click to edit.
+- **Event timeline** — every event, mission and unit course on the scenario clock: one-shot moments, random
+  windows, repeating ticks, condition triggers and estimated time en route, with problems flagged (outside the
+  scenario, same-minute clashes, missions ending before they start). Double-click to edit.
 - **Search everything** (Ctrl+K) — jump to any unit, mission, event, area, formation, script line or command.
 - **Edit many units at once** — tick the fields to change across a selection: rename patterns (`Escort {nn}`),
   side, group, proficiency, EMCON, hold, heading, speed, altitude, base, loadout and more, in one undo step.
@@ -54,6 +54,10 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Sides** — awareness, proficiency, computer-only, starting score, doctrine and a full posture matrix.
 - **Missions** — patrol, strike, support, ferry, mining, mine clearing and cargo, with areas, prosecution areas,
   assigned units, strike targets and `ScenEdit_SetMission` options.
+- **Courses** — plot the exact route of any aircraft, ship, submarine or ground unit in a course window with a map,
+  a table of legs and a flight profile. Each leg sets altitude, speed, radar / sonar / jammers, weapons
+  free / tight / hold and whether to leave the course to attack; waypoints can hold the unit for a while or raise a
+  flag for events. Aircraft at a base take off at their departure time and return or land at another base.
 - **Events** — triggers (time, date, delay, unit destroyed/damaged/detected, area entry, points...), conditions,
   probability and actions (message, score, end scenario, mission on/off, flags, spawn reinforcements, Lua), with
   templates and a live preview of the generated Lua.

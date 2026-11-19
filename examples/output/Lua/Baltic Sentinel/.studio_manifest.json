@@ -1,6 +1,6 @@
 {
-  "generator": "CMO Scenario Studio 1.7.0",
-  "written": "2026-11-19T18:01:36",
+  "generator": "CMO Scenario Studio 1.8.0",
+  "written": "2026-11-19T18:08:22",
   "files": [
     "Lua/Baltic Sentinel/Build_PLAY_NATO.lua",
     "Lua/Baltic Sentinel/Build_PLAY_RUSSIA.lua",

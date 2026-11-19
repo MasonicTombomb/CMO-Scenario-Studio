@@ -317,7 +317,7 @@ def test_play_through_leg_settings(database, lua_dll):
     assert legs[5].startswith("LEG end done")
     doctrine = legs[6]
     assert "VIPER 1 weapon_control_status_air=1" in doctrine and "VIPER 1 weapon_control_status_air=0" in doctrine
-    assert "ignore_plotted_course=false" in doctrine and "ignore_plotted_course=true" in doctrine
+    assert "ignore_plotted_course=no" in doctrine and "ignore_plotted_course=yes" in doctrine
 
 
 def test_course_plan_estimates():
@@ -336,3 +336,45 @@ def test_course_plan_estimates():
     assert [lg.radar for lg in lp.legs] == [True, False, False]
     assert [lg.weapons for lg in lp.legs] == ["tight", "free", "free"]
     assert lp.legs[2].t0 == lp.legs[1].t1 + 600                           # the 10-minute wait
+
+
+# ------------------------------------------------------------------ not just aircraft
+SURFACE = r"""
+local start = MOCK.now
+local u = ScenEdit_GetUnit({ name = '%(name)s' })
+local key = 'STUDIO_RT_%(id)s_1'
+local function show(tag)
+  print('UNIT ' .. tag .. ' ' .. ScenEdit_GetKeyValue(key) .. ' leg=' .. ScenEdit_GetKeyValue(key .. '_leg')
+        .. ' speed=' .. tostring(u.manualSpeed) .. ' emcon=' .. tostring(u.emcon) .. ' course=' .. #(u.course or {})
+        .. ' flag=' .. ScenEdit_GetKeyValue('%(flag)s'))
+end
+show('build')
+MOCK.now = start + 10 * 60; StudioRoutesTick(); show('depart')
+table.remove(u.course, 1); StudioRoutesTick(); show('arrived1')
+MOCK.now = start + 16 * 60; StudioRoutesTick(); show('wait over')
+u.course = {}; StudioRoutesTick(); show('end')
+print('UNIT doctrine ' .. table.concat(MOCK.unitdoctrine or {}, ','))
+"""
+
+
+@pytest.mark.parametrize("utype,dbid,sensor,emcon", [("Ship", 2814, "sonar", "Sonar=Active"),
+                                                    ("Submarine", 771, "sonar", "Sonar=Active"),
+                                                    ("GroundUnit", 491, "radar", "Radar=Active")])
+def test_ships_submarines_and_ground_units_follow_courses(database, lua_dll, utype, dbid, sensor, emcon):
+    """Same route manager for every moving unit: departure time, leg speed and sensors, weapons, wait, signal."""
+    from cmo_studio.tools.lua_engine import dry_run_build
+    p = new_project("Surface", "DB3K_519.db3")
+    first = Waypoint(56.6, 3.2, speed=12, weapons="hold", wait_minutes=5, signal="LEG1_DONE")
+    setattr(first, sensor, "active")
+    unit = Unit(side=p.sides[0].id, type=utype, dbid=dbid, name="MOVER", lat=56.5, lon=3.0,
+                course=Course([first, Waypoint(56.8, 3.6, speed=18, weapons="free")], 10, "stop"))
+    p.units.append(unit)
+    res = dry_run_build(p, lua_dll, db=database, after=SURFACE % {"name": "MOVER", "id": unit.id, "flag": "LEG1_DONE"})
+    assert res.ok and "MOCK API ERROR" not in res.output, res.output
+    out = [ln for ln in res.output.splitlines() if ln.startswith("UNIT")]
+    assert out[0] == "UNIT build wait leg= speed=nil emcon=nil course=0 flag="             # waits for H+10
+    assert out[1] == f"UNIT depart enroute leg=1 speed=12.0 emcon={emcon} course=2 flag="
+    assert out[2] == f"UNIT arrived1 loiter leg=1 speed=12.0 emcon={emcon} course=4 flag=true"   # holds 5 min
+    assert out[3] == f"UNIT wait over enroute leg=2 speed=18.0 emcon={emcon} course=1 flag=true"
+    assert out[4].startswith("UNIT end done")
+    assert "MOVER weapon_control_status_surface=2" in out[5] and "MOVER weapon_control_status_land=0" in out[5]

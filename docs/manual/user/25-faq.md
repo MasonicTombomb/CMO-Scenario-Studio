@@ -34,6 +34,12 @@ Yes. The project is a small text file designed to be compared and backed up.
 Map pictures are downloaded from the chosen map service, and the update check asks GitHub for the latest version.
 Nothing about you or your scenarios is sent anywhere.
 
+**How do I make the computer's aircraft or ships follow a set route?**
+Give the unit a course rather than a mission: select it and click **Edit course...** in the inspector, then click
+the waypoints on the map. Each leg can have its own altitude, speed, sensors and weapons, and aircraft can take off
+from one base and land at another. See *Courses* in Chapter 14. It works for aircraft, ships, submarines and ground
+units.
+
 **Is it free?**
 Yes, free and open source under the MIT License. The UK air base layouts come from OpenStreetMap
 (© OpenStreetMap contributors, Open Database License).

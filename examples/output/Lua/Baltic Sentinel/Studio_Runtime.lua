@@ -215,7 +215,7 @@ local function applyLeg(u, r, w)
     d.weapon_control_status_air, d.weapon_control_status_surface = v, v
     d.weapon_control_status_subsurface, d.weapon_control_status_land = v, v
   end
-  if w.engage then d.ignore_plotted_course = (w.engage == 'leave') end
+  if w.engage then d.ignore_plotted_course = (w.engage == 'leave') and 'yes' or 'no' end
   if next(d) then try(u.name .. ' doctrine', ScenEdit_SetDoctrine, { side = r.side, unitname = u.name }, d) end
 end
 

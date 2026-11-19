@@ -28,8 +28,8 @@
 | Drag with the left button | Pan, or move the unit under the mouse |
 | [[Esc]] | Stop the current tool, or select nothing |
 | [[Delete]] | Delete the selected object |
-| [[Enter]] / double-click | Finish drawing an area |
-| [[Backspace]] | Remove the last corner while drawing |
+| [[Enter]] / double-click | Finish drawing an area, or adding waypoints in the course window |
+| [[Backspace]] | Remove the last corner (or waypoint) while drawing |
 
 **In search**: arrow keys to choose, [[Enter]] to open, [[Esc]] to close.
 
@@ -64,6 +64,9 @@ CAP
 
 Chokepoint
 :   A narrow passage ships must use, such as the Strait of Hormuz or the GIUK gap.
+
+Course
+:   A route you plot for a unit, waypoint by waypoint, with settings for each leg (Chapter 14).
 
 DBID
 :   The number identifying an entry in CMO's database.
@@ -104,6 +107,9 @@ Key value
 
 [LOADDOC]
 :   The tag CMO uses to load a briefing page from a file.
+
+Leg
+:   The stretch of a course flown to one waypoint. Its settings (altitude, speed, sensors, weapons) apply on it.
 
 Loadout
 :   The weapons and stores an aircraft carries.
@@ -154,8 +160,14 @@ Squadron
 Template
 :   A ready-made group of units, such as a whole airbase.
 
+Signal
+:   A flag a unit sets when it reaches a waypoint of its course, so an event can react (Chapter 14).
+
 Variant
 :   Another build of the same scenario, usually with a different side played by the computer.
+
+Waypoint
+:   A point on a course. The unit flies (or sails, or drives) to each in turn.
 
 WCS
 :   Weapons control status: Free, Tight or Hold.

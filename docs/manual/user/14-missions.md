@@ -152,6 +152,16 @@ it. *No change* keeps whatever the unit already has.
 **Same for every leg** copies the selected leg's altitude, speed, sensors, weapons and targets setting to every
 leg.
 
+Courses work for every unit that moves: aircraft, helicopters, ships, submarines and ground units. Facilities
+cannot have one. The window shows only the settings that fit the unit:
+
+| Unit | Altitude | Speed | Radar | Sonar | Jammers | Weapons, targets | Wait, signal | Takes off from a base |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Aircraft, helicopters | yes | yes | yes | yes | yes | yes | yes (circles 5 nm round the waypoint) | yes |
+| Ships | - | yes | yes | yes | yes | yes | yes (circles 0.5 nm round it) | - |
+| Submarines | - (depth stays as set) | yes | yes | yes | yes | yes | yes (circles 0.5 nm round it) | - |
+| Ground units | - | yes | yes | - | yes | yes | yes (circles 0.5 nm round it) | - |
+
 | At the end | What happens |
 | --- | --- |
 | Carry on (no further orders) | The unit keeps going; CMO's normal behaviour takes over. |
