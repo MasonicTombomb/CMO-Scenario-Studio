@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- **Fixed: aircraft missing after the build when their base cannot hold them.** Aircraft based on a runway,
+  taxiway or tower (for example a part of a template air base), on a facility too small for them, or on a full
+  shelter, failed with a .NET exception and the build wrongly reported *loadout refused, placed in reserve*. Now:
+  - the build tries the other hangars, shelters and aprons of the same site and reports *X cannot take it, based at Y
+    instead*; it only reports a refused loadout when the reserve loadout is what made it work, and otherwise names
+    the base as the cause;
+  - the Issues panel shows an error for aircraft whose base has no hangar, shelter or parking that fits them, and a
+    warning when more aircraft start at a base than it has room for (from CMO's database);
+  - **Add to selected base** will not put aircraft into a unit that cannot hold them; on a template site it offers
+    the site's hangars, shelters and aprons with room, and suggests a squadron size that fits;
+  - the dry-run (F5 and `--dry-run`) checks aircraft space like CMO does, so this shows up before building in CMO.
+
 ## 1.6.1 — 2026-11-19
 
 - **PDF manuals**: a new 85-page **User Manual** written for complete beginners - installing, a tour of the window,

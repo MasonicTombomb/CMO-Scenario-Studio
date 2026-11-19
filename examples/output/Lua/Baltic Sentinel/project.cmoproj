@@ -24,7 +24,7 @@
     "duration_minutes": 0
   },
   "weather": {
-    "temperature": 9,
+    "temperature": 9.0,
     "rainfall": 0,
     "cloud": 0.3,
     "sea_state": 2
@@ -209,7 +209,7 @@
       "count": 1,
       "lat": 59.4,
       "lon": 21.0,
-      "altitude": 9000,
+      "altitude": 9000.0,
       "depth": null,
       "heading": null,
       "speed": null,
@@ -365,7 +365,7 @@
       "count": 1,
       "lat": 60.0,
       "lon": 31.5,
-      "altitude": 9000,
+      "altitude": 9000.0,
       "depth": null,
       "heading": null,
       "speed": null,
@@ -496,7 +496,7 @@
       "lat": 59.85,
       "lon": 25.0,
       "altitude": null,
-      "depth": 60,
+      "depth": 60.0,
       "heading": null,
       "speed": null,
       "host": "",
@@ -1231,6 +1231,7 @@
       "set_heading": true,
       "keep_on_station": true,
       "group_in_cmo": true,
+      "set_stations": true,
       "station_type": "Rotating",
       "sprint_drift": false,
       "notes": "Corvettes screen the missile ship on the approach to Hogland."

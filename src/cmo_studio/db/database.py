@@ -257,6 +257,27 @@ class Database:
                        "where lw.ID = ? group by w.Name order by w.Name", (loadout_id,))
         return [f"{n}x {name}" if n and n > 1 else name for name, n in rows]
 
+    def aircraft_spaces(self, utype: str, dbid: int) -> list:
+        """The aircraft spaces of a facility, ship, submarine or ground unit (model.hosting.Space)."""
+        from ..model.hosting import Space
+        table = UNIT_TABLES.get(utype)
+        if not table or utype == "Aircraft":
+            return []
+        try:
+            rows = self._q(f"select af.Type, af.PhysicalSize, af.Capacity from {table}AircraftFacilities l "
+                           "join DataAircraftFacility af on af.ID = l.ComponentID where l.ID = ?", (dbid,))
+        except sqlite3.Error:
+            return []
+        return [Space(int(t or 0), int(s or 0), int(c or 0)) for t, s, c in rows]
+
+    def aircraft_profile(self, aircraft_id: int):
+        """Size and rotary-wing flag of an aircraft (model.hosting.Aircraft), or None."""
+        from ..model.hosting import ROTARY_CATEGORIES, Aircraft
+        r = self._q("select PhysicalSizeCode, Category from DataAircraft where ID=?", (aircraft_id,))
+        if not r:
+            return None
+        return Aircraft(int(r[0][0] or 0), int(r[0][1] or 0) in ROTARY_CATEGORIES)
+
     def runway_needed(self, aircraft_id: int) -> str:
         r = self._q("select RunwayLengthCode from DataAircraft where ID=?", (aircraft_id,))
         return self.enum("EnumRunwayLength").get(r[0][0], "") if r else ""

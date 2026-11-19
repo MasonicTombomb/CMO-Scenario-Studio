@@ -35,7 +35,9 @@ Find the problem in the left column.
 | --- | --- |
 | Dry-run says `lua54.dll` not found | The CMO folder in **Settings** is wrong, or CMO is not installed on this PC. |
 | The Issues panel shows errors | Double-click each error to jump to it. The text says what is wrong. |
-| An aircraft is missing after the build in CMO | Its base had no room, or the runway was too short. Read the warnings in the build report; put the squadron in a bigger hangar or a single-unit airfield. |
+| An aircraft is missing after the build in CMO | Its base cannot hold it: aircraft must start in a hangar, shelter, apron or airfield, not on a runway or tower, and each has limited room. The Issues panel flags this; select the squadron and set **Starts at** to a hangar or shelter with room. |
+| The build says *based at ... instead* | The base you chose could not take the aircraft, so the build used another hangar or shelter of the same base. Change **Starts at** to that facility to make it permanent. |
+| The build says *loadout ... refused, placed in reserve* | CMO would not arm that aircraft with the chosen loadout, so it starts unarmed. Pick another loadout with the Loadout Viewer. |
 | A ship is missing after the build | It was placed on land. Move it into open water. |
 | CMO says the side already has units | You ran the build in a scenario that already has units. Start from **Create New Blank Scenario** every time. |
 | CMO cannot find `Build_Scenario.lua` | Export with **Install into the CMO folder** first, and check the folder name in the command matches the **Folder name** on the Scenario tab. |

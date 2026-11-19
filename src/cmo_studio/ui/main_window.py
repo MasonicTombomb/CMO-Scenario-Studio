@@ -447,7 +447,15 @@ class MainWindow(QMainWindow):
                                                          "in the Units tab.")
             return
         from PyQt6.QtWidgets import QInputDialog
-        n, ok = QInputDialog.getInt(self, "Squadron", f"How many {e.name} at {base.name}?", 4, 1, 200)
+        default = 4
+        if self.dbm.db is not None:
+            base = self._usable_base(base, e)
+            if base is None:
+                return
+            free = self._free_room(base, e)
+            if free is not None:
+                default = max(1, min(4, free))
+        n, ok = QInputDialog.getInt(self, "Squadron", f"How many {e.name} at {base.name}?", default, 1, 200)
         if not ok:
             return
         name, ok = QInputDialog.getText(self, "Squadron", "Squadron name (aircraft become '<name> #1'...):",
@@ -458,6 +466,46 @@ class MainWindow(QMainWindow):
         with self.doc.modify("Name squadron", "units"):
             u.name = name.strip() or e.name
         self.doc.select(u.id)
+
+    def _free_room(self, base: Unit, e: DBEntry) -> Optional[int]:
+        """Free space for aircraft ``e`` at ``base`` (None when the database cannot tell)."""
+        from ..model.hosting import room_for
+        db = self.dbm.db
+        ac = db.aircraft_profile(e.id) if db else None
+        if ac is None or not base.dbid:
+            return None
+        used = sum(max(1, int(u.count or 1)) for u in self.doc.project.units
+                   if u.host == base.id and u.type == "Aircraft" and not u.reserve)
+        return room_for(db.aircraft_spaces(base.type, int(base.dbid)), ac) - used
+
+    def _usable_base(self, base: Unit, e: DBEntry) -> Optional[Unit]:
+        """The base itself if aircraft ``e`` fits, else a part of the same site with room, chosen by the user."""
+        from ..model.hosting import why_not
+        free = self._free_room(base, e)
+        if free is None or free > 0:
+            return base
+        db = self.dbm.db
+        reason = why_not(db.aircraft_spaces(base.type, int(base.dbid)), db.aircraft_profile(e.id)) or "it is full"
+        options = []
+        if base.group:
+            for u in self.doc.project.units:
+                if u.id != base.id and u.group == base.group and u.side == base.side and not u.host \
+                        and u.type in ("Facility", "Ship", "GroundUnit"):
+                    room = self._free_room(u, e)
+                    if room and room > 0:
+                        options.append((f"{u.name}  -  room for {room}", u))
+        if not options:
+            QMessageBox.warning(self, "Add to base", f"{base.name} cannot take {e.name}: {reason}.\n\nSelect a "
+                                                     "hangar, hardened shelter, apron or airfield with room, or a "
+                                                     "ship with a hangar or flight deck.")
+            return None
+        from PyQt6.QtWidgets import QInputDialog
+        choice, ok = QInputDialog.getItem(self, "Add to base", f"{base.name} cannot take {e.name}: {reason}.\n\n"
+                                          f"Base it in another part of {base.group} instead:",
+                                          [label for label, _ in options], 0, False)
+        if not ok:
+            return None
+        return dict(options)[choice]
 
     # ------------------------------------------------------------------ navigation
     def goto_object(self, oid: str, line: int = 0) -> None:

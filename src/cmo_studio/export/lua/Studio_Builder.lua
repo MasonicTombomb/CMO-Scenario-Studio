@@ -150,6 +150,52 @@ local function unitName(u, i)
   return u.name
 end
 
+local function nameOf(id)
+  for _, v in ipairs(D.UNITS) do if v.id == id then return v.name end end
+  return tostring(id)
+end
+
+-- An aircraft that starts at a base. CMO refuses (with a .NET exception) when the base has no hangar, shelter or
+-- parking for it - a runway or tower picked as the base, a shelter that is too small or already full. Try the base,
+-- then the other aircraft facilities of the same site (u.alts); at each, the chosen loadout first and the reserve
+-- loadout second. Only report a refused loadout when the reserve loadout really was what made it work.
+local function addAircraftAtBase(u, name, spec, hostGuid)
+  local loadout = spec.loadoutid
+  local cands = { { id = u.host, guid = hostGuid } }
+  for _, aid in ipairs(u.alts or {}) do
+    local g = B.guids[aid] and B.guids[aid][1]
+    if g then cands[#cands + 1] = { id = aid, guid = g } end
+  end
+  local firstErr
+  for i, c in ipairs(cands) do
+    spec.base = c.guid
+    spec.loadoutid = loadout
+    local ok, res = try(ScenEdit_AddUnit, spec)
+    local reserve = false
+    if not (ok and res) then
+      firstErr = firstErr or res
+      if loadout ~= D.CFG.DEFAULT_LOADOUT then
+        spec.loadoutid = D.CFG.DEFAULT_LOADOUT
+        ok, res = try(ScenEdit_AddUnit, spec)
+        reserve = ok and res and true or false
+      end
+    end
+    if ok and res then
+      if i > 1 then
+        warn(string.format('%s: %s cannot take it, based at %s instead', name, nameOf(u.host), nameOf(c.id)))
+      end
+      if reserve then
+        warn(string.format('%s: loadout %s refused, placed in reserve instead', name, tostring(loadout)))
+      end
+      return true, res
+    end
+  end
+  local others = #cands > 1 and string.format(' (nor the %d other aircraft facilities of its site)', #cands - 1) or ''
+  return false, string.format('%s cannot base it%s: it needs a hangar, shelter or parking with room for this ' ..
+    'aircraft - a runway, taxiway or tower cannot hold aircraft. CMO said: %s', nameOf(u.host), others,
+    tostring(firstErr))
+end
+
 local function addOne(u, i)
   local name = unitName(u, i)
   local spec = { side = u.side, type = u.type, dbid = u.dbid, name = name }
@@ -167,7 +213,12 @@ local function addOne(u, i)
   if u.type == 'Submarine' and u.depth then spec.depth = u.depth end
   if u.heading then spec.heading = u.heading end
 
-  local ok, res = try(ScenEdit_AddUnit, spec)
+  local ok, res
+  if u.type == 'Aircraft' and hostGuid then
+    ok, res = addAircraftAtBase(u, name, spec, hostGuid)
+  else
+    ok, res = try(ScenEdit_AddUnit, spec)
+  end
   if (not ok or not res) and spec.base and u.type ~= 'Aircraft' then
     -- boats and vehicles: fall back to the host's position
     local h = select(2, try(ScenEdit_GetUnit, { guid = hostGuid }))
@@ -182,10 +233,15 @@ local function addOne(u, i)
   if (not ok or not res) and u.type == 'GroundUnit' then
     spec.type = 'Facility'; ok, res = try(ScenEdit_AddUnit, spec)
   end
-  if (not ok or not res) and u.type == 'Aircraft' and spec.loadoutid ~= D.CFG.DEFAULT_LOADOUT then
-    warn(string.format('%s: loadout %s refused, placed in reserve instead', name, tostring(spec.loadoutid)))
+  if (not ok or not res) and u.type == 'Aircraft' and not hostGuid and spec.loadoutid ~= D.CFG.DEFAULT_LOADOUT then
+    -- airborne aircraft: retry with the reserve loadout, and only blame the loadout if that works
+    local refused = spec.loadoutid
     spec.loadoutid = D.CFG.DEFAULT_LOADOUT
-    ok, res = try(ScenEdit_AddUnit, spec)
+    local ok2, res2 = try(ScenEdit_AddUnit, spec)
+    if ok2 and res2 then
+      warn(string.format('%s: loadout %s refused, placed in reserve instead', name, tostring(refused)))
+      ok, res = ok2, res2
+    end
   end
   if not ok or not res then
     B.failed[#B.failed + 1] = string.format('%s (%s %s, dbid %s): %s', name, u.side, u.type, tostring(u.dbid), tostring(res))

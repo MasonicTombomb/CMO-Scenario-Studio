@@ -111,6 +111,8 @@ def validate(p: Project, db=None) -> list[Issue]:
                                           f"({entry.year or '?'}-{entry.year_end or ''}).", u.id)
                 if u.type == "Aircraft" and u.loadout and not db.loadout_valid(int(u.dbid), int(u.loadout)):
                     add(ERROR, "Database", f"{label}: loadout {u.loadout} does not belong to '{entry.name}'.", u.id)
+    if db is not None:
+        _check_aircraft_hosts(p, db, units, add)
 
     # ------------------------------------------------------------------ reference points and zones
     rp_names: Counter = Counter()
@@ -293,3 +295,34 @@ def has_errors(issues: list[Issue]) -> bool:
 
 def find_issue_object(p: Project, issue: Issue) -> Optional[object]:
     return p.find(issue.obj_id) if issue.obj_id else None
+
+
+def _check_aircraft_hosts(p: Project, db, units: dict, add) -> None:
+    """Aircraft based in a unit that cannot hold them (a runway, a tower, too small) or more than fit."""
+    from .hosting import room_for, why_not
+    by_host: dict[str, list] = {}
+    for u in p.units:
+        if u.type == "Aircraft" and u.host and u.host in units and u.dbid:
+            by_host.setdefault(u.host, []).append(u)
+    for hid, planes in by_host.items():
+        host = units[hid]
+        if host.type == "Aircraft" or not host.dbid:
+            continue
+        spaces = db.aircraft_spaces(host.type, int(host.dbid))
+        used = 0
+        biggest_room = 0
+        for u in planes:
+            ac = db.aircraft_profile(int(u.dbid))
+            if ac is None:
+                continue
+            room = room_for(spaces, ac)
+            biggest_room = max(biggest_room, room)
+            if room == 0:
+                add(ERROR, "Units", f"{u.name or '(unnamed)'}: '{host.name}' cannot hold this aircraft: "
+                                    f"{why_not(spaces, ac)}. Base it in a hangar, shelter, apron or airfield "
+                                    f"instead (CMO refuses to create it).", u.id)
+            elif not u.reserve:
+                used += max(1, int(u.count or 1))
+        if biggest_room and used > biggest_room:
+            add(WARNING, "Units", f"'{host.name}' has room for {biggest_room} aircraft but {used} start there; "
+                                  "CMO refuses the extra ones. Spread them over more hangars or shelters.", hid)

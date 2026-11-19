@@ -60,11 +60,17 @@ studio calls the aircraft at a base a **squadron**: one unit entry with a **Coun
 The squadron starts with the first combat loadout listed in the database for that aircraft. To change it, select
 the squadron and pick another **Loadout**, or double-click a loadout in the Database panel's **Loadouts** tab.
 
-!!! warning "Room in the base"
-    Every base has limited space. A *Hardened Aircraft Shelter (1x Medium Aircraft)* holds one fighter; a *Hangar
-    (4x Large Aircraft)* holds four large aircraft. If you put more aircraft in a facility than it can hold, CMO may
-    refuse some when it builds. The build report tells you if it does. Spread big squadrons across several hangars,
-    or use a single-unit airfield, which holds many aircraft.
+!!! warning "Base aircraft in a hangar, shelter or apron - not on a runway"
+    Aircraft can only start in a **hangar**, **hardened aircraft shelter**, **apron (tarmac space)** or a whole
+    **airfield**, or on a ship with a hangar or deck. A **runway**, taxiway or **control tower** cannot hold aircraft,
+    and each space has a size limit and room for a set number: a *Hardened Aircraft Shelter (1x Medium Aircraft)*
+    holds one fighter, a *Hangar (4x Large Aircraft)* four large aircraft.
+
+    The studio checks this for you. **Add to selected base** will not put aircraft on a runway or tower: on a template
+    base it offers that base's hangars, shelters and aprons that still have room. The **Issues** panel shows an
+    error for aircraft whose base cannot hold them and a warning when more aircraft start at a base than fit. If it
+    still happens, the build in CMO moves the aircraft to another hangar or shelter of the same base and says so in
+    the report.
 
 **Ships** with hangars or flight decks work the same way: select the ship, then **Add to selected base**.
 

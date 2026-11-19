@@ -121,8 +121,37 @@ def _lq(s: str) -> str:
     return '"' + s.replace("\\", "/").replace('"', '\\"') + '"'
 
 
-def dry_run_build(project, dll_path: str | os.PathLike, variant: Optional[str] = None) -> DryRunResult:
-    """Export to a temp folder and run the builder (and every event script) against the mock API."""
+def _space_tables(project, db) -> str:
+    """Lua tables telling the mock which hosts can base which aircraft (see Studio_Mock.lua)."""
+    if db is None:
+        return ""
+    hosts, planes = {}, {}
+    for u in project.units:
+        if u.type == "Aircraft" and u.host and u.dbid:
+            host = project.unit(u.host)
+            if host is not None and host.dbid and host.type != "Aircraft":
+                for h in [host] + [project.unit(a) for a in _alts(project, host)]:
+                    if h is not None and h.dbid:
+                        hosts[int(h.dbid)] = db.aircraft_spaces(h.type, int(h.dbid))
+            prof = db.aircraft_profile(int(u.dbid))
+            if prof is not None:
+                planes[int(u.dbid)] = prof
+    if not hosts:
+        return ""
+    sp = ", ".join(f"[{d}] = {{{', '.join(f'{{{s.ftype}, {s.size}, {s.capacity}}}' for s in spaces)}}}"
+                   for d, spaces in hosts.items())
+    ac = ", ".join(f"[{d}] = {{{a.size}, {'true' if a.rotary else 'false'}}}" for d, a in planes.items())
+    return f"MOCK_SPACES = {{{sp}}}\nMOCK_AIRCRAFT = {{{ac}}}\n"
+
+
+def _alts(project, host):
+    from ..export.compiler import alternative_hosts
+    return alternative_hosts(project, host)
+
+
+def dry_run_build(project, dll_path: str | os.PathLike, variant: Optional[str] = None, db=None) -> DryRunResult:
+    """Export to a temp folder and run the builder (and every event script) against the mock API. With a
+    database, the mock also refuses aircraft whose base has no hangar or parking with room for them, as CMO does."""
     from ..export.exporter import Exporter
 
     exp = Exporter(project)
@@ -133,7 +162,8 @@ def dry_run_build(project, dll_path: str | os.PathLike, variant: Optional[str] =
         prelude = (
             f"LUA_ROOT = {_lq(str(lua_root))}\n"
             f"MOCK_START = {project.clock.start_epoch()}\n"
-            "STUDIO_OUT = {}\n"
+            + _space_tables(project, db)
+            + "STUDIO_OUT = {}\n"
             "print = function(...) local t = {} for i = 1, select('#', ...) do t[#t + 1] = tostring(select(i, ...)) end "
             "STUDIO_OUT[#STUDIO_OUT + 1] = table.concat(t, '\\t') end\n"
         )

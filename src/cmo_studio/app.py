@@ -123,7 +123,8 @@ def _headless(args) -> int:
         if not dll:
             print("lua54.dll not found - pass --cmo <CMO folder>", file=sys.stderr)
             return 2
-        res = dry_run_build(p, dll)
+        db = _open_db(cmo, p.meta.db_file)
+        res = dry_run_build(p, dll, db=db)
         print(res.output)
         if not res.ok:
             return 1
@@ -131,6 +132,22 @@ def _headless(args) -> int:
         res = Exporter(p).write(args.export, clean=True)
         print(f"Wrote {len(res.written)} file(s) to {res.root}")
     return 1 if any(i.level == ERROR for i in issues) else 0
+
+
+def _open_db(cmo, db_file: str):
+    """The project's database in the CMO folder (or the newest one), for host checks in the dry-run."""
+    from pathlib import Path
+
+    from .db import Database, latest_database
+    if not cmo:
+        return None
+    path = Path(cmo) / "DB" / db_file if db_file else None
+    if path is None or not path.is_file():
+        path = latest_database(cmo)
+    try:
+        return Database(path) if path else None
+    except Exception:  # noqa: BLE001 - the dry-run still works without it
+        return None
 
 
 if __name__ == "__main__":

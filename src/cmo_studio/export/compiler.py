@@ -46,6 +46,11 @@ def ordered_units(project: Project, include_reserve: bool = False) -> list[Unit]
             host = project.unit(u.host)
             if host:
                 visit(host)
+                if u.type == "Aircraft":            # the fallback bases must exist before the aircraft too
+                    for aid in alternative_hosts(project, host):
+                        alt = project.unit(aid)
+                        if alt is not None and aid in ids:
+                            visit(alt)
         visiting.discard(u.id)
         done.add(u.id)
         out.append(u)
@@ -257,6 +262,25 @@ def _doctrine(side) -> dict:
     return out
 
 
+_AIRCRAFT_FACILITY = re.compile(r"^A/C |Airfield|Airport|Air ?Base|Airstrip|Heliport|Helipad|FARP", re.I)
+
+
+def alternative_hosts(project: Project, host: Unit, limit: int = 40) -> list[str]:
+    """Other parts of the host's site that can hold aircraft, for the builder to try if CMO refuses the host
+    (e.g. a runway or tower picked as the base, or a full shelter). Hangars and shelters first."""
+    if not host.group:
+        return []
+    cands = [v for v in project.units
+             if v.id != host.id and v.group == host.group and v.side == host.side and not v.host and not v.reserve
+             and v.type in ("Facility", "Ship", "GroundUnit") and _AIRCRAFT_FACILITY.search(v.db_name or "")]
+    order = {"hangar": 0, "hardened": 1, "shelter": 1, "tarmac": 2, "parking": 2}
+
+    def rank(v: Unit) -> int:
+        n = (v.db_name or "").lower()
+        return min((r for k, r in order.items() if k in n), default=3)
+    return [v.id for v in sorted(cands, key=rank)][:limit]
+
+
 def unit_record(project: Project, u: Unit) -> dict:
     r: dict[str, Any] = {
         "id": u.id, "side": project.side_name(u.side), "type": u.type, "dbid": int(u.dbid),
@@ -267,6 +291,10 @@ def unit_record(project: Project, u: Unit) -> dict:
     host = project.unit(u.host) if u.host else None
     if host:
         r["host"] = host.id
+        if u.type == "Aircraft":
+            alts = alternative_hosts(project, host)
+            if alts:
+                r["alts"] = alts
     else:
         r["lat"], r["lon"] = round(float(u.lat), 6), round(float(u.lon), 6)
     if u.type == "Aircraft":

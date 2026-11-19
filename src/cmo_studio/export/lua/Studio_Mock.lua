@@ -56,6 +56,23 @@ end
 
 local TYPES = { aircraft = 'Aircraft', ship = 'Ship', submarine = 'Submarine', sub = 'Submarine', facility = 'Facility',
                 groundunit = 'GroundUnit' }
+-- Aircraft spaces, filled in by the dry-run when a database is open (otherwise any base is accepted):
+--   MOCK_SPACES[hostDbid]   = { {type, size, capacity}, ... }   (DataAircraftFacility of the host)
+--   MOCK_AIRCRAFT[dbid]     = { size, rotary }
+-- Like CMO, a base without a hangar/parking that fits, or a full one, refuses the aircraft.
+local PARKING = { [4001] = true, [4002] = true }
+local ROTARY = { [3001] = true, [3002] = true, [6001] = true, [6002] = true }
+local function sizeRank(c) return ({ [2001] = 1, [2002] = 2, [2003] = 3, [2004] = 4 })[c] or 1 end
+local function roomFor(spaces, ac)
+  local n = 0
+  for _, sp in ipairs(spaces) do
+    local kind, size, cap = sp[1], sp[2], sp[3]
+    if (PARKING[kind] or (ac[2] and ROTARY[kind])) and sizeRank(size) >= sizeRank(ac[1]) then n = n + cap end
+  end
+  return n
+end
+MOCK.based = {}
+
 function ScenEdit_AddUnit(s)
   local t = TYPES[string.lower(tostring(s.type or ''))]
   need(t, 'AddUnit: bad type ' .. tostring(s.type))
@@ -67,6 +84,16 @@ function ScenEdit_AddUnit(s)
     local b = MOCK.units[s.base]
     need(b, 'AddUnit: base not found for ' .. tostring(s.name))
     lat, lon = b.latitude, b.longitude
+    local spaces = MOCK_SPACES and MOCK_SPACES[b.dbid]
+    local ac = t == 'Aircraft' and MOCK_AIRCRAFT and MOCK_AIRCRAFT[s.dbid]
+    if spaces and ac then
+      local used = MOCK.based[s.base] or 0
+      if roomFor(spaces, ac) <= used then   -- what CMO does: an exception, not a misuse of the API
+        error(string.format('base %s has no room for %s (%d space(s), %d used)', b.name, tostring(s.name),
+                            roomFor(spaces, ac), used), 2)
+      end
+      MOCK.based[s.base] = used + 1
+    end
   end
   need(tonumber(lat) and tonumber(lon), 'AddUnit: no position for ' .. tostring(s.name))
   local g = guid()

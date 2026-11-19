@@ -227,7 +227,7 @@ class ExportPage(Page):
         key = self.variant.currentData() or None
         QGuiApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
-            res = dry_run_build(self.project, dll, key)
+            res = dry_run_build(self.project, dll, key, db=self.ctx.db)
         except LuaUnavailable as exc:
             QMessageBox.warning(self, "Lua", str(exc))
             return
