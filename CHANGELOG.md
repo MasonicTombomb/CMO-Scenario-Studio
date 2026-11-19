@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.6.2 — 2026-11-19
 
 - **Fixed: aircraft missing after the build when their base cannot hold them.** Aircraft based on a runway,
   taxiway or tower (for example a part of a template air base), on a facility too small for them, or on a full
