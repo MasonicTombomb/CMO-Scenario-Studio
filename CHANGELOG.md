@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.7.0 — 2026-11-19
 
 - **Plotted courses.** Give any unit a route to follow, waypoint by waypoint, to script a computer side's
   movements without a mission:
