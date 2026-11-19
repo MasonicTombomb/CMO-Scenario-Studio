@@ -149,7 +149,8 @@ def _alts(project, host):
     return alternative_hosts(project, host)
 
 
-def dry_run_build(project, dll_path: str | os.PathLike, variant: Optional[str] = None, db=None) -> DryRunResult:
+def dry_run_build(project, dll_path: str | os.PathLike, variant: Optional[str] = None, db=None,
+                  after: str = "") -> DryRunResult:
     """Export to a temp folder and run the builder (and every event script) against the mock API. With a
     database, the mock also refuses aircraft whose base has no hangar or parking with room for them, as CMO does."""
     from ..export.exporter import Exporter
@@ -170,6 +171,7 @@ def dry_run_build(project, dll_path: str | os.PathLike, variant: Optional[str] =
         script = (
             (f"STUDIO_BUILD_VARIANT = {_lq(variant)}\n" if variant else "")
             + f"ScenEdit_RunScript({_lq('/' + exp.folder + '/Build_Scenario.lua')})\n"
+            + (after + "\n" if after else "")    # tests: e.g. move MOCK.now on and run the route manager
             + "local n, bad = MOCK_RUN_EVENT_SCRIPTS()\n"
             + "print(MOCK_SUMMARY())\n"
             + "print(string.format('MOCK: ran %d event and special-action script(s) once', n))\n"

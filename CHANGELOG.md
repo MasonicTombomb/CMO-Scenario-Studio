@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+- **Plotted courses.** Give any unit a route to follow, waypoint by waypoint, to script a computer side's
+  movements without a mission:
+  - select a unit and click **Plot course** on the map toolbar (or right-click > **Plot course...**), then click the
+    waypoints; the course is drawn on the map with numbered waypoints you can drag; a **Courses** layer shows or
+    hides them;
+  - a **Course** box in the unit inspector lists the waypoints with optional altitude and speed per leg, reorders,
+    reverses or clears them, and sets **Depart** (minutes after the start) and **At the end**: carry on, return to
+    base, **land at another base**, or fly the course again (loop);
+  - aircraft in a base take off at their departure time, fly the course, then return or land at the chosen base -
+    for example *take off from Lossiemouth at H+30, fly the route, land at Coningsby*; units already moving get their
+    course at the build; reinforcements get theirs when they arrive;
+  - in CMO a new event, **Studio: unit courses**, runs each minute and keeps each unit's progress in key values, so
+    saved games carry on correctly; the dry-run plays it through;
+  - the Timeline shows when each unit departs, and the Issues panel checks courses (facilities with a course,
+    waypoints off the map, departures after the end, landing bases of another side or without room, units that also
+    have a mission or follow a formation lead).
+
 ## 1.6.2 — 2026-11-19
 
 - **Fixed: aircraft missing after the build when their base cannot hold them.** Aircraft based on a runway,

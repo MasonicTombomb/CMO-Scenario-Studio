@@ -144,6 +144,103 @@ function StudioSpawn(id)
   return added
 end
 
+------------------------------------------------------------------ courses (plotted routes)
+-- STUDIO.ROUTES = { { id=, side=, names={...}, wps={ {lat, lon, alt|false, speed|false}, ... }, depart=<unix time>,
+--                     finish='stop'|'rtb'|'land'|'repeat', land={ side=, name= } }, ... }
+-- StudioRoutesTick() runs once a minute (a generated event). A unit waiting at a base is launched at its departure
+-- time; a unit under way is given its course; at the end of the course it carries out the finish order. Each
+-- unit's progress is a key value (STUDIO_RT_<id>_<n>: wait / launched / enroute / done), so it survives saving.
+
+local function routeCourse(r, plain)
+  local c = {}
+  for i, w in ipairs(r.wps) do
+    local p = { latitude = w[1], longitude = w[2], TypeOf = 'ManualPlottedCourseWaypoint' }
+    if not plain then
+      if w[3] then p.desiredAltitude = w[3] end
+      if w[4] then p.desiredSpeed = w[4] end
+    end
+    c[i] = p
+  end
+  return c
+end
+
+local function giveCourse(u, r)
+  local ok, err = pcall(ScenEdit_SetUnit, { guid = u.guid, course = routeCourse(r, false) })
+  if not ok then   -- this CMO build refused per-waypoint altitude/speed: plain waypoints
+    ok, err = pcall(ScenEdit_SetUnit, { guid = u.guid, course = routeCourse(r, true) })
+    if ok then StudioDebug('waypoint altitude/speed not accepted for ' .. tostring(u.name)) end
+  end
+  if not ok then StudioLog('Could not give ' .. tostring(u.name) .. ' its course: ' .. tostring(err)) end
+  return ok
+end
+
+-- Is the unit under way (airborne / at sea), rather than parked at a base or docked?
+function StudioUnderWay(u)
+  if u.condition_v == 'Airborne' then return true end
+  if u.isOperating ~= nil then return u.isOperating and true or false end
+  return u.type ~= 'Aircraft' or u.base == nil
+end
+
+local function courseLength(u)
+  local n = 0
+  pcall(function() n = #(u.course or {}) end)
+  return n
+end
+
+local function finishRoute(u, r)
+  if r.finish == 'repeat' then
+    return giveCourse(u, r) and 'enroute' or 'done'
+  end
+  if r.finish == 'land' and r.land then
+    local b = StudioGetUnit({ side = r.land.side, name = r.land.name })
+    if b then
+      local ok, err = pcall(ScenEdit_SetUnit, { guid = u.guid, base = b.guid })
+      if not ok then StudioLog(u.name .. ' could not be assigned to ' .. r.land.name .. ': ' .. tostring(err)) end
+    else
+      StudioLog('Landing base ' .. r.land.name .. ' not found; ' .. u.name .. ' returns to its own base')
+    end
+    pcall(ScenEdit_SetUnit, { guid = u.guid, rtb = true })
+  elseif r.finish == 'rtb' then
+    pcall(ScenEdit_SetUnit, { guid = u.guid, rtb = true })
+  end
+  StudioDebug(u.name .. ' finished its course (' .. tostring(r.finish) .. ')')
+  return 'done'
+end
+
+-- atBuild: called by the builder - only give courses to units already under way, launch nothing.
+-- Returns the number of courses given.
+function StudioRoutesTick(atBuild)
+  local now = tonumber(ScenEdit_CurrentTime()) or 0
+  local given = 0
+  for _, r in ipairs(STUDIO.ROUTES or {}) do
+    for n, name in ipairs(r.names or {}) do
+      local key = 'STUDIO_RT_' .. r.id .. '_' .. n
+      local state = StudioGetKV(key, '')
+      if state == '' then state = 'wait' end
+      if state ~= 'done' then
+        local u = StudioGetUnit({ side = r.side, name = name })   -- nil: destroyed, or a reinforcement not here yet
+        if u then
+          if state == 'wait' and now >= (r.depart or 0) then
+            if StudioUnderWay(u) then
+              if giveCourse(u, r) then state = 'enroute'; given = given + 1 end
+            elseif not atBuild then
+              local ok, err = pcall(ScenEdit_SetUnit, { guid = u.guid, launch = true })
+              if ok then state = 'launched'; StudioDebug(name .. ' launched')
+              else StudioLog('Could not launch ' .. name .. ': ' .. tostring(err)); state = 'done' end
+            end
+          elseif state == 'launched' and StudioUnderWay(u) then
+            if giveCourse(u, r) then state = 'enroute'; given = given + 1 end
+          elseif state == 'enroute' and courseLength(u) == 0 then
+            state = finishRoute(u, r)
+          end
+          StudioSetKV(key, state)
+        end
+      end
+    end
+  end
+  return given
+end
+
 ------------------------------------------------------------------ short aliases (only if free)
 Log       = Log       or StudioLog
 Flag      = Flag      or StudioFlag

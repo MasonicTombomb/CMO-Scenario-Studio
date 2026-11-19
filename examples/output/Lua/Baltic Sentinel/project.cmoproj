@@ -119,7 +119,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_b975ca3c",
@@ -145,7 +146,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_c0eff515",
@@ -171,7 +173,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_fdbb91c6",
@@ -197,7 +200,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_96f80acc",
@@ -223,7 +227,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_2f81d861",
@@ -249,7 +254,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_815f0ac0",
@@ -275,7 +281,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_54bc5868",
@@ -301,7 +308,8 @@
       "reserve": true,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_8f9dfef4",
@@ -327,7 +335,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_22e3cd4a",
@@ -353,7 +362,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_e1caea7d",
@@ -379,7 +389,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_e0f2f6e3",
@@ -405,7 +416,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_22b46e61",
@@ -431,7 +443,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_3bc99509",
@@ -457,7 +470,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_a458b78d",
@@ -483,7 +497,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_930e0ece",
@@ -509,7 +524,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_875d1e54",
@@ -535,7 +551,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_7a617bac",
@@ -561,7 +578,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     },
     {
       "id": "u_035eb43b",
@@ -587,7 +605,8 @@
       "reserve": false,
       "group": "",
       "notes": "",
-      "extra": {}
+      "extra": {},
+      "course": null
     }
   ],
   "reference_points": [

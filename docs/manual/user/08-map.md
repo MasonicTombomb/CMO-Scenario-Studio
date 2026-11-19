@@ -28,14 +28,15 @@ the latitude and longitude under the mouse.
    removes the last corner; [[Esc]] cancels.
 5. **Measure**: click points along a route. The map shows each leg's length in kilometres and nautical miles and
    its bearing. [[Esc]] clears it.
-6. **New objects on**: the side that new units, areas and reference points belong to. **Check this before you
+6. **Plot course**: select a unit first, then click the waypoints of the route it should take. Finish with a
+   double-click or [[Enter]] (Chapter 14, *Courses*).
+7. **New objects on**: the side that new units, areas and reference points belong to. **Check this before you
    place anything.**
-7. **Templates...**: place a ready-made site such as an airbase or a real UK base (Chapter 12).
-8. **Patrol areas...**: add ready-made patrol areas from the library (Chapter 13).
-9. **Fit all**: zoom to show the whole scenario.
-10. **Labels**, **Areas**, **Ref points**, **Grid**: tick boxes that show or hide names, areas, reference points and
-    a latitude/longitude grid.
-11. **Sides shown ▾**: hide or show each side's units, to unclutter the map.
+8. **Templates...**: place a ready-made site such as an airbase or a real UK base (Chapter 12).
+9. **Patrol areas...**: add ready-made patrol areas from the library (Chapter 13).
+10. **Fit all**: zoom to show the whole scenario.
+11. **Show ▾**: what the map shows. Tick or untick **Labels** (names), **Areas**, **Ref points**, **Courses** (unit
+    courses) and **Grid** (a latitude/longitude grid), and each side's units, to unclutter the map.
 
 At the right end, **Map** chooses the background picture:
 
@@ -85,6 +86,7 @@ Each new unit is selected so you can name it straight away in the inspector.
 | Filled shape with corner squares | An area; white squares when selected |
 | Small diamond | A reference point (yellow when highlighted) |
 | Dashed lines from one unit to others | A formation: the lead joined to its members |
+| Dashed line through numbered circles | A unit's course; a dotted last leg means it returns, lands elsewhere or loops |
 
 ## The right-click menu
 
@@ -92,7 +94,7 @@ Right-click the map for a menu of shortcuts. What it offers depends on what is u
 
 | On... | Choices |
 | --- | --- |
-| A unit | **Select**, **Duplicate**, **Make formation from this unit...** or **Edit formation**, **Delete** |
+| A unit | **Select**, **Duplicate**, **Plot course...** (or **Add waypoints to course...** and **Clear course**), **Make formation from this unit...** or **Edit formation**, **Delete** |
 | An area | **Select**, **Save area to library...**, **Delete** |
 | Anywhere | **Place** *entry* **here** (when a database entry is chosen), **Add reference point here**, **Place unit template here...**, **Add patrol area from library...**, **Draw area from here**, **Measure from here**, **Copy coordinates**, **Centre here** |
 

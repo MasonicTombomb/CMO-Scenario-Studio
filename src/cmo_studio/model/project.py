@@ -132,6 +132,32 @@ class Side:
 
 
 @dataclass
+class Waypoint:
+    lat: float = 0.0
+    lon: float = 0.0
+    altitude: Optional[float] = None   # metres (aircraft); None = keep the unit's own
+    speed: Optional[float] = None      # knots; None = keep the unit's own
+
+
+#: what a unit does at the end of its course
+COURSE_FINISH: dict[str, str] = {
+    "stop": "Carry on (no further orders)",
+    "rtb": "Return to its base",
+    "land": "Land at another base",
+    "repeat": "Fly the course again (loop)",
+}
+
+
+@dataclass
+class Course:
+    """A plotted route. Aircraft that start at a base take off at the departure time, fly it, then finish."""
+    waypoints: list[Waypoint] = field(default_factory=list)
+    depart_minutes: int = 0            # after the scenario start (0 = at the start)
+    finish: str = "stop"               # see COURSE_FINISH
+    land_at: str = ""                  # unit id of the base to land at ('land')
+
+
+@dataclass
 class Unit:
     id: str = field(default_factory=lambda: new_id("u"))
     side: str = ""                  # side id
@@ -157,6 +183,7 @@ class Unit:
     group: str = ""                 # free tag for organising and filtering
     notes: str = ""
     extra: dict[str, Any] = field(default_factory=dict)  # passed to ScenEdit_SetUnit
+    course: Optional[Course] = None    # plotted route (waypoints, departure, what to do at the end)
 
     def display_name(self) -> str:
         return f"{self.name} (x{self.count})" if self.count > 1 else self.name
@@ -404,6 +431,11 @@ class Project:
             f.members = [x for x in f.members if x not in doomed]
             if f.lead in doomed:
                 f.lead = f.members.pop(0) if f.members else ""
+        for u in self.units:
+            if u.course is not None and u.course.land_at in doomed:
+                u.course.land_at = ""
+                if u.course.finish == "land":
+                    u.course.finish = "rtb"
 
     def remove_zone(self, zid: str) -> None:
         self.zones = [z for z in self.zones if z.id != zid]

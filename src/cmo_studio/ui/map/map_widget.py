@@ -26,6 +26,7 @@ class Tool(Enum):
     RP = "rp"
     ZONE = "zone"
     MEASURE = "measure"
+    COURSE = "course"
 
 
 HIT_PX = 11
@@ -38,6 +39,8 @@ class MapWidget(QWidget):
     placeRequested = pyqtSignal(float, float)
     rpRequested = pyqtSignal(float, float)
     zoneFinished = pyqtSignal(list)                    # [[lat, lon], ...]
+    courseFinished = pyqtSignal(str, list)             # unit id, new waypoints [[lat, lon], ...]
+    waypointMoved = pyqtSignal(str, int, float, float)  # unit id, waypoint index, lat, lon
     contextRequested = pyqtSignal(float, float, str, object)   # lat, lon, hit id, global QPoint
     cursorMoved = pyqtSignal(float, float)
     deleteRequested = pyqtSignal(str)
@@ -61,6 +64,8 @@ class MapWidget(QWidget):
         self.show_zones = True
         self.show_rps = True
         self.show_grid = False
+        self.show_courses = True
+        self.course_unit = ""             # unit whose course the Course tool extends
         self.attribution = ""
         self.place_label = ""
         self._drag_start: Optional[QPointF] = None
@@ -85,7 +90,7 @@ class MapWidget(QWidget):
         self._measure.clear()
         cursors = {Tool.SELECT: Qt.CursorShape.ArrowCursor, Tool.PLACE: Qt.CursorShape.CrossCursor,
                    Tool.RP: Qt.CursorShape.CrossCursor, Tool.ZONE: Qt.CursorShape.CrossCursor,
-                   Tool.MEASURE: Qt.CursorShape.CrossCursor}
+                   Tool.MEASURE: Qt.CursorShape.CrossCursor, Tool.COURSE: Qt.CursorShape.CrossCursor}
         self.setCursor(QCursor(cursors[tool]))
         hints = {
             Tool.SELECT: "Select: click to select, drag a unit/point to move it, drag the map to pan.",
@@ -93,6 +98,8 @@ class MapWidget(QWidget):
             Tool.RP: "Reference point: click to add. Esc to stop.",
             Tool.ZONE: "Draw area: click to add corners, double-click or Enter to finish, Backspace to undo, Esc cancels.",
             Tool.MEASURE: "Measure: click points to measure a route. Esc clears.",
+            Tool.COURSE: f"Plot course for {label or 'the unit'}: click to add waypoints, double-click or Enter to "
+                         f"finish, Backspace removes the last, Esc cancels.",
         }
         self.message.emit(hints[tool])
         self.update()
@@ -161,6 +168,8 @@ class MapWidget(QWidget):
             if self.show_rps:
                 self._paint_rps(p)
             self._paint_formations(p)
+            if self.show_courses:
+                self._paint_courses(p)
             self._paint_units(p)
         self._paint_draft(p)
         self._paint_measure(p)
@@ -386,7 +395,71 @@ class MapWidget(QWidget):
         p.setPen(col.lighter(150))
         p.drawText(pos, text)
 
+    def course_start(self, u) -> tuple[float, float]:
+        """Where a unit's course begins: its position, or its base's."""
+        host = self.project.unit(u.host) if (u.host and self.project) else None
+        return (host.lat, host.lon) if host is not None else (u.lat, u.lon)
+
+    def _paint_courses(self, p: QPainter) -> None:
+        for u in self.project.units:
+            c = u.course
+            if c is None or not c.waypoints or not self._visible(u.side):
+                continue
+            sel = u.id == self.selected
+            col = QColor(self._side_color(u.side))
+            col.setAlpha(255 if sel else 150)
+            pts = [self.to_screen(*self.course_start(u))]
+            for i, w in enumerate(c.waypoints):
+                pos = (w.lat, w.lon)
+                if self._drag_mode == "waypoint" and self._drag_id == u.id and self._drag_vertex == i \
+                        and self._drag_pos:
+                    pos = self._drag_pos
+                pts.append(self.to_screen(*pos))
+            p.setBrush(Qt.BrushStyle.NoBrush)
+            p.setPen(QPen(col, 2.2 if sel else 1.4, Qt.PenStyle.DashLine))
+            p.drawPolyline(QPolygonF(pts))
+            # the end of the route: back to base, on to another base, or round again
+            end = None
+            if c.finish == "rtb":
+                end = pts[0]
+            elif c.finish == "land" and c.land_at and self.project.unit(c.land_at):
+                b = self.project.unit(c.land_at)
+                end = self.to_screen(b.lat, b.lon)
+            elif c.finish == "repeat" and len(pts) > 2:
+                end = pts[1]
+            if end is not None:
+                p.setPen(QPen(col, 1.2, Qt.PenStyle.DotLine))
+                p.drawLine(pts[-1], end)
+            for i, q in enumerate(pts[1:], 1):
+                if sel:
+                    p.setPen(QPen(QColor("#111111"), 1))
+                    p.setBrush(QBrush(QColor("#ffffff")))
+                    p.drawRect(QRectF(q.x() - 4, q.y() - 4, 8, 8))
+                else:
+                    p.setPen(QPen(col, 1))
+                    p.setBrush(QBrush(col))
+                    p.drawEllipse(q, 2.5, 2.5)
+                if sel or self.zoom >= 8:
+                    self._label(p, q + QPointF(6, -5), str(i), col)
+            p.setBrush(Qt.BrushStyle.NoBrush)
+
     def _paint_draft(self, p: QPainter) -> None:
+        if self.tool == Tool.COURSE and self.project:
+            u = self.project.unit(self.course_unit)
+            if u is None:
+                return
+            last = (u.course.waypoints[-1].lat, u.course.waypoints[-1].lon) if (u.course and u.course.waypoints) \
+                else self.course_start(u)
+            pts = [self.to_screen(*last)] + [self.to_screen(a, b) for a, b in self._draft]
+            if self._mouse is not None:
+                pts.append(self._mouse)
+            p.setPen(QPen(QColor("#ffd166"), 2, Qt.PenStyle.DashLine))
+            p.setBrush(Qt.BrushStyle.NoBrush)
+            p.drawPolyline(QPolygonF(pts))
+            p.setBrush(QBrush(QColor("#ffd166")))
+            for q in pts[1:len(self._draft) + 1]:
+                p.drawEllipse(q, 3.5, 3.5)
+            return
         if self.tool != Tool.ZONE or not self._draft:
             return
         pts = [self.to_screen(a, b) for a, b in self._draft]
@@ -442,6 +515,11 @@ class MapWidget(QWidget):
         """(kind, id, vertex) under the cursor: kind in unit/rp/vertex/zone/''."""
         if not self.project:
             return "", "", -1
+        sel_unit = self.project.unit(self.selected) if self.selected else None
+        if sel_unit is not None and sel_unit.course and self.show_courses:
+            for i, w in enumerate(sel_unit.course.waypoints):
+                if (self.to_screen(w.lat, w.lon) - pos).manhattanLength() < HIT_PX:
+                    return "waypoint", sel_unit.id, i
         sel_zone = self.project.zone(self.selected) if self.selected else None
         if sel_zone:
             for i, (a, b) in enumerate(sel_zone.points):
@@ -484,8 +562,8 @@ class MapWidget(QWidget):
         kind, oid, vertex = self.hit(pos)
         if kind in ("unit", "rp"):
             self._drag_mode, self._drag_id = "move", oid
-        elif kind == "vertex":
-            self._drag_mode, self._drag_id, self._drag_vertex = "vertex", oid, vertex
+        elif kind in ("vertex", "waypoint"):
+            self._drag_mode, self._drag_id, self._drag_vertex = kind, oid, vertex
         else:
             self._drag_mode = "pan"
         self._last = pos
@@ -505,14 +583,14 @@ class MapWidget(QWidget):
                 self.cy -= d.y()
                 self._last = pos
                 self.viewChanged.emit()
-            elif self._drag_mode in ("move", "vertex"):
+            elif self._drag_mode in ("move", "vertex", "waypoint"):
                 self._drag_pos = (lat, lon)
         self.update()
 
     def mouseReleaseEvent(self, e) -> None:
         pos = e.position()
         if e.button() == Qt.MouseButton.RightButton:
-            if self.tool == Tool.ZONE and self._draft:
+            if self.tool in (Tool.ZONE, Tool.COURSE) and self._draft:
                 self._draft.pop()
                 self.update()
                 return
@@ -522,10 +600,12 @@ class MapWidget(QWidget):
             self._drag_start = None
             return
         mode, self._drag_mode = self._drag_mode, ""
-        if self._moved and mode in ("move", "vertex") and self._drag_pos:
+        if self._moved and mode in ("move", "vertex", "waypoint") and self._drag_pos:
             lat, lon = self._drag_pos
             if mode == "move":
                 self.objectMoved.emit(self._drag_id, lat, lon)
+            elif mode == "waypoint":
+                self.waypointMoved.emit(self._drag_id, self._drag_vertex, lat, lon)
             else:
                 self.zonePointMoved.emit(self._drag_id, self._drag_vertex, lat, lon)
         elif not self._moved:
@@ -544,15 +624,20 @@ class MapWidget(QWidget):
             self.placeRequested.emit(lat, lon)
         elif self.tool == Tool.RP:
             self.rpRequested.emit(lat, lon)
-        elif self.tool == Tool.ZONE:
+        elif self.tool in (Tool.ZONE, Tool.COURSE):
             self._draft.append([lat, lon])
         elif self.tool == Tool.MEASURE:
             self._measure.append((lat, lon))
         self.update()
 
     def mouseDoubleClickEvent(self, e) -> None:
-        if self.tool == Tool.ZONE:
+        if self.tool in (Tool.ZONE, Tool.COURSE):
             self._finish_zone()
+
+    def start_course(self, unit_id: str, label: str = "") -> None:
+        """Course tool: clicks add waypoints to the end of this unit's course."""
+        self.course_unit = unit_id
+        self.set_tool(Tool.COURSE, label)
 
     def _finish_zone(self) -> None:
         # the double-click also produced a click at the same point: drop near-duplicates
@@ -561,6 +646,11 @@ class MapWidget(QWidget):
             if not pts or (self.to_screen(*pts[-1]) - self.to_screen(*pt)).manhattanLength() > 4:
                 pts.append(pt)
         self._draft.clear()
+        if self.tool == Tool.COURSE:
+            if pts and self.course_unit:
+                self.courseFinished.emit(self.course_unit, pts)
+            self.set_tool(Tool.SELECT)
+            return
         if len(pts) >= 1:
             self.zoneFinished.emit(pts)
         self.update()
@@ -589,9 +679,9 @@ class MapWidget(QWidget):
             else:
                 self.selected = ""
                 self.objectClicked.emit("")
-        elif k in (Qt.Key.Key_Return, Qt.Key.Key_Enter) and self.tool == Tool.ZONE:
+        elif k in (Qt.Key.Key_Return, Qt.Key.Key_Enter) and self.tool in (Tool.ZONE, Tool.COURSE):
             self._finish_zone()
-        elif k == Qt.Key.Key_Backspace and self.tool == Tool.ZONE and self._draft:
+        elif k == Qt.Key.Key_Backspace and self.tool in (Tool.ZONE, Tool.COURSE) and self._draft:
             self._draft.pop()
         elif k == Qt.Key.Key_Delete and self.selected:
             self.deleteRequested.emit(self.selected)

@@ -471,6 +471,22 @@ local function buildKeyValues()
   for _, kv in ipairs(D.KV) do try(ScenEdit_SetKeyValue, kv[1], kv[2]) end
   try(ScenEdit_SetKeyValue, 'STUDIO_VARIANT', VARIANT_KEY or '')
   for _, e in ipairs(D.EVENTS) do try(ScenEdit_SetKeyValue, 'STUDIO_EVT_' .. e.key, '') end
+  for _, r in ipairs((STUDIO and STUDIO.ROUTES) or {}) do
+    for n = 1, #(r.names or {}) do try(ScenEdit_SetKeyValue, 'STUDIO_RT_' .. r.id .. '_' .. n, '') end
+  end
+end
+
+-- Units already in the air or at sea get their course now; aircraft at a base wait for their departure time
+-- (the route manager event launches them during play).
+local function buildCourses()
+  if not (STUDIO and STUDIO.ROUTES and #STUDIO.ROUTES > 0) then return end
+  if not callable(StudioRoutesTick) then warn('Courses: the runtime library is not loaded'); return end
+  local ok, res = pcall(StudioRoutesTick, true)
+  if not ok then warn('Courses: ' .. tostring(res)); return end
+  local waiting = 0
+  for _, r in ipairs(STUDIO.ROUTES) do waiting = waiting + #(r.names or {}) end
+  B.added['courses given at build'] = res
+  if waiting > res then B.added['courses waiting to depart'] = waiting - res end
 end
 
 ------------------------------------------------------------------ report
@@ -528,6 +544,7 @@ local function build()
   log(1, 'Formations...');       buildFormations()
   log(1, 'Missions...');         buildMissions()
   log(1, 'Key values...');       buildKeyValues()
+  log(1, 'Courses...');          buildCourses()
   log(1, 'Events...');           buildEvents()
   log(1, 'Special actions...');  buildSpecials()
   report()

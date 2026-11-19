@@ -393,6 +393,9 @@ def compile_build_data(project: Project) -> dict:
     D["MISSIONS"] = missions
     D["KV"] = [[k, str(v)] for k, v in project.key_values.items()]
     D["EVENTS"] = [compile_event(project, e) for e in project.events]
+    rev = route_event(project)
+    if rev is not None:
+        D["EVENTS"].append(compile_event(project, rev))
     D["SPECIALS"] = [{"side": project.side_name(a.side), "name": a.name, "desc": a.description,
                       "repeatable": bool(a.repeatable), "active": bool(a.active), "script": a.script}
                      for a in project.special_actions]
@@ -422,6 +425,52 @@ def compile_formations(project: Project) -> list[dict]:
             rec["nostations"] = True
         out.append(rec)
     return out
+
+
+def unit_names(u: Unit) -> list[str]:
+    """The names CMO gives the unit's copies: '<name> #1..n' when counted."""
+    n = max(1, int(u.count or 1))
+    return [f"{u.name} #{i}" for i in range(1, n + 1)] if n > 1 else [u.name]
+
+
+#: the generated event that runs the route manager once a minute
+ROUTE_EVENT_ID = "e_studio_courses"
+
+
+def compile_routes(project: Project) -> list[dict]:
+    """Plotted courses for the runtime route manager (STUDIO.ROUTES in LuaInit.lua)."""
+    from ..model.project import COURSE_FINISH
+    out = []
+    start = project.clock.start_epoch()
+    for u in project.units:
+        c = u.course
+        if c is None or not c.waypoints or not project.side(u.side):
+            continue
+        r: dict[str, Any] = {
+            "id": u.id, "side": project.side_name(u.side), "names": unit_names(u),
+            "wps": [[round(float(w.lat), 6), round(float(w.lon), 6),
+                     float(w.altitude) if w.altitude is not None else False,
+                     float(w.speed) if w.speed is not None else False] for w in c.waypoints],
+            "depart": start + 60 * max(0, int(c.depart_minutes or 0)),
+            "finish": c.finish if c.finish in COURSE_FINISH else "stop",
+        }
+        if r["finish"] == "land":
+            base = project.unit(c.land_at) if c.land_at else None
+            if base is not None and project.side(base.side):
+                r["land"] = {"side": project.side_name(base.side), "name": unit_first_name(base)}
+            else:
+                r["finish"] = "rtb"
+        out.append(r)
+    return out
+
+
+def route_event(project: Project) -> Optional[Event]:
+    """A once-a-minute event that runs StudioRoutesTick(), when any unit has a course."""
+    if not any(u.course and u.course.waypoints for u in project.units):
+        return None
+    return Event(id=ROUTE_EVENT_ID, name="Studio: unit courses", repeatable=True,
+                 triggers=[Trigger("RegularTime", {"Interval": ONE_MINUTE})],
+                 actions=[Action("LuaScript", {"Code": "if StudioRoutesTick then StudioRoutesTick() end"})])
 
 
 def compile_reserves(project: Project) -> dict:

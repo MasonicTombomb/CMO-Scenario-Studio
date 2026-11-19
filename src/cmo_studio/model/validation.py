@@ -113,6 +113,7 @@ def validate(p: Project, db=None) -> list[Issue]:
                     add(ERROR, "Database", f"{label}: loadout {u.loadout} does not belong to '{entry.name}'.", u.id)
     if db is not None:
         _check_aircraft_hosts(p, db, units, add)
+    _check_courses(p, db, add)
 
     # ------------------------------------------------------------------ reference points and zones
     rp_names: Counter = Counter()
@@ -326,3 +327,48 @@ def _check_aircraft_hosts(p: Project, db, units: dict, add) -> None:
         if biggest_room and used > biggest_room:
             add(WARNING, "Units", f"'{host.name}' has room for {biggest_room} aircraft but {used} start there; "
                                   "CMO refuses the extra ones. Spread them over more hangars or shelters.", hid)
+
+
+def _check_courses(p: Project, db, add) -> None:
+    """Plotted courses: who can follow one, where it ends, and conflicts with missions and formations."""
+    from .formations import formation_of
+    total_min = p.clock.duration_days * 1440 + p.clock.duration_hours * 60 + p.clock.duration_minutes
+    on_mission = {uid for m in p.missions for uid in m.units}
+    for u in p.units:
+        c = u.course
+        if c is None or not c.waypoints:
+            continue
+        label = f"{u.name or '(unnamed)'}"
+        if u.type == "Facility":
+            add(ERROR, "Courses", f"{label}: a facility cannot move, so it cannot follow a course.", u.id)
+            continue
+        for i, w in enumerate(c.waypoints, 1):
+            if not (-90 <= w.lat <= 90 and -180 <= w.lon <= 180):
+                add(ERROR, "Courses", f"{label}: waypoint {i} is off the map.", u.id)
+        if c.depart_minutes and total_min and c.depart_minutes >= total_min:
+            add(WARNING, "Courses", f"{label}: departs {c.depart_minutes} min after the start, after the scenario "
+                                    f"ends ({total_min} min).", u.id)
+        if c.finish == "land":
+            base = p.unit(c.land_at) if c.land_at else None
+            if base is None:
+                add(WARNING, "Courses", f"{label}: 'Land at another base' has no base chosen; it will return to "
+                                        "its own base instead.", u.id)
+            elif base.side != u.side:
+                add(ERROR, "Courses", f"{label}: landing base '{base.name}' belongs to another side.", u.id)
+            elif db is not None and u.type == "Aircraft" and base.dbid and u.dbid:
+                from .hosting import room_for, why_not
+                ac = db.aircraft_profile(int(u.dbid))
+                spaces = db.aircraft_spaces(base.type, int(base.dbid))
+                if ac is not None and room_for(spaces, ac) == 0:
+                    add(ERROR, "Courses", f"{label}: '{base.name}' cannot take this aircraft: {why_not(spaces, ac)}."
+                                          " Choose a hangar, shelter, apron or airfield to land at.", u.id)
+        if c.finish == "rtb" and u.type == "Aircraft" and not u.host:
+            add(INFO, "Courses", f"{label}: starts in the air with no base; at the end of its course CMO sends it "
+                                 "to the nearest suitable base.", u.id)
+        if u.id in on_mission:
+            add(WARNING, "Courses", f"{label}: is assigned to a mission, which will override its course. Give it a "
+                                    "course or a mission, not both.", u.id)
+        fm = formation_of(p, u.id)
+        if fm is not None and fm.lead != u.id and fm.keep_on_station:
+            add(WARNING, "Courses", f"{label}: is a member of formation '{fm.name}' and follows its lead; plot the "
+                                    "course on the lead instead.", u.id)

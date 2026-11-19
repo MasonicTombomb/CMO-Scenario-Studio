@@ -6,8 +6,8 @@ from typing import Optional
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QActionGroup, QGuiApplication
-from PyQt6.QtWidgets import (QCheckBox, QComboBox, QHBoxLayout, QInputDialog, QLabel, QMenu, QSplitter,
-                             QStackedWidget, QToolBar, QVBoxLayout, QWidget)
+from PyQt6.QtWidgets import (QComboBox, QHBoxLayout, QInputDialog, QLabel, QMenu, QSplitter,
+                             QStackedWidget, QToolBar, QToolButton, QVBoxLayout, QWidget)
 
 from ...db.database import DBEntry
 from ...geo import format_latlon
@@ -38,7 +38,9 @@ class MapPage(Page):
                                 (Tool.PLACE, "Place unit", "Place the unit chosen in the DB browser"),
                                 (Tool.RP, "Reference point", "Click to add reference points"),
                                 (Tool.ZONE, "Draw area", "Draw a patrol / trigger area"),
-                                (Tool.MEASURE, "Measure", "Measure distance and bearing")):
+                                (Tool.MEASURE, "Measure", "Measure distance and bearing"),
+                                (Tool.COURSE, "Plot course", "Select a unit, then click waypoints for the route it "
+                                                             "should fly or sail")):
             a = QAction(text, self, checkable=True)
             a.setToolTip(tip)
             a.triggered.connect(lambda _c, t=tool: self.set_tool(t))
@@ -65,24 +67,35 @@ class MapPage(Page):
         fit = QAction("Fit all", self)
         fit.triggered.connect(lambda: self.map.fit_project())
         tb.addAction(fit)
-        self.labels = QCheckBox("Labels")
-        self.labels.setChecked(True)
-        self.labels.toggled.connect(self._layers)
-        tb.addWidget(self.labels)
-        self.zones_cb = QCheckBox("Areas")
-        self.zones_cb.setChecked(True)
-        self.zones_cb.toggled.connect(self._layers)
-        tb.addWidget(self.zones_cb)
-        self.rps_cb = QCheckBox("Ref points")
-        self.rps_cb.setChecked(True)
-        self.rps_cb.toggled.connect(self._layers)
-        tb.addWidget(self.rps_cb)
-        self.grid_cb = QCheckBox("Grid")
-        self.grid_cb.toggled.connect(self._layers)
-        tb.addWidget(self.grid_cb)
-        self.sides_btn = QAction("Sides shown ▾", self)
-        self.sides_btn.triggered.connect(self._sides_menu)
-        tb.addAction(self.sides_btn)
+        # what the map shows: layers and sides, in one drop-down to keep the toolbar short
+        self.show_menu = QMenu(self)
+        self.show_menu.setToolTipsVisible(True)
+        self.show_menu.addSection("Layers")
+
+        def layer(text: str, on: bool, tip: str = "") -> QAction:
+            a = self.show_menu.addAction(text)
+            a.setCheckable(True)
+            a.setChecked(on)
+            if tip:
+                a.setToolTip(tip)
+            a.toggled.connect(self._layers)
+            return a
+        self.labels = layer("Labels", True, "Unit, area and reference point names")
+        self.zones_cb = layer("Areas", True)
+        self.rps_cb = layer("Ref points", True)
+        self.courses_cb = layer("Courses", True, "The plotted courses of units")
+        self.grid_cb = layer("Grid", False, "A latitude / longitude grid")
+        self.show_menu.addSection("Sides")
+        self._side_actions: list[QAction] = []
+        self.show_menu.aboutToShow.connect(self._fill_side_actions)
+        self.show_btn = QToolButton()
+        self.show_btn.setText("Show ▾")
+        self.show_btn.setToolTip("Show or hide labels, areas, reference points, courses, the grid and each side's "
+                                 "units")
+        self.show_btn.setMenu(self.show_menu)
+        self.show_btn.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.show_btn.setStyleSheet("QToolButton::menu-indicator { image: none; }")
+        tb.addWidget(self.show_btn)
         tb.addSeparator()
         tb.addWidget(QLabel(" Map: "))
         self.tile_combo = QComboBox()
@@ -127,6 +140,8 @@ class MapPage(Page):
         m.placeRequested.connect(self._place)
         m.rpRequested.connect(self._add_rp)
         m.zoneFinished.connect(self._add_zone)
+        m.courseFinished.connect(self._add_waypoints)
+        m.waypointMoved.connect(self._waypoint_moved)
         m.contextRequested.connect(self._context)
         m.deleteRequested.connect(self._delete)
         m.cursorMoved.connect(lambda lat, lon: ctx.window and ctx.window.set_cursor_text(format_latlon(lat, lon)))
@@ -163,6 +178,15 @@ class MapPage(Page):
 
     # ------------------------------------------------------------------ tools
     def set_tool(self, tool: Tool, label: str = "") -> None:
+        if tool == Tool.COURSE:
+            u = self.project.unit(self.doc.selection) if self.doc.selection else None
+            if u is None:
+                self.ctx.status("Select a unit first, then press 'Plot course' and click its waypoints.")
+                self.tool_actions[Tool.SELECT].setChecked(True)
+                self.map.set_tool(Tool.SELECT)
+                return
+            self.plot_course(u.id)
+            return
         self.tool_actions[tool].setChecked(True)
         if tool == Tool.PLACE and not self.place_entry:
             self.ctx.status("Choose a unit in the Database panel first, then press 'Place on map'.")
@@ -175,21 +199,60 @@ class MapPage(Page):
         self.place_entry = entry
         self.set_tool(Tool.PLACE, entry.name)
 
+    def plot_course(self, unit_id: str) -> None:
+        """Course tool for this unit: each click adds a waypoint to the end of its course."""
+        u = self.project.unit(unit_id)
+        if u is None:
+            return
+        self.tool_actions[Tool.COURSE].setChecked(True)
+        self.map.start_course(u.id, u.name)
+        self.map.setFocus()
+
+    def _add_waypoints(self, unit_id: str, pts: list) -> None:
+        from ...model.project import Course, Waypoint
+        u = self.project.unit(unit_id)
+        self.tool_actions[Tool.SELECT].setChecked(True)
+        if u is None or not pts:
+            return
+        with self.edit(f"Plot course for {u.name}", "units"):
+            if u.course is None:
+                u.course = Course()
+            u.course.waypoints.extend(Waypoint(round(a, 6), round(b, 6)) for a, b in pts)
+        self.doc.select(u.id, None)
+        self.ctx.status(f"{u.name}: {len(u.course.waypoints)} waypoint(s). Set its departure and what it does at "
+                        f"the end in the inspector.")
+
+    def _waypoint_moved(self, unit_id: str, i: int, lat: float, lon: float) -> None:
+        u = self.project.unit(unit_id)
+        if u is None or u.course is None or not (0 <= i < len(u.course.waypoints)):
+            return
+        with self.edit("Move waypoint", "units"):
+            u.course.waypoints[i].lat, u.course.waypoints[i].lon = round(lat, 6), round(lon, 6)
+
+    def _clear_course(self, unit_id: str) -> None:
+        u = self.project.unit(unit_id)
+        if u is not None and u.course is not None:
+            with self.edit(f"Clear course of {u.name}", "units"):
+                u.course = None
+
     def _layers(self, *_):
+        self.map.show_courses = self.courses_cb.isChecked()
         self.map.show_labels = self.labels.isChecked()
         self.map.show_zones = self.zones_cb.isChecked()
         self.map.show_rps = self.rps_cb.isChecked()
         self.map.show_grid = self.grid_cb.isChecked()
         self.map.update()
 
-    def _sides_menu(self):
-        menu = QMenu(self)
+    def _fill_side_actions(self):
+        for a in self._side_actions:
+            self.show_menu.removeAction(a)
+        self._side_actions = []
         for s in self.project.sides:
-            a = menu.addAction(s.name)
+            a = self.show_menu.addAction(s.name)
             a.setCheckable(True)
             a.setChecked(s.id not in self.map.hidden_sides)
             a.toggled.connect(lambda on, sid=s.id: self._toggle_side(sid, on))
-        menu.exec(self.cursor().pos())
+            self._side_actions.append(a)
 
     def _toggle_side(self, sid: str, on: bool):
         if on:
@@ -351,6 +414,11 @@ class MapPage(Page):
             menu.addAction(f"Select '{getattr(obj, 'name', oid)}'", lambda: self.doc.select(oid, self))
             if isinstance(obj, Unit):
                 menu.addAction("Duplicate", lambda: (self.unit_form.set_unit(oid), self.unit_form._duplicate()))
+                menu.addAction("Plot course..." if not (obj.course and obj.course.waypoints) else
+                               "Add waypoints to course...", lambda: (self.doc.select(oid, self),
+                                                                      self.plot_course(oid)))
+                if obj.course and obj.course.waypoints:
+                    menu.addAction("Clear course", lambda: self._clear_course(oid))
                 from ...model.formations import formation_of
                 fm = formation_of(self.project, oid)
                 if self.ctx.window is not None:

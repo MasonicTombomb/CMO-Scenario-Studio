@@ -1,4 +1,5 @@
-"""When things happen: events (by trigger) and missions (by start/end time) on the scenario clock.
+"""When things happen: events (by trigger), missions (by start/end time) and unit courses (by departure) on
+the scenario clock.
 
 Pure Python so it can be tested; the Timeline tab draws what :func:`build_timeline` returns.
 """
@@ -31,7 +32,7 @@ class Mark:
 
 @dataclass
 class Row:
-    kind: str                       # 'event' | 'mission'
+    kind: str                       # 'event' | 'mission' | 'course'
     obj_id: str
     name: str
     active: bool = True
@@ -173,7 +174,35 @@ def event_detail(p: Project, e: Event) -> str:
     return "\n".join(x for x in lines if x)
 
 
-def build_timeline(p: Project, include_missions: bool = True) -> Timeline:
+def course_rows(p: Project, start: int, end: int) -> list[Row]:
+    """A row per unit with a plotted course: a diamond where it takes off or sets off."""
+    from ..geo import distance_km
+    from .project import COURSE_FINISH
+    rows = []
+    for u in p.units:
+        c = u.course
+        if c is None or not c.waypoints:
+            continue
+        t = start + 60 * max(0, int(c.depart_minutes or 0))
+        origin = p.unit(u.host) if u.host else u
+        pts = [(origin.lat, origin.lon)] + [(w.lat, w.lon) for w in c.waypoints]
+        nm = sum(distance_km(a[0], a[1], b[0], b[1]) for a, b in zip(pts, pts[1:])) / 1.852
+        verb = f"takes off from {origin.name}" if u.host else "sets off"
+        finish = COURSE_FINISH.get(c.finish, c.finish)
+        if c.finish == "land" and p.unit(c.land_at):
+            finish = f"Lands at {p.unit(c.land_at).name}"
+        r = Row("course", u.id, u.display_name(), active=True, once=True,
+                marks=[Mark(POINT, t, label=verb.split(" from ")[0])],
+                detail=f"{u.display_name()} ({p.side_name(u.side)})\n{verb.capitalize()} at {fmt_time(t, start)}, "
+                       f"{len(c.waypoints)} waypoint(s), {nm:,.0f} nm\nAt the end: {finish}"
+                       + ("\nA reinforcement: the course starts once it has arrived" if u.reserve else ""))
+        if t > end:
+            r.issues.append(f"Departs at {fmt_time(t, start)}, after the scenario ends.")
+        rows.append(r)
+    return rows
+
+
+def build_timeline(p: Project, include_missions: bool = True, include_courses: bool = True) -> Timeline:
     start = p.clock.start_epoch()
     end = start + 60 * (p.clock.duration_days * 1440 + p.clock.duration_hours * 60 + p.clock.duration_minutes)
     if end <= start:
@@ -217,6 +246,8 @@ def build_timeline(p: Project, include_missions: bool = True) -> Timeline:
                     if m.style == POINT:
                         r.marks.append(Mark(POINT, m.start, label=f"switched by '{e.name}'"))
             rows.append(r)
+    if include_courses:
+        rows += course_rows(p, start, end)
     # clashes: two one-shot timed events in the same minute
     clashes = []
     points = [(m.start // 60, r) for r in rows if r.kind == "event" and r.active

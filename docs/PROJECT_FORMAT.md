@@ -20,7 +20,9 @@ of the studio load.
   "units":   [ { "id", "side", "type", "dbid", "db_name", "name", "count", "lat", "lon",
                  "altitude", "depth", "heading", "speed",            // null = default
                  "host", "loadout", "radar_active", "sonar_active", "hold_position", "autodetectable",
-                 "proficiency", "reserve", "group", "notes", "extra": { } } ],
+                 "proficiency", "reserve", "group", "notes", "extra": { },
+                 "course": null | { "waypoints": [ { "lat", "lon", "altitude", "speed" } ],   // m, kn; null = unit's own
+                                    "depart_minutes", "finish": "stop|rtb|land|repeat", "land_at": unitId } } ],
   "reference_points": [ { "id", "side", "name", "lat", "lon", "highlighted", "all_sides" } ],
   "zones":   [ { "id", "side", "name", "points": [[lat, lon], ...], "color", "all_sides", "notes" } ],
   "missions":[ { "id", "side", "name", "mclass", "subtype", "zone", "prosecution_zone", "destination",
@@ -42,6 +44,8 @@ of the studio load.
 ## Values
 
 - `units[].type`: `Aircraft`, `Ship`, `Submarine`, `Facility`, `GroundUnit`.
+- `units[].course.finish`: `stop` (carry on), `rtb` (return to its base), `land` (land at `land_at`, a base of the
+  same side), `repeat` (fly the course again). `depart_minutes` counts from the scenario start.
 - `missions[].mclass`: `patrol` (`aaw asw naval land mixed sead`), `strike` (`air land sea sub`), `support`,
   `ferry`, `mining`, `mineclearing`, `cargo`.
 - `formations[].preset` is a key from [`model/formations.py`](../src/cmo_studio/model/formations.py) (`line_ahead`, `circular_screen`, `finger_four`, `ground_wedge`...); `params` holds only the values that differ from the preset.

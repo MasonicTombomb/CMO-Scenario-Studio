@@ -48,10 +48,13 @@ The events reference the script folder at run time, so `Lua\<F>\` must exist on 
    `ScenEdit_SetUnit({guid=, formation={bearing=, distance=, type=, sprint=}})` (retried with bearing and
    distance only). Units are already on station, so a refusal only leaves them ungrouped (reported).
 8. Missions — options, prosecution area, assigned units, strike targets.
-9. Key values (initial values, `STUDIO_VARIANT`, reset of event once-flags).
-10. Events — triggers, native conditions, the generated Lua action, native actions.
-11. Special actions.
-12. BUILD REPORT with counts, failures, warnings and the exact editor steps.
+9. Key values (initial values, `STUDIO_VARIANT`, reset of event once-flags and course progress).
+10. Courses — `StudioRoutesTick(true)`: units already under way at the start (airborne aircraft, ships, ground
+    units) with a departure at the start get their plotted course now. Aircraft in a base wait for the
+    *Studio: unit courses* event.
+11. Events — triggers, native conditions, the generated Lua action, native actions.
+12. Special actions.
+13. BUILD REPORT with counts, failures, warnings and the exact editor steps.
 
 Every API call is wrapped in `pcall`; a failure becomes a warning in the report instead of stopping the build. Some
 calls have fallbacks (date order, submarine type name, ground units as facilities, refused loadouts → reserve).
@@ -95,10 +98,42 @@ Unit and area references are studio ids; the engine maps them to GUIDs and refer
 | `StudioMissionStatus(side, mission, active)` | Activate or deactivate a mission. |
 | `StudioRandomPosition(latMin, latMax, lonMin, lonMax)` | Random point in a box. |
 | `StudioSpawn(id)` | Spawn a project reinforcement once; returns the units. |
+| `StudioUnderWay(unit)` | True if the unit is airborne or under way (not an aircraft or boat sitting in a base). |
+| `StudioRoutesTick(atBuild)` | The course manager (below). Returns how many courses it gave out. |
 
 `STUDIO.TITLE`, `STUDIO.PATH`, `STUDIO.START` (Unix time of the scenario start), `STUDIO.SIDES` and
-`STUDIO.RESERVES` are set by `LuaInit.lua`. If not already defined, the short aliases `Log`, `Flag`, `SetFlag`,
+`STUDIO.RESERVES` and `STUDIO.ROUTES` are set by `LuaInit.lua`. If not already defined, the short aliases `Log`, `Flag`, `SetFlag`,
 `GetKV`, `SetKV` and `RunScript` point to the studio functions.
+
+### Courses (`STUDIO.ROUTES`)
+
+Units with a plotted course are listed in `LuaInit.lua`:
+
+```lua
+STUDIO.ROUTES = {
+  { id = '<unit id>', side = 'United Kingdom', names = { 'TARTAN #1', 'TARTAN #2' },
+    wps = { { 58.5, -1.0, 9000, 450 }, { 57.0, 1.0, false, false } },   -- lat, lon, altitude m, speed kn
+    depart = 1904531400,                       -- Unix time (scenario start + Depart minutes)
+    finish = 'land',                           -- 'stop' | 'rtb' | 'land' | 'repeat'
+    land = { side = 'United Kingdom', name = 'Coningsby Hangar (4x Medium)' } },
+}
+```
+
+When any course exists, the export adds a repeatable event **Studio: unit courses** (*Regular time*, every minute)
+whose action is `StudioRoutesTick()`. For each copy of each unit it keeps a state in the key value
+`STUDIO_RT_<id>_<n>`, so progress survives saving and loading:
+
+| State | Meaning and next step |
+| --- | --- |
+| `wait` | Before `depart`. At `depart`: a unit under way is given the course (`enroute`); an aircraft in a base is sent off with `ScenEdit_SetUnit({guid=, launch=true})` (`launched`). |
+| `launched` | Taking off. Once airborne it is given the course (`enroute`). |
+| `enroute` | Flying the course. When `unit.course` is empty the finish order runs and the state becomes `done` (or `enroute` again for `repeat`). |
+| `done` | Nothing more to do. |
+
+The course is given with `ScenEdit_SetUnit({guid=, course={ {latitude=, longitude=, TypeOf='ManualPlottedCourseWaypoint', desiredAltitude=, desiredSpeed=}, ... }})`;
+if CMO refuses the altitude or speed fields, the plain waypoints are used. `land` sets `base=` to the landing base's
+GUID, then `rtb=true`; `rtb` sets `rtb=true`. A unit that is not found (destroyed, or a reinforcement not yet
+arrived) is skipped until it appears.
 
 ### Generated event script
 

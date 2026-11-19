@@ -117,6 +117,24 @@ function ScenEdit_SetUnit(t)
     MOCK.groups = MOCK.groups or {}
     MOCK.groups[u.group] = (MOCK.groups[u.group] or 0) + 1
   end
+  if t.course ~= nil then
+    need(type(t.course) == 'table', 'SetUnit: course must be a table of waypoints for ' .. u.name)
+    for i, w in ipairs(t.course) do
+      need(tonumber(w.latitude) and tonumber(w.longitude),
+           string.format('SetUnit: waypoint %d of %s needs latitude and longitude', i, u.name))
+    end
+    u.course = t.course
+    MOCK.courses = (MOCK.courses or 0) + 1
+  end
+  if t.launch then
+    need(u.base, 'SetUnit: launch for ' .. u.name .. ', which is not at a base')
+    u.condition_v, u.isOperating = 'Airborne', true
+    MOCK.launched = (MOCK.launched or 0) + 1
+  end
+  if t.base ~= nil and t.base ~= false then
+    need(MOCK.units[t.base] or ScenEdit_GetUnit({ name = t.base }), 'SetUnit: base not found: ' .. tostring(t.base))
+    u.base = t.base
+  end
   return u
 end
 function ScenEdit_SetEMCON(kind, id, s) need(MOCK.units[id] or MOCK.sides[id], 'SetEMCON: unknown ' .. tostring(id)); return true end

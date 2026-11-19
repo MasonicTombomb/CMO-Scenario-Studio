@@ -19,6 +19,8 @@ AXIS_H = 40
 ROW_H = 28
 EVENT_COL = QColor("#3d8bfd")
 MISSION_COL = QColor("#30a46c")
+COURSE_COL = QColor("#f5a524")
+KIND_COL = {"event": EVENT_COL, "mission": MISSION_COL, "course": COURSE_COL}
 CLASH_COL = QColor("#e5484d")
 
 
@@ -115,7 +117,7 @@ class TimelineCanvas(QWidget):
             y = AXIS_H + i * ROW_H
             if y + ROW_H < vis.top() + AXIS_H:
                 continue
-            col = (EVENT_COL if r.kind == "event" else MISSION_COL)
+            col = KIND_COL.get(r.kind, MISSION_COL)
             if not r.active:
                 col = QColor("#6b6f78")
             p.fillRect(QRectF(vis.left() + 4, y + 7, 4, ROW_H - 14), col)
@@ -128,7 +130,8 @@ class TimelineCanvas(QWidget):
         p.setPen(QColor("#9fb3c8"))
         p.drawText(QRectF(vis.left() + 10, vis.top(), LABEL_W, AXIS_H), Qt.AlignmentFlag.AlignVCenter,
                    f"{sum(r.kind == 'event' for r in self.rows)} events, "
-                   f"{sum(r.kind == 'mission' for r in self.rows)} missions")
+                   f"{sum(r.kind == 'mission' for r in self.rows)} missions"
+                   + (f", {n} courses" if (n := sum(r.kind == 'course' for r in self.rows)) else ""))
         p.end()
 
     def _tick_step(self) -> int:
@@ -154,7 +157,7 @@ class TimelineCanvas(QWidget):
 
     def _paint_row(self, p: QPainter, r: Row, y: float) -> None:
         tl = self.tl
-        base = EVENT_COL if r.kind == "event" else MISSION_COL
+        base = KIND_COL.get(r.kind, MISSION_COL)
         if not r.active:
             base = QColor("#6b6f78")
         mid = y + ROW_H / 2
@@ -202,7 +205,8 @@ class TimelineCanvas(QWidget):
                     p.setBrush(Qt.BrushStyle.NoBrush)
                     p.drawEllipse(QPointF(x, mid), d + 4, d + 4)
                 p.setPen(QColor("#d0d4da"))
-                p.drawText(QPointF(x + 11, mid + 4), m.label if r.kind == "mission" else fmt_time(m.start)[7:])
+                p.drawText(QPointF(x + 11, mid + 4), m.label if r.kind == "mission" else
+                           f"{m.label} {fmt_time(m.start)[7:]}" if r.kind == "course" else fmt_time(m.start)[7:])
 
     # ------------------------------------------------------------------ interaction
     def row_at(self, y: float) -> Optional[Row]:
@@ -250,17 +254,20 @@ class TimelinePage(Page):
         lay = QVBoxLayout(self)
         bar = QHBoxLayout()
         self.filter = QLineEdit()
-        self.filter.setPlaceholderText("Filter events and missions...")
+        self.filter.setPlaceholderText("Filter events, missions and courses...")
         self.filter.setClearButtonEnabled(True)
         self.filter.textChanged.connect(lambda *_: self._apply())
         bar.addWidget(self.filter, 1)
         self.missions = QCheckBox("Missions")
         self.missions.setChecked(True)
+        self.courses = QCheckBox("Courses")
+        self.courses.setChecked(True)
+        self.courses.setToolTip("Units with a plotted course: when each takes off or sets off")
         self.conditional = QCheckBox("Condition-only events")
         self.conditional.setChecked(True)
         self.sort_time = QCheckBox("Sort by time")
         self.sort_time.setChecked(True)
-        for cb in (self.missions, self.conditional, self.sort_time):
+        for cb in (self.missions, self.courses, self.conditional, self.sort_time):
             cb.toggled.connect(lambda *_: self._apply())
             bar.addWidget(cb)
         for text, fn in (("Fit", self._fit), ("Zoom in", lambda: self._zoom(1.5)),
@@ -284,8 +291,9 @@ class TimelinePage(Page):
         sl.addWidget(self.detail, 1)
         sl.addWidget(hint_label("Diamonds fire once; bars are random windows or mission periods; ticked bars "
                                 "repeat; dotted lines fire on a condition. Red: outside the scenario or two "
-                                "one-shot events in the same minute. Ctrl+wheel zooms; double-click opens the "
-                                "event or mission."))
+                                "one-shot events in the same minute. Amber rows are unit courses (when each "
+                                "unit takes off or sets off). Ctrl+wheel zooms; double-click opens the event, "
+                                "mission or unit."))
         split.addWidget(side)
         split.setSizes([1100, 320])
         lay.addWidget(split, 1)
@@ -310,6 +318,8 @@ class TimelinePage(Page):
         for r in self._tl.rows:
             if r.kind == "mission" and not self.missions.isChecked():
                 continue
+            if r.kind == "course" and not self.courses.isChecked():
+                continue
             if r.kind == "event" and not r.timed and not self.conditional.isChecked():
                 continue
             if words and not all(w in (r.name + " " + r.detail).lower() for w in words):
@@ -317,7 +327,8 @@ class TimelinePage(Page):
             rows.append(r)
         if self.sort_time.isChecked():
             big = 1 << 62
-            rows.sort(key=lambda r: (r.kind != "event", r.first_time() if r.first_time() is not None else big,
+            order = {"event": 0, "mission": 1, "course": 2}
+            rows.sort(key=lambda r: (order.get(r.kind, 3), r.first_time() if r.first_time() is not None else big,
                                      r.name.lower()))
         self.canvas.set_rows(self._tl, rows)
 

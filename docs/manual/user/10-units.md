@@ -31,6 +31,7 @@ Further down the inspector:
 | Auto-detectable | Every side can always see this unit. Use for fixed landmarks such as airbases everyone knows about. |
 | Reinforcement | The unit is not there at the start; an event brings it in later (see below). |
 | Loadout (aircraft) | The weapons the aircraft carry. **View loadouts...** opens the Loadout Viewer. |
+| Course | The route the unit takes, when it sets off and what it does at the end (Chapter 14, *Courses*). |
 | Hosted units (bases and ships) | The aircraft and boats based here (see below). |
 | Extra fields | Advanced: any other CMO unit setting, applied after the unit is built, such as `fuel` = `50`. |
 | Notes | Your notes. Never exported. |

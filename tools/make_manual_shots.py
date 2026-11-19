@@ -26,7 +26,7 @@ os.environ["CMO_STUDIO_NO_UPDATE_CHECK"] = "1"
 from PyQt6.QtCore import QPoint, QPointF, QRect, QRectF, QSettings, Qt  # noqa: E402
 from PyQt6.QtGui import QColor, QFont, QPainter, QPen, QPixmap  # noqa: E402
 from PyQt6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QGroupBox, QLabel, QLineEdit,  # noqa: E402
-                             QTabBar, QTabWidget, QToolBar, QWidget)
+                             QTabBar, QTableWidget, QTabWidget, QToolBar, QWidget)
 
 from cmo_studio.settings import AppSettings, detect_cmo_dir  # noqa: E402
 from cmo_studio.ui.main_window import MainWindow  # noqa: E402
@@ -225,9 +225,9 @@ def main():
     tb = w.map_page.findChild(QToolBar)
     shot("map_toolbar", w.map_page, [
         (1, ("action", "Select / move")), (2, ("action", "Place unit")), (3, ("action", "Reference point")),
-        (4, ("action", "Draw area")), (5, ("action", "Measure")), (6, w.map_page.side_combo),
-        (7, ("action", "Templates...")), (8, ("action", "Patrol areas...")), (9, ("action", "Fit all")),
-        (10, "Labels"), (11, "Sides shown ▾")], crop=QRect(QPoint(0, 0), QPoint(w.map_page.width(),
+        (4, ("action", "Draw area")), (5, ("action", "Measure")), (6, ("action", "Plot course")),
+        (7, w.map_page.side_combo), (8, ("action", "Templates...")), (9, ("action", "Patrol areas...")),
+        (10, ("action", "Fit all")), (11, "Show ▾")], crop=QRect(QPoint(0, 0), QPoint(w.map_page.width(),
                                                                                    tb.height() + 4)))
     # 3. Map + inspector for a ship
     shot("map_unit_inspector", w.map_page, [
@@ -245,6 +245,19 @@ def main():
     pump(app, 0.5)
     shot("map_airbase_inspector", w.map_page, [(1, ("row", "Name:")), (2, "Hosted units")],
          crop=QRect(w.map_page.unit_form.mapTo(w.map_page, QPoint(0, 0)), w.map_page.unit_form.size()))
+    # 4b. A course: the Course box of a ship with a plotted route (in memory only, removed again)
+    from cmo_studio.model.project import Course, Waypoint
+    w.doc.select(ship.id)
+    ship.course = Course([Waypoint(ship.lat + 0.25, ship.lon + 0.6), Waypoint(ship.lat + 0.1, ship.lon + 1.4, None, 18),
+                          Waypoint(ship.lat - 0.15, ship.lon + 2.0)], 30, "repeat")
+    w.map_page.unit_form.refresh()
+    pump(app, 0.3)
+    cb = w.map_page.unit_form.course_box
+    shot("unit_course", cb, [(1, cb.findChild(QTableWidget)), (2, "Plot on map"), (3, "Remove"), (4, ("row", "Depart:")),
+                             (5, ("row", "At the end:")), (6, ("row", "Land at:"))])
+    ship.course = None
+    w.map_page.unit_form.refresh()
+
     # 5. Database dock
     shot("database_dock", w.db_browser, [
         (1, w.db_browser.findChild(QComboBox)), (2, ("row", "Type:")), (3, w.db_browser.search),
@@ -331,8 +344,8 @@ def main():
     pump(app, 0.3)
     w.timeline_page._fit()
     pump(app, 0.3)
-    shot("tab_timeline", w.timeline_page, [(1, "Filter events and missions..."), (2, "Missions"),
-                                           (3, "Condition-only events"), (4, "Sort by time")])
+    shot("tab_timeline", w.timeline_page, [(1, "Filter events, missions and courses..."), (2, "Missions"),
+                                           (3, "Courses"), (4, "Condition-only events"), (5, "Sort by time")])
 
     # 7. Dialogs
     from cmo_studio.ui.dialogs import NewProjectDialog, SettingsDialog
