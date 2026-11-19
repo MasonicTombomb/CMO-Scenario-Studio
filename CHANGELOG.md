@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.8.0 — 2026-11-19
 
 - **The course window.** Courses now open in their own window (**Edit course...** in the inspector, **Course...**
   on the map toolbar, or right-click a unit) instead of a box in the inspector:

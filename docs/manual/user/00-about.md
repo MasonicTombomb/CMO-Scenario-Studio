@@ -57,5 +57,5 @@ the map may show different areas or tiles.
 
 ## Version
 
-This manual describes CMO Scenario Studio version 1.7.0. The studio checks for updates itself (Chapter 23); the
+This manual describes CMO Scenario Studio version 1.8.0. The studio checks for updates itself (Chapter 23); the
 manual for the version you have installed is always in the **Help** menu.
