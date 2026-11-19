@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.8.1 — 2026-11-19
 
 - **Fixed**: a leg's *Targets* setting (leave the course to attack / stay on it) sent CMO `true`/`false`; it now
   sends `yes`/`no`, like the Sides tab's *Ignore plotted course* doctrine.
