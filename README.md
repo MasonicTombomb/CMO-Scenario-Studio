@@ -176,7 +176,15 @@ See [`examples/output`](examples/output) for a real export.
 
 ## Documentation
 
-- [User guide](docs/USER_GUIDE.md) — every tab, workflows and tips
+- **[User Manual (PDF)](docs/manuals/CMO-Scenario-Studio-User-Manual.pdf)** — the complete beginner's guide: install,
+  a step-by-step first scenario from nothing to playing it in CMO, every tab and dialog with annotated screenshots,
+  troubleshooting, FAQ and glossary (85 pages)
+- **[Reference Manual (PDF)](docs/manuals/CMO-Scenario-Studio-Reference-Manual.pdf)** — formats, the exported Lua and
+  runtime API, events in depth, libraries and catalogues, database, command line, releasing (53 pages)
+
+Both are also in the app (**Help** menu, F1), in the Start menu, and attached to every release. The Markdown
+sources are in [`docs/manual/`](docs/manual/); the reference chapters below are the same text:
+
 - [Export format and Lua runtime](docs/EXPORT_FORMAT.md) — what each file does, the `Studio*` Lua API
 - [Project file format](docs/PROJECT_FORMAT.md) — the `.cmoproj` JSON schema
 - [Patrol area library](docs/AREAS.md) — format and full list of areas

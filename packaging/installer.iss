@@ -79,7 +79,8 @@ Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs 
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExe}"
-Name: "{group}\User guide"; Filename: "{app}\docs\USER_GUIDE.md"
+Name: "{group}\User Manual"; Filename: "{app}\docs\manuals\CMO-Scenario-Studio-User-Manual.pdf"
+Name: "{group}\Reference Manual"; Filename: "{app}\docs\manuals\CMO-Scenario-Studio-Reference-Manual.pdf"
 Name: "{group}\Example projects"; Filename: "{app}\examples"
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopicon

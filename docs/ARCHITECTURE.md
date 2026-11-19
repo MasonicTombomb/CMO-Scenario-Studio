@@ -78,3 +78,17 @@ src/cmo_studio/
 3. If it needs runtime help, add a `Studio*` function to `Studio_Runtime.lua` (and mock any new API in
    `Studio_Mock.lua`).
 4. Validate its parameters in `model/validation.py`, and add a test.
+
+## Documentation
+
+The PDF manuals in `docs/manuals/` are built, not written by hand:
+
+- `docs/manual/user/NN-*.md`: the User Manual, one file per chapter, joined in name order. `# Title {.unnumbered}`
+  keeps a heading out of the chapter numbering (front matter, appendices); `!!! tip "Title"` makes a call-out box;
+  `[[Ctrl+S]]` draws keys; `![caption](img/x.png)` on its own line becomes a captioned figure.
+- The Reference Manual mixes `docs/manual/reference/*.md` with the reference docs in `docs/` (see `MANUALS` in
+  `tools/make_manuals.py`), so those docs have a single source.
+- `python tools/make_manual_shots.py` renders the annotated screenshots into `docs/manual/img/` (needs CMO for the
+  database panel); `python tools/make_manuals.py` prints the PDFs with headless Chrome or Edge.
+- `tests/test_manuals.py` checks every image exists, nothing failed to convert, and the chapter numbers the text
+  refers to still hold.

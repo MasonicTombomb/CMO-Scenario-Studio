@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7"]
+dev = ["pytest>=7", "markdown>=3.5"]
 
 [project.scripts]
 cmo-studio = "cmo_studio.app:main"

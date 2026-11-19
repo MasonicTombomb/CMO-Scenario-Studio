@@ -84,7 +84,9 @@ def build() -> Path:
     # User-facing files next to the exe
     for name in ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md"):
         shutil.copy2(ROOT / name, out / name)
-    shutil.copytree(ROOT / "docs", out / "docs", dirs_exist_ok=True)
+    # the PDF manuals and Markdown docs; the manual sources and README screenshots stay in the repository
+    shutil.copytree(ROOT / "docs", out / "docs", dirs_exist_ok=True,
+                    ignore=shutil.ignore_patterns("manual", "images"))
     ex = out / "examples"
     ex.mkdir(exist_ok=True)
     for p in (ROOT / "examples").glob("*.cmoproj"):
@@ -232,6 +234,9 @@ def package(out: Path) -> Path:
                 z.write(p, f"{APP}-{__version__}/{p.relative_to(out).as_posix()}")
     digest = write_sha256(zpath)
     print(f"release: {zpath} ({zpath.stat().st_size / 1e6:.1f} MB)\nsha256:  {digest}")
+    for pdf in sorted((ROOT / "docs" / "manuals").glob("*.pdf")):     # the manuals as release downloads too
+        shutil.copy2(pdf, RELEASE / pdf.name)
+        print(f"manual:  {pdf.name}")
     return zpath
 
 

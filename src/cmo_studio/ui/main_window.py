@@ -10,7 +10,7 @@ from PyQt6.QtCore import Qt, QTimer, QUrl
 from PyQt6.QtGui import QAction, QCloseEvent, QDesktopServices, QGuiApplication, QKeySequence
 from PyQt6.QtWidgets import (QDockWidget, QFileDialog, QLabel, QMainWindow, QMessageBox, QTabWidget)
 
-from .. import APP_NAME, __version__
+from .. import APP_NAME, GITHUB_REPO, __version__
 from ..updater import RELEASES_PAGE
 from ..db.database import DBEntry, latest_database
 from ..importers.legacy_lua import import_legacy_build
@@ -35,7 +35,7 @@ from .pages.timeline_page import TimelinePage
 from .pages.units_page import UnitsPage
 
 FILE_FILTER = f"CMO Scenario Studio project (*{PROJECT_SUFFIX});;All files (*)"
-DOCS_URL = "https://github.com/"
+REPO_URL = f"https://github.com/{GITHUB_REPO}"
 
 
 class MainWindow(QMainWindow):
@@ -213,7 +213,8 @@ class MainWindow(QMainWindow):
         self._action(t, "Open the CMO folder", self._open_cmo)
 
         h = mb.addMenu("&Help")
-        self._action(h, "User guide (docs folder)", self._open_docs, "F1")
+        self._action(h, "User manual (PDF)", lambda: self.open_manual("User"), "F1")
+        self._action(h, "Reference manual (PDF)", lambda: self.open_manual("Reference"))
         self._action(h, "Check for updates...", lambda: self.updater.check(manual=True))
         self._action(h, "Release notes (GitHub)", lambda: QDesktopServices.openUrl(QUrl(RELEASES_PAGE)))
         h.addSeparator()
@@ -397,9 +398,12 @@ class MainWindow(QMainWindow):
         if self.settings.cmo_dir:
             QDesktopServices.openUrl(QUrl.fromLocalFile(self.settings.cmo_dir))
 
-    def _open_docs(self):
-        docs = docs_dir() / "USER_GUIDE.md"
-        QDesktopServices.openUrl(QUrl.fromLocalFile(str(docs)) if docs.is_file() else QUrl(DOCS_URL))
+    def open_manual(self, which: str = "User") -> None:
+        """Open the PDF manual (installed copy, else the one on GitHub)."""
+        name = f"CMO-Scenario-Studio-{which}-Manual.pdf"
+        pdf = docs_dir() / "manuals" / name
+        url = QUrl.fromLocalFile(str(pdf)) if pdf.is_file() else QUrl(f"{REPO_URL}/blob/main/docs/manuals/{name}")
+        QDesktopServices.openUrl(url)
 
     # ------------------------------------------------------------------ DB actions
     def _place_from_db(self, e: DBEntry):

@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- **PDF manuals**: a new 85-page **User Manual** written for complete beginners - installing, a tour of the window,
+  a step-by-step first scenario from nothing to playing it in CMO, every tab and dialog with annotated screenshots,
+  troubleshooting, questions and answers, keyboard shortcuts, glossary and menu reference - and a 53-page
+  **Reference Manual** (formats, exported Lua and runtime API, events in depth, formation layouts, library formats and
+  catalogues, database, command line, releasing). Open them from **Help** (F1) or the Start menu; they are also
+  attached to every release. Built from Markdown in `docs/manual/` with `tools/make_manuals.py`; annotated
+  screenshots from `tools/make_manual_shots.py`.
+
 ## 1.6.0 — 2026-11-15
 
 - **Windows installer** (`CMO-Scenario-Studio-<version>-setup.exe`, Inno Setup): installs into Program Files with
