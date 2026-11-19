@@ -1,0 +1,112 @@
+
+name: Feature Request
+description: Suggest a new feature, improvement or enhancement.
+title: "[FEATURE] "
+labels:
+  - enhancement
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Request
+
+        Thank you for suggesting an improvement!
+
+        Please provide as much detail as possible so we can
+        understand your suggestion and evaluate its usefulness.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: A short and clear description of the feature you would like to see.
+      placeholder: Describe your proposed feature...
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Motivation
+      description: |
+        What problem does this feature solve?
+        Is something currently difficult, missing or unnecessarily complicated?
+      placeholder: |
+        I'm trying to...
+        Currently, I have to...
+        It would be easier if...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed Solution
+      description: |
+        Describe how you would like the feature to work.
+        Include any relevant details about its behaviour or implementation.
+      placeholder: Explain how you envisage this feature working...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: Describe any alternatives you have considered...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: Which area of the application would this feature affect?
+      multiple: true
+      options:
+        - User Interface
+        - Scenario Editor
+        - Scenario Building
+        - Unit Management
+        - Aircraft / Loadouts
+        - Airbases / Facilities
+        - Missions / Formations
+        - Lua / Scripting
+        - File Import / Export
+        - Performance / Optimisation
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples / Mock-ups
+      description: |
+        Include examples, screenshots, diagrams or mock-ups
+        that help explain your suggestion.
+      placeholder: Describe or attach any examples...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Any other information that might help us understand your request.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Submission Checklist
+      options:
+        - label: I have checked that this feature has not already been requested.
+          required: true
+        - label: This feature request relates to the purpose of this project.
+          required: true
