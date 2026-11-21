@@ -104,6 +104,16 @@ class Weather:
 
 
 @dataclass
+class WeatherEntry:
+    """A weather change that fires at a set offset after the scenario starts."""
+    offset_minutes: int = 60      # minutes after scenario start (must be > 0)
+    temperature: float = 15.0
+    rainfall: int = 0
+    cloud: float = 0.0
+    sea_state: int = 2
+
+
+@dataclass
 class BuildOptions:
     armed_start: bool = True      # aircraft start with their configured loadout (else reserve)
     default_loadout: int = 3      # DB3000 "(Reserve [Available])"
@@ -357,6 +367,7 @@ class Project:
     variants: list[Variant] = field(default_factory=list)
     formations: list[Formation] = field(default_factory=list)
     key_values: dict[str, str] = field(default_factory=dict)   # initial ScenEdit_SetKeyValue pairs
+    forecast: list[WeatherEntry] = field(default_factory=list)
 
     # ------------------------------------------------------------------ lookups
     def side(self, sid: str) -> Optional[Side]:

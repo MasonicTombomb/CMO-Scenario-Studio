@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from PyQt6.QtCore import QDateTime, Qt, QTimeZone
 from PyQt6.QtWidgets import (QCheckBox, QComboBox, QDateTimeEdit, QDoubleSpinBox, QFormLayout, QGridLayout,
-                             QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPlainTextEdit, QScrollArea, QSpinBox,
-                             QVBoxLayout, QWidget)
+                             QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPlainTextEdit, QPushButton,
+                             QScrollArea, QSpinBox, QVBoxLayout, QWidget)
 
 from ...model.project import safe_folder_name, safe_prefix
 from ..widgets import KeyValueTable, hint_label
@@ -99,12 +99,12 @@ class ScenarioPage(Page):
         f.addRow("Duration:", row)
         grid.addWidget(g, 1, 0)
 
-        g = QGroupBox("Weather at start")
+        g = QGroupBox("Weather")
         f = QFormLayout(g)
         t = w.spin(QDoubleSpinBox(), "temperature")
         t.setRange(-60, 60)
         t.setSuffix(" °C")
-        f.addRow("Temperature:", t)
+        f.addRow("Temp at start:", t)
         r = w.spin(QSpinBox(), "rainfall")
         r.setRange(0, 50)
         f.addRow("Rainfall (0-50):", r)
@@ -115,6 +115,15 @@ class ScenarioPage(Page):
         s = w.spin(QSpinBox(), "sea_state")
         s.setRange(0, 9)
         f.addRow("Sea state (0-9):", s)
+        fc_row = QHBoxLayout()
+        self._fc_btn = QPushButton("Weather Forecast...")
+        self._fc_btn.clicked.connect(self._open_forecast)
+        self._fc_label = QLabel("No forecast")
+        self._fc_label.setStyleSheet("color: gray;")
+        fc_row.addWidget(self._fc_btn)
+        fc_row.addWidget(self._fc_label)
+        fc_row.addStretch()
+        f.addRow(fc_row)
         grid.addWidget(g, 1, 1)
 
         g = QGroupBox("Build options")
@@ -155,6 +164,22 @@ class ScenarioPage(Page):
             b.load()
         self.kv.set_data(self.project.key_values)
         self._update_paths()
+        self._update_forecast_label()
+
+    def _update_forecast_label(self) -> None:
+        n = len(self.project.forecast)
+        if n == 0:
+            self._fc_label.setText("No forecast")
+        elif n == 1:
+            self._fc_label.setText("1 change scheduled")
+        else:
+            self._fc_label.setText(f"{n} changes scheduled")
+
+    def _open_forecast(self) -> None:
+        from ..forecast_dialog import ForecastDialog
+        dlg = ForecastDialog(self.doc, self)
+        dlg.exec()
+        self._update_forecast_label()
 
     def _update_paths(self):
         m = self.project.meta

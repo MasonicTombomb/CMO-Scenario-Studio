@@ -381,6 +381,40 @@ local function buildMissions()
   end
 end
 
+------------------------------------------------------------------ weather forecast
+local function buildForecast()
+  if not D.FORECAST or #D.FORECAST == 0 then return end
+  for i, f in ipairs(D.FORECAST) do
+    local ename = string.format('Studio: Weather #%d', i)
+    local tname = ename .. ' - T1'
+    local aname = ename .. ' (script)'
+    local flag  = string.format('STUDIO_WX_%d', i)
+    -- One-shot: guard on the flag, then check clock, set flag, change weather.
+    local boot  = "if not STUDIO_LUAINIT_LOADED then ScenEdit_RunScript('" .. D.CFG.PATH .. "LuaInit.lua') end\n"
+    local script = boot .. string.format(
+      'if StudioFlag(%q) then return end\n' ..
+      'if (tonumber(ScenEdit_CurrentTime()) or 0) < %d then return end\n' ..
+      'StudioSetFlag(%q, true)\n' ..
+      'pcall(ScenEdit_SetWeather, %s, %s, %s, %s)',
+      flag, f.t, flag,
+      tostring(f.temp), tostring(f.rain), tostring(f.cloud), tostring(f.sea)
+    )
+    local ok = try(ScenEdit_SetEvent, ename, { mode = 'add', IsRepeatable = true, IsActive = true, IsShown = false })
+    if ok then
+      count('weather changes')
+      try(ScenEdit_SetTrigger, { mode = 'add', name = tname, type = 'RegularTime', Interval = 4 })
+      try(ScenEdit_SetEventTrigger, ename, { mode = 'add', name = tname })
+      local okA, errA = try(ScenEdit_SetAction, { mode = 'add', type = 'LuaScript', name = aname,
+                                                   ScriptText = crlf(script) })
+      if okA then try(ScenEdit_SetEventAction, ename, { mode = 'add', name = aname })
+      else warn('Weather forecast #' .. i .. ' action: ' .. tostring(errA)) end
+      log(2, 'wx      #%d at epoch %d', i, f.t)
+    else
+      warn('Weather forecast #' .. i .. ': event could not be created')
+    end
+  end
+end
+
 ------------------------------------------------------------------ events
 local BOOT = "if not STUDIO_LUAINIT_LOADED then ScenEdit_RunScript('" .. D.CFG.PATH .. "LuaInit.lua') end\n"
 
@@ -471,6 +505,7 @@ local function buildKeyValues()
   for _, kv in ipairs(D.KV) do try(ScenEdit_SetKeyValue, kv[1], kv[2]) end
   try(ScenEdit_SetKeyValue, 'STUDIO_VARIANT', VARIANT_KEY or '')
   for _, e in ipairs(D.EVENTS) do try(ScenEdit_SetKeyValue, 'STUDIO_EVT_' .. e.key, '') end
+  for i = 1, #(D.FORECAST or {}) do try(ScenEdit_SetKeyValue, string.format('STUDIO_WX_%d', i), '') end
   for _, r in ipairs((STUDIO and STUDIO.ROUTES) or {}) do
     for n = 1, #(r.names or {}) do
       local k = 'STUDIO_RT_' .. r.id .. '_' .. n
@@ -542,6 +577,7 @@ local function build()
 
   log(1, 'Sides...');            buildSides()
   log(1, 'Clock and weather...'); buildClock()
+  if D.FORECAST and #D.FORECAST > 0 then log(1, 'Weather forecast (%d change(s))...', #D.FORECAST); buildForecast() end
   log(1, 'Reference points...'); buildPoints()
   log(1, 'Units...');            buildUnits()
   log(1, 'Formations...');       buildFormations()

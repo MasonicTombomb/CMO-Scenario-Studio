@@ -392,6 +392,14 @@ def compile_build_data(project: Project) -> dict:
         missions.append(rec)
     D["MISSIONS"] = missions
     D["KV"] = [[k, str(v)] for k, v in project.key_values.items()]
+    start_epoch = c.start_epoch()
+    D["FORECAST"] = [
+        {"t": start_epoch + e.offset_minutes * 60,
+         "temp": float(e.temperature), "rain": int(e.rainfall),
+         "cloud": float(e.cloud), "sea": int(e.sea_state)}
+        for e in sorted(project.forecast, key=lambda x: x.offset_minutes)
+        if e.offset_minutes > 0
+    ]
     D["EVENTS"] = [compile_event(project, e) for e in project.events]
     rev = route_event(project)
     if rev is not None:
