@@ -453,6 +453,8 @@ def route_waypoint(w) -> dict:
         d["alt"] = float(w.altitude)
     if w.speed:
         d["spd"] = float(w.speed)
+    if w.depth is not None:
+        d["dep"] = float(w.depth)
     if w.name:
         d["name"] = w.name
     for key, val, allowed in (("radar", w.radar, SENSOR_SETTING), ("sonar", w.sonar, SENSOR_SETTING),

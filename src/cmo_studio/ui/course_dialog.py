@@ -147,6 +147,8 @@ class ProfileChart(QWidget):
                 p.drawText(QRectF(0, Y(m) - 8, r.left() - 6, 16), Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
                            f"{m:,.0f} m")
             p.drawText(QRectF(0, r.top() - 17, r.left() + 40, 14), Qt.AlignmentFlag.AlignLeft, "Altitude")
+        elif plan.sub:
+            self._paint_depth(p, plan, r, xs, X)
         # speed
         spd_top = max(lg.speed for lg in plan.legs) * 1.25
         SY = lambda kn: r.bottom() - r.height() * (kn / spd_top)  # noqa: E731
@@ -196,6 +198,38 @@ class ProfileChart(QWidget):
                    "green on / grey off / dark unchanged    weapons: red free, amber tight, green hold")
         p.end()
 
+    def _paint_depth(self, p: QPainter, plan: CoursePlan, r: QRectF, xs: list[float], X) -> None:
+        """Submarines: depth below the surface line at the top, deeper further down."""
+        known = any(lg.depth is not None for lg in plan.legs)
+        if not known:
+            p.setPen(QPen(ALT_COL, 1, Qt.PenStyle.DashLine))
+            p.drawLine(QPointF(r.left(), r.center().y()), QPointF(r.right(), r.center().y()))
+            p.drawText(QPointF(r.left() + 6, r.center().y() - 4), "Depth: as the submarine starts (none set)")
+            return
+        deepest = max([lg.depth for lg in plan.legs if lg.depth is not None] + [plan.start_depth or 0.0, 50.0]) * 1.15
+        Y = lambda m: r.top() + r.height() * (m / deepest)  # noqa: E731
+        prev = plan.start_depth if plan.start_depth is not None else next(
+            lg.depth for lg in plan.legs if lg.depth is not None)
+        pts: list[QPointF] = []
+        for i, lg in enumerate(plan.legs):
+            b = lg.depth if lg.depth is not None else prev
+            x0, x1 = X(xs[i]), X(xs[i + 1])
+            pts += [QPointF(x0, Y(prev)), QPointF(x0 + (x1 - x0) * 0.2, Y(b)), QPointF(x1, Y(b))]
+            prev = b
+        fill = QColor(ALT_COL)
+        fill.setAlpha(45)
+        p.setPen(Qt.PenStyle.NoPen)
+        p.setBrush(QBrush(fill))
+        p.drawPolygon(QPolygonF([QPointF(pts[0].x(), r.top())] + pts + [QPointF(pts[-1].x(), r.top())]))
+        p.setBrush(Qt.BrushStyle.NoBrush)
+        p.setPen(QPen(ALT_COL, 2))
+        p.drawPolyline(QPolygonF(pts))
+        p.setPen(ALT_COL)
+        for m in (0.0, deepest / 2, deepest / 1.15):
+            p.drawText(QRectF(0, Y(m) - 8, r.left() - 6, 16), Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+                       "surface" if not m else f"{m:,.0f} m")
+        p.drawText(QRectF(0, r.top() - 17, r.left() + 40, 14), Qt.AlignmentFlag.AlignLeft, "Depth")
+
     def mousePressEvent(self, e) -> None:
         i = self.leg_at(e.position().x())
         if i >= 0:
@@ -208,6 +242,8 @@ class ProfileChart(QWidget):
             return
         lg = self.plan.legs[i]
         alt = "" if lg.alt is None else f"{lg.alt:,.0f} m ({lg.alt * FT:,.0f} ft), "
+        if self.plan.sub and lg.depth is not None:
+            alt = f"depth {lg.depth:,.0f} m, "
         QToolTip.showText(e.globalPosition().toPoint(),
                           f"{lg.label}: {lg.nm:,.0f} nm, {alt}{lg.speed:,.0f} kn\n"
                           f"Radar {_onoff(lg.radar)}, weapons {WCS_TEXT.get(lg.weapons, lg.weapons)}"
@@ -323,7 +359,10 @@ class CourseDialog(QDialog):
         hh = self.table.horizontalHeader()
         hh.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         hh.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        self.table.setColumnHidden(2, not air)
+        sub = u.type == "Submarine"
+        if sub:
+            self.table.setHorizontalHeaderItem(2, QTableWidgetItem("Depth"))
+        self.table.setColumnHidden(2, not (air or sub))
         self.table.currentCellChanged.connect(lambda row, *_: self._row_selected(row))
         rv.addWidget(self.table, 1)
 
@@ -363,6 +402,16 @@ class CourseDialog(QDialog):
         self.alt_row.setLayout(altrow)
         altrow.setContentsMargins(0, 0, 0, 0)
         form.addRow("Altitude:", self.alt_row)
+        self.depth = QDoubleSpinBox()
+        self.depth.setRange(-1, 3000)
+        self.depth.setDecimals(0)
+        self.depth.setSingleStep(10)
+        self.depth.setSuffix(" m")
+        self.depth.setSpecialValueText("no change")
+        self.depth.setToolTip("Depth below the surface on the leg to this waypoint (0 = surfaced). 'no change' keeps "
+                              "the previous leg's.")
+        self.depth.valueChanged.connect(self._leg_changed)
+        form.addRow("Depth:", self.depth)
         self.speed = QDoubleSpinBox()
         self.speed.setRange(0, 3000)
         self.speed.setDecimals(0)
@@ -396,10 +445,12 @@ class CourseDialog(QDialog):
         form.addRow("Signal there:", self.signal)
         same = QPushButton("Same for every leg")
         same.setAutoDefault(False)
-        same.setToolTip("Copy this leg's altitude, speed, sensors, weapons and targets setting to every leg")
+        same.setToolTip("Copy this leg's altitude (or depth), speed, sensors, weapons and targets setting to every "
+                        "leg")
         same.clicked.connect(self.same_for_all)
         tac.addRow("", same)
         form.setRowVisible(self.alt_row, air)
+        form.setRowVisible(self.depth, u.type == "Submarine")
         tac.setRowVisible(self.sonar, u.type != "GroundUnit")
         rv.addWidget(self.leg_box)
         rv.addWidget(hint_label("Settings apply on the leg flown <i>to</i> the waypoint and stay in force until a "
@@ -408,7 +459,8 @@ class CourseDialog(QDialog):
         top.setSizes([780, 540])
         vsplit.addWidget(top)
 
-        prof = QGroupBox("Profile" if air else "Speed and settings along the route")
+        prof = QGroupBox("Profile" if air else "Depth profile" if u.type == "Submarine" else
+                         "Speed and settings along the route")
         pv = QVBoxLayout(prof)
         self.chart = ProfileChart()
         self.chart.legClicked.connect(self._chart_clicked)
@@ -487,11 +539,12 @@ class CourseDialog(QDialog):
         self.table.setRowCount(len(legs))
         grey = QColor("#8a8f99")
         for r, lg in enumerate(legs):
+            level = lg.depth if self.plan.sub else lg.alt
             cells = [str(lg.n) if lg.n else "→", lg.label,
-                     "" if lg.alt is None else f"{lg.alt:,.0f} m",
+                     "" if level is None else f"{level:,.0f} m",
                      f"{lg.speed:,.0f} kn", _onoff(lg.radar), WCS_TEXT.get(lg.weapons, lg.weapons),
                      f"{lg.wait} min" if lg.wait else "", f"{lg.nm:,.0f} nm", f"H+{hms(lg.t1)}"]
-            inherited = {2: not lg.alt_set, 3: not lg.speed_set}
+            inherited = {2: not (lg.depth_set if self.plan.sub else lg.alt_set), 3: not lg.speed_set}
             for col, text in enumerate(cells):
                 it = QTableWidgetItem(text)
                 if inherited.get(col) or lg.n == 0:
@@ -533,6 +586,7 @@ class CourseDialog(QDialog):
         self.lat.setValue(w.lat)
         self.lon.setValue(w.lon)
         self.alt.setValue(w.altitude or 0)
+        self.depth.setValue(-1 if w.depth is None else w.depth)
         self.speed.setValue(w.speed or 0)
         for cb, val in ((self.radar, w.radar), (self.sonar, w.sonar), (self.ecm, w.ecm), (self.weapons, w.weapons),
                         (self.engage, w.engage)):
@@ -572,6 +626,8 @@ class CourseDialog(QDialog):
         w.lat, w.lon = round(self.lat.value(), 6), round(self.lon.value(), 6)
         if self.unit.type == "Aircraft":
             w.altitude = self.alt.value() or None
+        if self.unit.type == "Submarine":
+            w.depth = None if self.depth.value() < 0 else self.depth.value()
         w.speed = self.speed.value() or None
         w.radar, w.sonar, w.ecm = self.radar.currentData(), self.sonar.currentData(), self.ecm.currentData()
         w.weapons, w.engage = self.weapons.currentData(), self.engage.currentData()
@@ -644,7 +700,7 @@ class CourseDialog(QDialog):
         if w is None:
             return
         for o in self.course.waypoints:
-            o.altitude, o.speed = w.altitude, w.speed
+            o.altitude, o.speed, o.depth = w.altitude, w.speed, w.depth
             o.radar, o.sonar, o.ecm, o.weapons, o.engage = w.radar, w.sonar, w.ecm, w.weapons, w.engage
         self.refresh()
 

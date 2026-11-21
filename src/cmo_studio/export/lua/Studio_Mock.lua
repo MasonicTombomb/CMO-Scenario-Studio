@@ -138,6 +138,7 @@ function ScenEdit_SetUnit(t)
   end
   if t.manualAltitude ~= nil then u.manualAltitude = t.manualAltitude end
   if t.manualSpeed ~= nil then u.manualSpeed = t.manualSpeed end
+  if t.depth ~= nil then need(tonumber(t.depth), 'SetUnit: depth must be a number'); u.depth = t.depth end
   if t.base ~= nil and t.base ~= false then
     need(MOCK.units[t.base] or ScenEdit_GetUnit({ name = t.base }), 'SetUnit: base not found: ' .. tostring(t.base))
     u.base = t.base

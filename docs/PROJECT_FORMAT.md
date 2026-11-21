@@ -11,7 +11,8 @@ of the studio load.
   "meta":    { "title", "folder_name", "file_prefix", "author", "inspired_by", "setting", "location", "db_file",
                "complexity", "difficulty", "hypothetical_note", "description_html", "auto_header", "designer_notes" },
   "clock":   { "start": "2030-05-12T04:00:00", "duration_days", "duration_hours", "duration_minutes" },   // Zulu
-  "weather": { "temperature", "rainfall", "cloud", "sea_state" },
+  "weather": { "temperature", "rainfall", "cloud", "sea_state" },              // at the start
+  "forecast": [ { "offset_minutes", "temperature", "rainfall", "cloud", "sea_state" } ],   // later changes
   "build":   { "armed_start", "default_loadout", "verbose", "force_rebuild" },
   "sides":   [ { "id", "name", "tag", "color", "awareness", "proficiency", "computer_only", "start_score",
                  "doctrine": { "use_nuclear_weapons": "no", ... },
@@ -21,7 +22,7 @@ of the studio load.
                  "altitude", "depth", "heading", "speed",            // null = default
                  "host", "loadout", "radar_active", "sonar_active", "hold_position", "autodetectable",
                  "proficiency", "reserve", "group", "notes", "extra": { },
-                 "course": null | { "waypoints": [ { "lat", "lon", "altitude", "speed",   // m, kn; null = no change
+                 "course": null | { "waypoints": [ { "lat", "lon", "altitude", "speed", "depth",   // m, kn, m; null = no change
                                                      "name", "radar", "sonar", "ecm", "weapons", "engage",
                                                      "wait_minutes", "signal" } ],
                                     "depart_minutes", "finish": "stop|rtb|land|repeat", "land_at": unitId } } ],
@@ -48,7 +49,10 @@ of the studio load.
 - `units[].type`: `Aircraft`, `Ship`, `Submarine`, `Facility`, `GroundUnit`.
 - `units[].course.waypoints[]`: settings apply on the leg flown *to* the waypoint. `radar`, `sonar`, `ecm`:
   `""` (no change), `active`, `passive`; `weapons`: `""`, `free`, `tight`, `hold`; `engage`: `""`, `leave` (may leave
-  the course to attack), `stay`; `wait_minutes`: circle there on arrival; `signal`: flag set to true on arrival.
+  the course to attack), `stay`; `wait_minutes`: wait there on arrival (ground units stop, others circle);
+  `signal`: flag set to true on arrival; `depth`: submarines only, metres below the surface (0 = surfaced).
+- `forecast[]`: `offset_minutes` after the start (entries at 0 or less are ignored; the start weather is `weather`),
+  `rainfall` 0-50, `cloud` 0-1, `sea_state` 0-9.
 - `units[].course.finish`: `stop` (carry on), `rtb` (return to its base), `land` (land at `land_at`, a base of the
   same side), `repeat` (fly the course again). `depart_minutes` counts from the scenario start.
 - `missions[].mclass`: `patrol` (`aaw asw naval land mixed sead`), `strike` (`air land sea sub`), `support`,

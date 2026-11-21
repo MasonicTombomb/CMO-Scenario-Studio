@@ -55,7 +55,7 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Missions** — patrol, strike, support, ferry, mining, mine clearing and cargo, with areas, prosecution areas,
   assigned units, strike targets and `ScenEdit_SetMission` options.
 - **Courses** — plot the exact route of any aircraft, ship, submarine or ground unit in a course window with a map,
-  a table of legs and a flight profile. Each leg sets altitude, speed, radar / sonar / jammers, weapons
+  a table of legs and a flight (or depth) profile. Each leg sets altitude or submarine depth, speed, radar / sonar / jammers, weapons
   free / tight / hold and whether to leave the course to attack; waypoints can hold the unit for a while or raise a
   flag for events. Aircraft at a base take off at their departure time and return or land at another base.
 - **Weather forecast** — schedule weather changes at any point after the scenario starts: set an offset in minutes

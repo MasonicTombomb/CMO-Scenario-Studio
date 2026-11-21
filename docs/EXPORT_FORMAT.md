@@ -41,14 +41,17 @@ The events reference the script folder at run time, so `Lua\<F>\` must exist on 
 1. Refuse to run if any side already has units (unless `FORCE_REBUILD`).
 2. Load `LuaInit.lua`.
 3. Sides (added or reused), postures, awareness, proficiency, doctrine, starting score, computer-only flag.
-4. Start time, duration, current time, weather.
+4. Start time, duration, current time, weather; then the **weather forecast**: one hidden, repeatable event per
+   timed change (`Studio: Weather #n`, *Regular time* every minute) whose script waits for its time, sets the
+   once-flag `STUDIO_WX_<n>` and calls `ScenEdit_SetWeather(temp, rain, cloud, sea)`.
 5. Reference points and area points.
 6. Units — hosts first; then EMCON, hold position, auto-detectable, proficiency, speed, extra fields.
 7. Formations — `unit.group = 'Name'` for the lead and members, then each member's station with
    `ScenEdit_SetUnit({guid=, formation={bearing=, distance=, type=, sprint=}})` (retried with bearing and
    distance only). Units are already on station, so a refusal only leaves them ungrouped (reported).
 8. Missions — options, prosecution area, assigned units, strike targets.
-9. Key values (initial values, `STUDIO_VARIANT`, reset of event once-flags and course progress).
+9. Key values (initial values, `STUDIO_VARIANT`, reset of event once-flags, weather-change flags and course
+   progress).
 10. Courses — `StudioRoutesTick(true)`: units already under way at the start (airborne aircraft, ships, ground
     units) with a departure at the start get their plotted course now. Aircraft in a base wait for the
     *Studio: unit courses* event.
@@ -76,6 +79,7 @@ D.FORMATIONS = { { name, lead = unitId, stype = 'Rotating'|'Fixed', sprint,
                    members = { { id, bearing, dist }, ... } }, ... }   -- bearing deg, dist nm
 D.MISSIONS = { { side, name, class, sub?, zone?, pzone?, dest?, units = {ids}, targets = {ids}, opts? }, ... }
 D.KV       = { { key, value }, ... }
+D.FORECAST = { { t = <Unix time>, temp, rain, cloud, sea }, ... }   -- weather changes after the start, in time order
 D.EVENTS   = { { key, name, repeatable, active, shown, triggers = { {name, spec, unit?, area?} },
                  conditions = { {name, spec} }, script, actions = { {name, spec} } }, ... }
 D.SPECIALS = { { side, name, desc, repeatable, active, script }, ... }
@@ -113,7 +117,7 @@ Units with a plotted course are listed in `LuaInit.lua`:
 STUDIO.ROUTES = {
   { id = '<unit id>', side = 'United Kingdom', names = { 'TARTAN #1', 'TARTAN #2' },
     kind = 'Aircraft',
-    wps = { { lat = 58.5, lon = -1.0, alt = 9000, spd = 450, name = 'IP', radar = 'passive', ecm = 'active',
+    wps = { { lat = 58.5, lon = -1.0, alt = 9000, spd = 450, name = 'IP', radar = 'passive', ecm = 'active',  -- dep = m (submarines)
               wcs = 'free', engage = 'leave', wait = 10, flag = 'STRIKE_AT_IP' },
             { lat = 57.0, lon = 1.0 } },               -- only lat and lon are always there
     depart = 1904531400,                       -- Unix time (scenario start + Depart minutes)
@@ -132,11 +136,12 @@ whose action is `StudioRoutesTick()`. For each copy of each unit it keeps a stat
 | `wait` | Before `depart`. At `depart`: a unit under way is given the course (`enroute`); an aircraft in a base is sent off with `ScenEdit_SetUnit({guid=, launch=true})` (`launched`). |
 | `launched` | Taking off. Once airborne it is given the course (`enroute`). |
 | `enroute` | Flying the course. Each tick compares the waypoints left in `unit.course` with the leg it was on: for every waypoint passed it sets the waypoint's `flag`; a waypoint with `wait` starts a `loiter`; otherwise the next leg's settings are applied. When none are left the finish order runs and the state becomes `done` (or `enroute` again for `repeat`). |
-| `loiter` | Circling a waypoint (four points 5 nm round it for aircraft, 0.5 nm for others) until `_until`, then given the rest of the course. |
+| `loiter` | Waiting at a waypoint until `_until`, then given the rest of the course. Aircraft circle four points 5 nm round it, ships and submarines 0.5 nm; ground units are given an empty course and stop. |
 | `done` | Nothing more to do. |
 
 A leg's settings are applied when it starts: `alt` and `spd` with `ScenEdit_SetUnit({guid=, manualAltitude=})`
-and `manualSpeed=`; `radar`, `sonar`, `ecm` with `ScenEdit_SetEMCON('Unit', guid, 'Radar=Active;OECM=Passive')`;
+and `manualSpeed=`; `dep` (submarines) with `ScenEdit_SetUnit({guid=, depth=})`, as `ScenEdit_AddUnit` takes it,
+falling back to `manualAltitude = -dep`; `radar`, `sonar`, `ecm` with `ScenEdit_SetEMCON('Unit', guid, 'Radar=Active;OECM=Passive')`;
 `wcs` (free 0, tight 1, hold 2, for air, surface, subsurface and land) and `engage` (`ignore_plotted_course` = `'yes'` / `'no'`, as on the Sides tab) with
 `ScenEdit_SetDoctrine({side=, unitname=}, {...})`. A setting CMO refuses is logged and the rest go on.
 

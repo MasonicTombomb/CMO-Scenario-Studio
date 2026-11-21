@@ -345,36 +345,74 @@ local u = ScenEdit_GetUnit({ name = '%(name)s' })
 local key = 'STUDIO_RT_%(id)s_1'
 local function show(tag)
   print('UNIT ' .. tag .. ' ' .. ScenEdit_GetKeyValue(key) .. ' leg=' .. ScenEdit_GetKeyValue(key .. '_leg')
-        .. ' speed=' .. tostring(u.manualSpeed) .. ' emcon=' .. tostring(u.emcon) .. ' course=' .. #(u.course or {})
-        .. ' flag=' .. ScenEdit_GetKeyValue('%(flag)s'))
+        .. ' speed=' .. tostring(u.manualSpeed) .. ' depth=' .. tostring(u.depth) .. ' emcon=' .. tostring(u.emcon)
+        .. ' course=' .. #(u.course or {}) .. ' flag=' .. ScenEdit_GetKeyValue('%(flag)s'))
 end
 show('build')
 MOCK.now = start + 10 * 60; StudioRoutesTick(); show('depart')
 table.remove(u.course, 1); StudioRoutesTick(); show('arrived1')
+MOCK.now = start + 13 * 60; StudioRoutesTick(); show('holding')
 MOCK.now = start + 16 * 60; StudioRoutesTick(); show('wait over')
 u.course = {}; StudioRoutesTick(); show('end')
 print('UNIT doctrine ' .. table.concat(MOCK.unitdoctrine or {}, ','))
 """
 
 
-@pytest.mark.parametrize("utype,dbid,sensor,emcon", [("Ship", 2814, "sonar", "Sonar=Active"),
-                                                    ("Submarine", 771, "sonar", "Sonar=Active"),
-                                                    ("GroundUnit", 491, "radar", "Radar=Active")])
-def test_ships_submarines_and_ground_units_follow_courses(database, lua_dll, utype, dbid, sensor, emcon):
-    """Same route manager for every moving unit: departure time, leg speed and sensors, weapons, wait, signal."""
+@pytest.mark.parametrize("utype,dbid,sensor,emcon,held", [("Ship", 2814, "sonar", "Sonar=Active", 4),
+                                                         ("Submarine", 771, "sonar", "Sonar=Active", 4),
+                                                         ("GroundUnit", 491, "radar", "Radar=Active", 0)])
+def test_ships_submarines_and_ground_units_follow_courses(database, lua_dll, utype, dbid, sensor, emcon, held):
+    """Same route manager for every moving unit: departure time, leg speed and sensors, weapons, wait, signal.
+    Ships and submarines circle while they wait; ground units stop; submarines change depth per leg."""
     from cmo_studio.tools.lua_engine import dry_run_build
     p = new_project("Surface", "DB3K_519.db3")
-    first = Waypoint(56.6, 3.2, speed=12, weapons="hold", wait_minutes=5, signal="LEG1_DONE")
+    first = Waypoint(56.6, 3.2, speed=12, depth=60, weapons="hold", wait_minutes=5, signal="LEG1_DONE")
     setattr(first, sensor, "active")
     unit = Unit(side=p.sides[0].id, type=utype, dbid=dbid, name="MOVER", lat=56.5, lon=3.0,
-                course=Course([first, Waypoint(56.8, 3.6, speed=18, weapons="free")], 10, "stop"))
+                course=Course([first, Waypoint(56.8, 3.6, speed=18, depth=200, weapons="free")], 10, "stop"))
     p.units.append(unit)
     res = dry_run_build(p, lua_dll, db=database, after=SURFACE % {"name": "MOVER", "id": unit.id, "flag": "LEG1_DONE"})
     assert res.ok and "MOCK API ERROR" not in res.output, res.output
     out = [ln for ln in res.output.splitlines() if ln.startswith("UNIT")]
-    assert out[0] == "UNIT build wait leg= speed=nil emcon=nil course=0 flag="             # waits for H+10
-    assert out[1] == f"UNIT depart enroute leg=1 speed=12.0 emcon={emcon} course=2 flag="
-    assert out[2] == f"UNIT arrived1 loiter leg=1 speed=12.0 emcon={emcon} course=4 flag=true"   # holds 5 min
-    assert out[3] == f"UNIT wait over enroute leg=2 speed=18.0 emcon={emcon} course=1 flag=true"
-    assert out[4].startswith("UNIT end done")
-    assert "MOVER weapon_control_status_surface=2" in out[5] and "MOVER weapon_control_status_land=0" in out[5]
+    d1, d2 = ("60.0", "200.0") if utype == "Submarine" else ("nil", "nil")     # depth only for submarines
+    assert out[0] == "UNIT build wait leg= speed=nil depth=nil emcon=nil course=0 flag="     # waits for H+10
+    assert out[1] == f"UNIT depart enroute leg=1 speed=12.0 depth={d1} emcon={emcon} course=2 flag="
+    assert out[2] == f"UNIT arrived1 loiter leg=1 speed=12.0 depth={d1} emcon={emcon} course={held} flag=true"
+    assert out[3] == f"UNIT holding loiter leg=1 speed=12.0 depth={d1} emcon={emcon} course={held} flag=true"
+    assert out[4] == f"UNIT wait over enroute leg=2 speed=18.0 depth={d2} emcon={emcon} course=1 flag=true"
+    assert out[5].startswith("UNIT end done")
+    assert "MOVER weapon_control_status_surface=2" in out[6] and "MOVER weapon_control_status_land=0" in out[6]
+
+
+def test_submarine_depth_in_the_plan_export_and_window(window):
+    w, app = window
+    from cmo_studio.model.course_plan import plan_course
+    from cmo_studio.ui.course_dialog import CourseDialog
+    p = new_project("Sub", "DB3K_519.db3")
+    boat = Unit(side=p.sides[0].id, type="Submarine", dbid=771, name="SSN", lat=56.5, lon=3.0, depth=100,
+                course=Course([Waypoint(56.6, 3.2, depth=40), Waypoint(56.8, 3.6), Waypoint(57.0, 3.9, depth=300)]))
+    p.units.append(boat)
+    plan = plan_course(p, boat)
+    assert plan.sub and plan.start_depth == 100
+    assert [lg.depth for lg in plan.legs] == [40.0, 40.0, 300.0] and [lg.depth_set for lg in plan.legs] == \
+        [True, False, True]
+    assert compile_routes(p)[0]["wps"][0] == {"lat": 56.6, "lon": 3.2, "dep": 40.0}
+    w.doc.load(p)
+    dlg = CourseDialog(w, boat.id)
+    dlg.show()
+    app.processEvents()
+    assert dlg.table.horizontalHeaderItem(2).text() == "Depth" and not dlg.table.isColumnHidden(2)
+    assert dlg.table.item(0, 2).text() == "40 m" and dlg.depth.isVisible() and not dlg.alt_row.isVisible()
+    dlg.select(1)
+    assert dlg.depth.text() == "no change"
+    dlg.depth.setValue(0)                                             # surface on leg 2
+    assert dlg.course.waypoints[1].depth == 0.0 and dlg.plan.legs[1].depth == 0.0
+    dlg.depth.setValue(-1)
+    assert dlg.course.waypoints[1].depth is None
+    dlg.chart.grab()
+    dlg._orig = dlg.course
+    dlg.reject()
+    ship = Unit(side=p.sides[0].id, type="Ship", dbid=2814, name="FFG", lat=56.0, lon=3.0,
+                course=Course([Waypoint(56.2, 3.1, depth=50)]))
+    p.units.append(ship)
+    assert any("only submarines use" in i.message for i in validate(p))

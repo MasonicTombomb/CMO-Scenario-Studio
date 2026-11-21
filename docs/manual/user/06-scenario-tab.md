@@ -12,7 +12,7 @@ how it is built.
    below).
 4. **Files and database**: folder names and the database (see below).
 5. **Time (Zulu)**: when the scenario starts and how long it lasts.
-6. **Weather at start**.
+6. **Weather**: the weather at the start, and **Weather Forecast...** for timed changes later (see *Weather forecast* below).
 7. **Build options**: how the build script behaves.
 8. **Initial key values**: values your scripts can read (advanced).
 9. **Designer notes**: notes to yourself. They are saved in the project but never exported.

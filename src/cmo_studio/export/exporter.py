@@ -140,8 +140,10 @@ class Exporter:
         D = compile_build_data(self.p)
         parts = [self.header_comment(), "", "local D = {}", ""]
         order = ("CFG", "PAGES", "SIDES", "POSTURES", "VARIANTS", "RPS", "ZONES", "UNITS", "FORMATIONS",
-                 "MISSIONS", "KV",
+                 "MISSIONS", "KV", "FORECAST",
                  "EVENTS", "SPECIALS")
+        # anything the compiler adds later is written too, so new build data cannot be left out by accident
+        order += tuple(k for k in D if k not in order)
         for key in order:
             value = D[key]
             if isinstance(value, list):

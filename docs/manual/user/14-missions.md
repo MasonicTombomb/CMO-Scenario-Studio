@@ -142,11 +142,12 @@ it. *No change* keeps whatever the unit already has.
 | Name | A name for the waypoint, shown on the map, in the table and in CMO (*IP*, *Tanker*, *Target*). |
 | Lat, lon | The waypoint's position; type it exactly or drag the waypoint on the map. |
 | Altitude | Aircraft only. The altitude for the leg, in metres (feet shown beside it). |
+| Depth | Submarines only. The depth below the surface for the leg, in metres; 0 surfaces. *no change* keeps the previous leg's. |
 | Speed | The speed for the leg, in knots. |
 | Radar / Sonar / Jammers | Switch them on (active) or off (passive) for the leg. Off is quieter: harder to detect, but the unit sees less. |
 | Weapons | **Free**: fire at anything not friendly. **Tight**: only at targets identified as hostile. **Hold**: only in self-defence. |
 | Targets | **Leave the course to attack**: the unit may break off to attack what it finds. **Stay on the course**: it keeps to the route. |
-| Wait there | On arrival, circle the waypoint this long before going on (a holding point, a tanker track, a time on target). |
+| Wait there | On arrival, circle the waypoint this long before going on (a holding point, a tanker track, a time on target). Ground units stop there instead. |
 | Signal there | On arrival, set a flag (a key value, for example `STRIKE_AT_IP`) to true. An event with a *Regular time* trigger and the condition **Flag is set** can then react: a message, a score, a mission switched on (Chapter 15). |
 
 **Same for every leg** copies the selected leg's altitude, speed, sensors, weapons and targets setting to every
@@ -155,12 +156,15 @@ leg.
 Courses work for every unit that moves: aircraft, helicopters, ships, submarines and ground units. Facilities
 cannot have one. The window shows only the settings that fit the unit:
 
-| Unit | Altitude | Speed | Radar | Sonar | Jammers | Weapons, targets | Wait, signal | Takes off from a base |
+| Unit | Altitude / depth | Speed | Radar | Sonar | Jammers | Weapons, targets | Wait, signal | Takes off from a base |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Aircraft, helicopters | yes | yes | yes | yes | yes | yes | yes (circles 5 nm round the waypoint) | yes |
+| Aircraft, helicopters | altitude | yes | yes | yes | yes | yes | yes (circles 5 nm round the waypoint) | yes |
 | Ships | - | yes | yes | yes | yes | yes | yes (circles 0.5 nm round it) | - |
-| Submarines | - (depth stays as set) | yes | yes | yes | yes | yes | yes (circles 0.5 nm round it) | - |
-| Ground units | - | yes | yes | - | yes | yes | yes (circles 0.5 nm round it) | - |
+| Submarines | depth | yes | yes | yes | yes | yes | yes (circles 0.5 nm round it) | - |
+| Ground units | - | yes | yes | - | yes | yes | yes (stops at the waypoint) | - |
+
+For a submarine the profile under the map is a **depth profile**: the surface is the top line and the boat's depth
+is drawn below it, leg by leg.
 
 | At the end | What happens |
 | --- | --- |

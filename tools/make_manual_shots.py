@@ -295,7 +295,7 @@ def main():
 
     page(w.scenario_page, "tab_scenario", [
         (1, ("row", "Title:")), (2, ("row", "Setting:")), (3, ("row", "Author:")), (4, "Files and database"),
-        (5, "Time (Zulu)"), (6, "Weather at start"), (7, "Build options"),
+        (5, "Time (Zulu)"), (6, "Weather"), (7, "Build options"),
         (8, "Initial key values (ScenEdit_SetKeyValue)"), (9, "Designer notes (never exported)")])
     page(w.sides_page, "tab_sides", [
         (1, w.sides_page.findChild(type(w.sides_page.list)) if hasattr(w.sides_page, "list") else "Side"),

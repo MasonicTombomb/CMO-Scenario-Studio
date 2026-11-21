@@ -25,6 +25,8 @@ class Leg:
     nm: float
     alt: Optional[float]                # metres in force on this leg (None = CMO chooses)
     alt_set: bool
+    depth: Optional[float]              # metres in force (submarines; None = unchanged from the start)
+    depth_set: bool
     speed: float                        # knots in force (estimate when not set)
     speed_set: bool
     radar: Optional[bool]               # True on, False off, None = unit's default
@@ -43,8 +45,10 @@ class CoursePlan:
     legs: list[Leg] = field(default_factory=list)
     origin: str = ""
     air: bool = False
+    sub: bool = False
     hosted: bool = False
     start_alt: Optional[float] = None
+    start_depth: Optional[float] = None
     depart_s: int = 0
     end_s: int = 0
     total_nm: float = 0.0
@@ -71,10 +75,13 @@ def plan_course(p: Project, u: Unit) -> Optional[CoursePlan]:
     host = p.unit(u.host) if u.host else None
     origin = (host.lat, host.lon) if host is not None else (u.lat, u.lon)
     plan = CoursePlan(origin=host.name if host is not None else u.name, air=u.type == "Aircraft",
+                      sub=u.type == "Submarine",
                       hosted=host is not None, depart_s=60 * max(0, int(c.depart_minutes or 0)),
                       repeat=c.finish == "repeat")
     alt = 0.0 if (plan.air and host is not None) else (u.altitude if plan.air else None)
     plan.start_alt = alt
+    depth = u.depth if plan.sub else None
+    plan.start_depth = depth
     speed = float(u.speed) if u.speed else TYPICAL_SPEED.get(u.type, 15.0)
     radar: Optional[bool] = True if u.radar_active else None
     sonar: Optional[bool] = True if u.sonar_active else None
@@ -87,13 +94,15 @@ def plan_course(p: Project, u: Unit) -> Optional[CoursePlan]:
             alt = float(w.altitude)
         if w.speed:
             speed = float(w.speed)
+        if plan.sub and w.depth is not None:
+            depth = float(w.depth)
         radar, sonar, ecm = _flag(w.radar, radar), _flag(w.sonar, sonar), _flag(w.ecm, ecm)
         weapons = w.weapons or weapons
         engage = w.engage or engage
         nm = _nm(here, (w.lat, w.lon))
         t1 = t + int(round(nm / max(speed, 1.0) * 3600))
         plan.legs.append(Leg(i, w.name or f"Waypoint {i}", here, (w.lat, w.lon), nm, alt, w.altitude is not None,
-                             speed, bool(w.speed), radar, sonar, ecm, weapons, engage,
+                             depth, plan.sub and w.depth is not None, speed, bool(w.speed), radar, sonar, ecm, weapons, engage,
                              max(0, int(w.wait_minutes or 0)), w.signal, t, t1))
         t = t1 + 60 * max(0, int(w.wait_minutes or 0))
         here = (w.lat, w.lon)
@@ -108,7 +117,7 @@ def plan_course(p: Project, u: Unit) -> Optional[CoursePlan]:
     if end is not None:
         nm = _nm(here, end)
         t1 = t + int(round(nm / max(speed, 1.0) * 3600))
-        plan.legs.append(Leg(0, label, here, end, nm, alt, False, speed, False, radar, sonar, ecm, weapons, engage,
+        plan.legs.append(Leg(0, label, here, end, nm, alt, False, depth, False, speed, False, radar, sonar, ecm, weapons, engage,
                              0, "", t, t1))
         t = t1
     plan.end_s = t

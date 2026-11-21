@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.9.1 — 2026-11-21
+
+- **Fixed: the weather forecast never reached CMO.** In 1.9.0 the forecast was compiled but left out of
+  `Build_Scenario.lua`, so no weather change was ever built. It is written now, and the exporter writes every table
+  the compiler produces, so new build data cannot be dropped this way again. Re-export and rebuild scenarios that
+  use a forecast.
+- **Submarine depth on each leg.** The course window has a **Depth** setting for submarines (0 surfaces; *no
+  change* keeps the previous leg's), a Depth column in the leg table and a **depth profile** under the map. In CMO
+  the depth is set as each leg starts.
+- **Ground units stop while they wait** at a waypoint instead of driving a small loop; aircraft, ships and
+  submarines still circle.
+- Tests: the forecast (table, dry-run build, and a check that every build table reaches the build script),
+  submarine depth, and ground units holding still.
+- Docs: Chapter 14 (depth, waits by unit type), the export and project format references (forecast and depth),
+  README; manuals rebuilt.
+
 ## 1.9.0 — 2026-11-21
 
 - **Dynamic weather forecast.** Schedule weather changes at any point after the scenario starts:

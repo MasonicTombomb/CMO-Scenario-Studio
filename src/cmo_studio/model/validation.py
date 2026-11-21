@@ -350,6 +350,8 @@ def _check_courses(p: Project, db, add) -> None:
                                         "and _ so events can test it.", u.id)
             if w.altitude is not None and u.type != "Aircraft":
                 add(INFO, "Courses", f"{label}: waypoint {i} has an altitude, which only aircraft use.", u.id)
+            if w.depth is not None and u.type != "Submarine":
+                add(INFO, "Courses", f"{label}: waypoint {i} has a depth, which only submarines use.", u.id)
         if c.depart_minutes and total_min and c.depart_minutes >= total_min:
             add(WARNING, "Courses", f"{label}: departs {c.depart_minutes} min after the start, after the scenario "
                                     f"ends ({total_min} min).", u.id)

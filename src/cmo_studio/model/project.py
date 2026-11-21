@@ -148,6 +148,7 @@ class Waypoint:
     lon: float = 0.0
     altitude: Optional[float] = None   # metres (aircraft); None = keep the unit's own
     speed: Optional[float] = None      # knots; None = keep the unit's own
+    depth: Optional[float] = None      # metres below the surface (submarines); None = keep the unit's own
     name: str = ""
     radar: str = ""                    # see SENSOR_SETTING: '' no change | 'active' | 'passive'
     sonar: str = ""

@@ -146,7 +146,7 @@ end
 
 ------------------------------------------------------------------ courses (plotted routes)
 -- STUDIO.ROUTES = { { id=, side=, kind=, names={...}, depart=<unix time>, finish='stop'|'rtb'|'land'|'repeat',
---                     land={ side=, name= }, wps={ { lat=, lon=, alt=, spd=, name=, radar=, sonar=, ecm=, wcs=,
+--                     land={ side=, name= }, wps={ { lat=, lon=, alt=, spd=, dep=, name=, radar=, sonar=, ecm=, wcs=,
 --                     engage=, wait=, flag= }, ... } }, ... }      (only lat and lon are always there)
 -- StudioRoutesTick() runs once a minute (a generated event). A unit waiting at a base is launched at its departure
 -- time; a unit under way is given its course. The settings of waypoint i (altitude, speed, sensors, weapons) are
@@ -181,8 +181,10 @@ local function giveWaypoints(u, wps, from)
   return ok
 end
 
--- four points round a waypoint, for waiting there (aircraft circle wider than ships)
+-- four points round a waypoint, for waiting there (aircraft circle wider than ships). Ground units do not
+-- circle: an empty course and they stop where they are.
 local function orbitAround(w, kind)
+  if kind == 'GroundUnit' then return {} end
   local nm = (kind == 'Aircraft') and 5 or 0.5
   local dlat = nm / 60
   local dlon = dlat / math.max(0.1, math.cos(math.rad(w.lat)))
@@ -204,6 +206,12 @@ local function applyLeg(u, r, w)
   if not w then return end
   if w.alt then try(u.name .. ' altitude', ScenEdit_SetUnit, { guid = u.guid, manualAltitude = w.alt }) end
   if w.spd then try(u.name .. ' speed', ScenEdit_SetUnit, { guid = u.guid, manualSpeed = w.spd }) end
+  if w.dep and r.kind == 'Submarine' then
+    -- depth as on ScenEdit_AddUnit; older builds take it as a negative manual altitude instead
+    if not pcall(ScenEdit_SetUnit, { guid = u.guid, depth = w.dep }) then
+      try(u.name .. ' depth', ScenEdit_SetUnit, { guid = u.guid, manualAltitude = -w.dep })
+    end
+  end
   local em = {}
   if w.radar then em[#em + 1] = 'Radar=' .. EMCON[w.radar] end
   if w.sonar then em[#em + 1] = 'Sonar=' .. EMCON[w.sonar] end
@@ -296,7 +304,7 @@ local function loiter(u, r, key, now)
     if j < #r.wps then return sendOn(u, r, key, j + 1) and 'enroute' or 'done' end
     return finishRoute(u, r, key)
   end
-  if courseLength(u) == 0 then giveWaypoints(u, orbitAround(r.wps[j], r.kind), 1) end
+  if r.kind ~= 'GroundUnit' and courseLength(u) == 0 then giveWaypoints(u, orbitAround(r.wps[j], r.kind), 1) end
   return 'loiter'
 end
 
