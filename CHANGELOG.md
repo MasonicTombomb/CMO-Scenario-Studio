@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.0 — 2026-11-21
+
+- **Dynamic weather forecast.** Schedule weather changes at any point after the scenario starts:
+  click **Weather Forecast...** on the Scenario tab to open a table of timed changes (temperature,
+  rainfall, cloud and sea state), each tied to a number of minutes after the start. The build
+  generates a one-shot CMO event per change that fires at the right time and calls
+  `ScenEdit_SetWeather`; initial T+0 conditions are still set on the Scenario tab as before.
+
 ## 1.8.1 — 2026-11-19
 
 - **Fixed**: a leg's *Targets* setting (leave the course to attack / stay on it) sent CMO `true`/`false`; it now

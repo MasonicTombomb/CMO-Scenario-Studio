@@ -58,6 +58,9 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
   a table of legs and a flight profile. Each leg sets altitude, speed, radar / sonar / jammers, weapons
   free / tight / hold and whether to leave the course to attack; waypoints can hold the unit for a while or raise a
   flag for events. Aircraft at a base take off at their departure time and return or land at another base.
+- **Weather forecast** — schedule weather changes at any point after the scenario starts: set an offset in minutes
+  and new temperature, rainfall, cloud and sea state; the build generates a one-shot event per change that fires
+  `ScenEdit_SetWeather` at the right time. Initial conditions are still set at T+0 on the Scenario tab.
 - **Events** — triggers (time, date, delay, unit destroyed/damaged/detected, area entry, points...), conditions,
   probability and actions (message, score, end scenario, mission on/off, flags, spawn reinforcements, Lua), with
   templates and a live preview of the generated Lua.

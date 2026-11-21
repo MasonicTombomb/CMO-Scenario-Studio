@@ -62,6 +62,32 @@ the title without spaces.
 | Cloud | 0 to 1 | 0 is clear sky, 1 is total overcast. Cloud blocks visual and infrared sensors. |
 | Sea state | 0 to 9 | 0 is flat calm, 9 is hurricane seas. High seas make submarines harder to find and hurt small boats. |
 
+## Weather forecast
+
+The initial weather (above) sets conditions at T+0. Click **Weather Forecast...** to schedule
+further changes during the scenario.
+
+Each row in the forecast table gives:
+
+| Column | Range | Meaning |
+| --- | --- | --- |
+| Offset (min) | 1 or more | Minutes after the scenario start when this change fires. |
+| Temp (°C) | −60 to 60 | New air temperature. |
+| Rain (0–50) | 0 to 50 | New rainfall intensity. |
+| Cloud (0–1) | 0 to 1 | New cloud cover (0 = clear, 1 = overcast). |
+| Sea (0–9) | 0 to 9 | New sea state (0 = calm, 9 = phenomenal). |
+
+Click **Add Change** to append a new row (it copies the previous row's values and adds 60 minutes
+to the offset). Select a row and click **Remove Selected** to delete it. Entries are sorted by
+offset when you click **OK**.
+
+The build generates a hidden, one-shot CMO event for each row; each event checks the scenario
+clock every minute and calls `ScenEdit_SetWeather` as soon as the offset time is reached.
+
+!!! tip
+    Use the forecast to model deteriorating conditions, a storm blowing through, or clearing
+    weather after a rain squall.
+
 ## Build options
 
 **Aircraft start armed with their chosen loadout (otherwise in reserve)**
