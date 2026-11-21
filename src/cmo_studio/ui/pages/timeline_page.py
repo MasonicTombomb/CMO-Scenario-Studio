@@ -20,7 +20,8 @@ ROW_H = 28
 EVENT_COL = QColor("#3d8bfd")
 MISSION_COL = QColor("#30a46c")
 COURSE_COL = QColor("#f5a524")
-KIND_COL = {"event": EVENT_COL, "mission": MISSION_COL, "course": COURSE_COL}
+WEATHER_COL = QColor("#4cc3d9")
+KIND_COL = {"event": EVENT_COL, "mission": MISSION_COL, "course": COURSE_COL, "weather": WEATHER_COL}
 CLASH_COL = QColor("#e5484d")
 
 
@@ -260,6 +261,9 @@ class TimelinePage(Page):
         bar.addWidget(self.filter, 1)
         self.missions = QCheckBox("Missions")
         self.missions.setChecked(True)
+        self.weather = QCheckBox("Weather")
+        self.weather.setChecked(True)
+        self.weather.setToolTip("The weather forecast: a diamond at each timed change")
         self.courses = QCheckBox("Courses")
         self.courses.setChecked(True)
         self.courses.setToolTip("Units with a plotted course: when each takes off or sets off")
@@ -267,7 +271,7 @@ class TimelinePage(Page):
         self.conditional.setChecked(True)
         self.sort_time = QCheckBox("Sort by time")
         self.sort_time.setChecked(True)
-        for cb in (self.missions, self.courses, self.conditional, self.sort_time):
+        for cb in (self.missions, self.courses, self.weather, self.conditional, self.sort_time):
             cb.toggled.connect(lambda *_: self._apply())
             bar.addWidget(cb)
         for text, fn in (("Fit", self._fit), ("Zoom in", lambda: self._zoom(1.5)),
@@ -318,6 +322,8 @@ class TimelinePage(Page):
         for r in self._tl.rows:
             if r.kind == "mission" and not self.missions.isChecked():
                 continue
+            if r.kind == "weather" and not self.weather.isChecked():
+                continue
             if r.kind == "course" and not self.courses.isChecked():
                 continue
             if r.kind == "event" and not r.timed and not self.conditional.isChecked():
@@ -327,7 +333,7 @@ class TimelinePage(Page):
             rows.append(r)
         if self.sort_time.isChecked():
             big = 1 << 62
-            order = {"event": 0, "mission": 1, "course": 2}
+            order = {"weather": 0, "event": 1, "mission": 2, "course": 3}
             rows.sort(key=lambda r: (order.get(r.kind, 3), r.first_time() if r.first_time() is not None else big,
                                      r.name.lower()))
         self.canvas.set_rows(self._tl, rows)
@@ -380,5 +386,9 @@ class TimelinePage(Page):
     def _open(self, r: Row):
         w = self.ctx.window
         if w is None:
+            return
+        if r.kind == "weather":
+            w.tabs.setCurrentWidget(w.scenario_page)
+            w.scenario_page._open_forecast()
             return
         w.goto_object(r.obj_id)

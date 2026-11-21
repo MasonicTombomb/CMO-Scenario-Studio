@@ -6,7 +6,7 @@ from typing import Optional
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QActionGroup, QGuiApplication
-from PyQt6.QtWidgets import (QComboBox, QHBoxLayout, QInputDialog, QLabel, QMenu, QSplitter,
+from PyQt6.QtWidgets import (QComboBox, QHBoxLayout, QInputDialog, QLabel, QMenu, QPushButton, QSlider, QSplitter,
                              QStackedWidget, QToolBar, QToolButton, QVBoxLayout, QWidget)
 
 from ...db.database import DBEntry
@@ -132,6 +132,28 @@ class MapPage(Page):
         split.setStretchFactor(0, 1)
         split.setSizes([900, 360])
         lay.addWidget(split, 1)
+        # the scenario clock: drag to see where units with a course should be, the weather and the events so far
+        crow = QHBoxLayout()
+        crow.setContentsMargins(4, 0, 4, 0)
+        crow.addWidget(QLabel("Clock:"))
+        self.clock = QSlider(Qt.Orientation.Horizontal)
+        self.clock.setToolTip("Drag through the scenario: units with a course are shown where they should be "
+                              "(estimated), with the weather and the timed events so far. At the start the map is "
+                              "as you edit it.")
+        self.clock.setPageStep(15)
+        self.clock.valueChanged.connect(self._clock_changed)
+        crow.addWidget(self.clock, 1)
+        self.clock_label = QLabel("H+0:00")
+        self.clock_label.setMinimumWidth(190)
+        crow.addWidget(self.clock_label)
+        back = QPushButton("Start")
+        back.setToolTip("Back to the start (the map as you edit it)")
+        back.clicked.connect(lambda: self.clock.setValue(0))
+        crow.addWidget(back)
+        lay.addLayout(crow)
+        self.clock_info = hint_label("")
+        lay.addWidget(self.clock_info)
+        self._clock = None
 
         m = self.map
         m.objectClicked.connect(lambda oid: self.doc.select(oid, self))
@@ -143,6 +165,9 @@ class MapPage(Page):
         m.waypointMoved.connect(self._waypoint_moved)
         m.contextRequested.connect(self._context)
         m.deleteRequested.connect(self._delete)
+        m.multiChanged.connect(self._multi_changed)
+        m.groupMoved.connect(self._group_moved)
+        m.multiDeleteRequested.connect(self._delete_many)
         m.cursorMoved.connect(lambda lat, lon: ctx.window and ctx.window.set_cursor_text(format_latlon(lat, lon)))
         m.message.connect(lambda t: ctx.status(t, 8000))
         self.doc.selected.connect(self._selected)
@@ -151,6 +176,7 @@ class MapPage(Page):
     # ------------------------------------------------------------------ refresh
     def refresh(self) -> None:
         self.map.set_project(self.project)
+        self._clock_reset()
         cur = self.side_combo.current_id()
         self.side_combo.set_items([(s.name, s.id) for s in self.project.sides], keep=False)
         if cur and self.project.side(cur):
@@ -162,6 +188,7 @@ class MapPage(Page):
     def _on_changed(self, kind, source):
         # Always repaint the map (cheap); the inspector forms refresh themselves.
         self.map.set_project(self.project)
+        self._clock_reset()
         if kind in ("sides", "") or source is not self:
             super()._on_changed(kind, source)
 
@@ -218,6 +245,41 @@ class MapPage(Page):
         if u is not None and u.course is not None:
             with self.edit(f"Clear course of {u.name}", "units"):
                 u.course = None
+
+    # ------------------------------------------------------------------ the scenario clock
+    def _clock_reset(self) -> None:
+        from ...model.clock import ScenarioClock
+        self._clock = ScenarioClock(self.project)
+        self.clock.blockSignals(True)
+        self.clock.setRange(0, max(1, self._clock.duration_s // 60))
+        self.clock.blockSignals(False)
+        self._clock_changed(self.clock.value())
+
+    def _clock_changed(self, minutes: int) -> None:
+        from ...model.course_plan import hms
+        from ...model.timeline import fmt_time
+        if self._clock is None:
+            return
+        t = int(minutes) * 60
+        self.clock_label.setText(f"H+{hms(t)}  ({fmt_time(self._clock.start + t)})")
+        if t <= 0:
+            self.map.clock_ghosts, self.map.clock_text = [], ""
+            self.clock_info.setText("Drag the clock to see where units with a course should be at any moment, with "
+                                    "the weather and the timed events so far." if self._clock.plans or
+                                    self.project.forecast else "")
+            self.map.update()
+            return
+        m = self._clock.at(t)
+        self.map.clock_ghosts = m.ghosts
+        self.map.clock_text = f"H+{hms(t)}  (estimated)"
+        temp, rain, cloud, sea = m.weather
+        wx = (f"{temp:g} °C, rain {rain}, cloud {cloud:g}, sea state {sea}"
+              + (f" (changed at H+{hms(m.weather_changed_at * 60)})" if m.weather_changed_at else " (as at the start)"))
+        ev = (f"{len(m.fired)} timed event(s) fired, latest '{m.fired[-1]}'" if m.fired else "no timed event yet")
+        moving = sum(1 for g in m.ghosts if not g.status.startswith(("waiting to", "course finished", "landed")))
+        self.clock_info.setText(f"Weather: {wx}.  Events: {ev}.  Units with a course: {len(m.ghosts)} shown, "
+                                f"{moving} on the move.")
+        self.map.update()
 
     def _layers(self, *_):
         self.map.show_courses = self.courses_cb.isChecked()
@@ -391,9 +453,102 @@ class MapPage(Page):
                 self.project.remove_zone(oid)
             self.doc.select("")
 
+    # ------------------------------------------------------------------ several units at once
+    def selected_units(self) -> list[str]:
+        return [i for i in self.map.multi if self.project.unit(i) is not None]
+
+    def _multi_changed(self, ids: list):
+        if len(ids) > 1:
+            self.ctx.status(f"{len(ids)} units selected. Drag one to move them all; right-click for more; Esc clears.")
+
+    def _group_moved(self, ids: list, dlat: float, dlon: float):
+        from ...model.formations import move_with_formation
+        units = [self.project.unit(i) for i in ids if self.project.unit(i) is not None]
+        if not units:
+            return
+        with self.edit(f"Move {len(units)} units", "units"):
+            before = {u.id: (u.lat, u.lon) for u in self.project.units}
+            done: set[str] = set()
+            for u in units:
+                if u.id in done:
+                    continue
+                lat0, lon0 = before[u.id]
+                move_with_formation(self.project, u.id, lat0 + dlat, lon0 + dlon)
+                done.update(x.id for x in self.project.units if (x.lat, x.lon) != before[x.id])
+                done.add(u.id)
+            for x in self.project.units:            # hosted units stay with their base
+                host = self.project.unit(x.host) if x.host else None
+                if host is not None:
+                    x.lat, x.lon = host.lat, host.lon
+        self.ctx.status(f"Moved {len(units)} unit(s).")
+        self.map.update()
+
+    def _delete_many(self, ids: list):
+        from PyQt6.QtWidgets import QMessageBox
+        units = [self.project.unit(i) for i in ids if self.project.unit(i) is not None]
+        if not units:
+            return
+        hosted = sum(1 for x in self.project.units if x.host in {u.id for u in units})
+        extra = f" and the {hosted} aircraft or boats based in them" if hosted else ""
+        if QMessageBox.question(self, "Delete units", f"Delete {len(units)} units{extra}?") !=                 QMessageBox.StandardButton.Yes:
+            return
+        with self.edit(f"Delete {len(units)} units", "units"):
+            for u in units:
+                if self.project.unit(u.id) is not None:
+                    self.project.remove_unit(u.id)
+        self.map.set_multi([])
+        self.doc.select("")
+
+    def _course_for_all(self, ids: list):
+        movable = [i for i in ids if self.project.unit(i) and self.project.unit(i).type != "Facility"]
+        w = self.ctx.window
+        if not movable or w is None:
+            self.ctx.status("None of the selected units can move.")
+            return
+        from ..course_dialog import edit_course
+        edit_course(w, movable[0], also=movable[1:])
+
+    def _add_to_mission(self, ids: list):
+        from ..widgets import PickerDialog
+        units = [self.project.unit(i) for i in ids if self.project.unit(i) is not None]
+        side = units[0].side if units else ""
+        missions = [m for m in self.project.missions if m.side == side]
+        if not missions:
+            self.ctx.status(f"{self.project.side_name(side)} has no missions yet (Missions tab).")
+            return
+        dlg = PickerDialog("Add the selected units to a mission", [(m.name, m.id) for m in missions], parent=self,
+                           multi=False)
+        if not dlg.exec() or not dlg.selected_ids():
+            return
+        m = self.project.mission(dlg.selected_ids()[0])
+        same = [u.id for u in units if u.side == side and u.id not in m.units and u.type != "Facility"]
+        with self.edit(f"Add {len(same)} unit(s) to {m.name}", "missions"):
+            m.units.extend(same)
+        skipped = len(units) - len(same)
+        self.ctx.status(f"Added {len(same)} unit(s) to '{m.name}'." +
+                        (f" {skipped} skipped (another side, a facility, or already on it)." if skipped else ""))
+
+    def _multi_menu(self, menu: QMenu, ids: list):
+        n = len(ids)
+        head = menu.addAction(f"{n} units selected")
+        head.setEnabled(False)
+        w = self.ctx.window
+        if w is not None:
+            menu.addAction("Edit selected...", lambda: w.bulk_edit_selected(ids))
+            menu.addAction("Same course for all...", lambda: self._course_for_all(ids))
+            menu.addAction("Add to mission...", lambda: self._add_to_mission(ids))
+            menu.addAction("Make formation...", lambda: w.make_formation(ids))
+        menu.addAction(f"Delete {n} units", lambda: self._delete_many(ids))
+        menu.addAction("Clear selection", lambda: self.map.set_multi([]))
+        menu.addSeparator()
+
     def _context(self, lat: float, lon: float, oid: str, gpos):
         menu = QMenu(self)
         obj = self.project.find(oid) if oid else None
+        many = self.selected_units()
+        if len(many) > 1 and (not oid or oid in many):
+            self._multi_menu(menu, many)
+            obj = None
         if obj is not None:
             menu.addAction(f"Select '{getattr(obj, 'name', oid)}'", lambda: self.doc.select(oid, self))
             if isinstance(obj, Unit):

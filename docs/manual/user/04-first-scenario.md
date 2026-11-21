@@ -8,6 +8,12 @@ should see.
 and Shetland. The United Kingdom has a Type 23 frigate on anti-submarine patrol there and Typhoon fighters at RAF
 Lossiemouth flying a combat air patrol over Shetland. The UK wins by sinking the submarine.
 
+!!! tip "In a hurry? Use the wizard"
+    **File > New scenario from wizard...** ([[Ctrl+Shift+N]]) builds a working scenario in a few clicks: two sides,
+    real UK air bases (or a generic base elsewhere) with fighter squadrons on combat air patrol, patrol areas, an
+    enemy bomber probe on a plotted course and the usual events. See *The New Scenario wizard* at the end of this
+    chapter. This chapter builds everything by hand, so you learn how each part works.
+
 You will use: a new project, the Scenario and Sides tabs, a real-world airbase template, the Database panel,
 squadrons, the patrol-area library, missions, events, briefings, validation, the dry-run, export, and the build in
 CMO.
@@ -234,3 +240,31 @@ Congratulations: you have designed, built and played your own CMO scenario.
 - Open the example scenario (Chapter 5) to see a larger scenario with more events, formations, scripts and two
   playable variants.
 - Read Chapters 6 to 21 for every option in the studio.
+
+## The New Scenario wizard
+
+**File > New scenario from wizard...** ([[Ctrl+Shift+N]]) asks four pages of questions and builds the scenario.
+
+![The wizard's starter kit page](img/dialog_wizard.png)
+
+1. **The scenario**: title, setting, database, start date and time (Zulu) and how long it lasts.
+2. **Sides**: a preset (*United Kingdom v Russia*, *NATO v Russia*, *Blue v Red*) with names you can change, which
+   side the player commands (the other is computer-controlled, or neither for two players) and an optional
+   Civilian side.
+3. **Starter kit**:
+    - **Region**: where it happens. In the United Kingdom you choose real air bases (RAF Lossiemouth and RAF
+      Coningsby by default); elsewhere a generic main operating base is placed near the patrol areas.
+    - **Fighters**: how many at each base. The studio picks the right type for the preset (Typhoon FGR.4 for the
+      UK, F-35A for NATO) from your database, in service by the start year, with an air-to-air loadout, and puts
+      them in hangars with room.
+    - **Patrol areas**: areas from the area library for the region (QRA North and South for the UK); each gets a
+      combat air patrol mission with the fighters on it.
+    - **Bomber probe**: side B sends a pair of bombers (Tu-95MS for Russia) on a plotted course into the area and
+      back, with the signal `BEAR_PROBE` when they reach it.
+    - **Standard events**: a welcome message, points for each enemy unit destroyed (both sides) and a 15-minute
+      warning.
+4. **Ready**: a summary. Click **Finish**.
+
+The map then shows the whole scenario. Check the Issues panel, change anything you like, and carry on as in the
+rest of this manual. Without a database (no CMO folder set) the wizard builds everything except the aircraft and
+tells you so.

@@ -128,6 +128,10 @@ a base are on the Units tab rather than the map; select them there.
 8. **Depart**: when the unit sets off, in minutes after the scenario starts. *at the start* means straight away.
 9. **At the end** and **Land at**: what the unit does after the last waypoint (second table below).
 10. **The summary**: departure, waypoints, distance, time and the end of the course.
+11. **Range** (aircraft): the route against what the aircraft can fly with its loadout (see *Range and fuel*).
+12. **Arrive at**: a time on target for this waypoint, and whether the unit makes it (see *Time on target*).
+13. **Time it**: sets the departure (and waits) so the unit meets its times on target.
+14. **Library ▾**: save this course, use a saved one, or copy it to other units (see *Reusing courses*).
 
 Click **OK** to keep the course. **Cancel** closes the window and throws the changes away (it asks first). Either
 way, the course is one change on the main window, so [[Ctrl+Z]] undoes it.
@@ -177,6 +181,53 @@ is drawn below it, leg by leg.
     Arrival times use each leg's speed, or the unit's starting speed, or a typical speed for its type (450 kn for
     aircraft, 15 kn for ships). Take-off, climb, wind and fights change them in CMO.
 
+### Time on target
+
+Strike packages, tanker meets and coordinated attacks are about arriving at the right moment. Give a waypoint an
+**Arrive at** time (minutes after the scenario starts) and the window shows, beside it, in the **Arrives** column
+and on the profile, whether the unit is *on time* (within two minutes), *early* or *late*. A late leg also shows
+the speed it would need.
+
+Click **Time it** and the studio works it out for you:
+
+1. The **departure** is set so the unit reaches the first waypoint with a time exactly on time.
+2. For each later waypoint with a time that it would reach early, it **waits** that much longer at the waypoint
+   before it.
+3. Anything still late is reported with the speed it would need. Raise that leg's speed, or set a later time.
+
+!!! example "Three flights on target at the same moment"
+    Give the IP waypoint of each flight's course the same **Arrive at** time, for example 120 minutes, and click
+    **Time it** in each. Flights from further away leave earlier; all three should reach the IP together.
+
+The Timeline shows each time on target as a diamond on the unit's course row, and the Issues panel warns about
+units that cannot make one.
+
+### Range and fuel
+
+For an aircraft with a **loadout**, the window compares the route with an estimate of how far it can fly:
+twice the loadout's combat radius plus its time on station at a cruise speed, both from CMO's database. Waits
+count too, as distance flown at the leg's speed. The line under the summary says *Within range* or *Too far*, and
+on the profile a red dashed line marks where the fuel should run out. The Issues panel warns about routes that are
+too long.
+
+It is an estimate: altitude, speed and weapons change real fuel use in CMO, and a tanker on the route (a wait at a
+tanker track) is not counted as refuelling. Treat *Too far* as a prompt to check, not a rule.
+
+### Reusing courses
+
+**Library ▾** in the course window has three commands:
+
+- **Save this course to the library...**: keeps the waypoints with every leg setting, the departure and the end
+  order under a name, in `routes.json` in your data folder (beside your template and area libraries). It is there
+  in every project. A saved course with the same name is replaced.
+- **Use a saved course...**: pick a saved course and click **Use instead** (replaces this unit's course) or **Add
+  to the end** (adds its waypoints after this one's). **Delete** removes saved courses you no longer need.
+- **Copy this course to other units...**: tick units of the same side; each gets a copy of this course, settings
+  and all. It happens when you click **OK**, in the same single undo step.
+
+A landing base belongs to one project, so a saved course that landed elsewhere comes back as **Return to its
+base**, and a copy given to a ship or ground unit carries on at the end instead.
+
 ### Taking off from a base
 
 Aircraft that start **in a base** (their **Starts at** is a base, Chapter 10) wait on the ground until their
@@ -212,8 +263,9 @@ loading a game part way through is fine. The Timeline (Chapter 19) shows when ea
 !!! warning "A course or a mission, not both"
     Units on a mission follow the mission and ignore the course. Give a unit one or the other. The Issues panel
     warns about units with both, about formation members (they follow their lead), about facilities (they cannot
-    move), about departures after the scenario ends, about landing bases that cannot take the aircraft, and about
-    signals with spaces or punctuation.
+    move), about departures after the scenario ends, about landing bases that cannot take the aircraft, about
+    signals with spaces or punctuation, about times on target that cannot be met, and about routes longer than the
+    aircraft's estimated range.
 
 !!! tip "Players can still change it"
     A course is the unit's starting orders. On a side a player controls, the player can give the unit new orders

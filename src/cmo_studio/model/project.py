@@ -123,6 +123,26 @@ class BuildOptions:
 
 
 @dataclass
+class Orders:
+    """The side's briefing pack (operation order and intelligence summary). Anything left empty is written for you
+    from the scenario: forces, missions, courses, weather, doctrine."""
+    operation: str = ""            # e.g. OPERATION NORTHERN SHIELD
+    originator: str = ""           # e.g. HQ Joint Force Air Component
+    classification: str = ""       # banner text; empty: EXERCISE - UNCLASSIFIED
+    situation: str = ""            # background, in addition to the generated situation
+    mission: str = ""              # the mission statement
+    intent: str = ""               # commander's intent: purpose, method, end state
+    concept: str = ""              # concept of operations
+    enemy_assessment: str = ""     # intelligence: the enemy's aim and posture
+    mlcoa: str = ""                # most likely enemy course of action
+    mdcoa: str = ""                # most dangerous enemy course of action
+    roe: str = ""                  # rules of engagement, in addition to the weapons control states
+    sustainment: str = ""
+    command: str = ""
+    exact_positions: bool = False  # intelligence summary gives exact enemy positions (else approximate)
+
+
+@dataclass
 class Side:
     id: str = field(default_factory=lambda: new_id("s"))
     name: str = "New Side"
@@ -136,6 +156,7 @@ class Side:
     postures: dict[str, str] = field(default_factory=dict)   # other side id -> F/N/U/H
     briefing_html: str = ""
     export_briefing: bool = True
+    orders: Orders = field(default_factory=Orders)
 
     def file_tag(self) -> str:
         return safe_prefix(self.tag or self.name)
@@ -156,6 +177,7 @@ class Waypoint:
     weapons: str = ""                  # see WEAPONS_SETTING: '' | 'free' | 'tight' | 'hold'
     engage: str = ""                   # see ENGAGE_SETTING: '' | 'leave' | 'stay'
     wait_minutes: int = 0              # on arrival: circle here this long before going on
+    arrive_minutes: Optional[int] = None   # time on target: arrive here this many minutes after the start
     signal: str = ""                   # on arrival: set this flag (key value) so events can react
 
 

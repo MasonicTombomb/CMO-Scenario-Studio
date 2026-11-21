@@ -17,14 +17,17 @@ of the studio load.
   "sides":   [ { "id", "name", "tag", "color", "awareness", "proficiency", "computer_only", "start_score",
                  "doctrine": { "use_nuclear_weapons": "no", ... },
                  "postures": { "<other side id>": "F|N|U|H" },
-                 "briefing_html", "export_briefing" } ],
+                 "briefing_html", "export_briefing",
+                 "orders": { "operation", "originator", "classification", "situation", "mission", "intent",
+                             "concept", "enemy_assessment", "mlcoa", "mdcoa", "roe", "sustainment", "command",
+                             "exact_positions" } } ],     // briefing pack text; empty = generated
   "units":   [ { "id", "side", "type", "dbid", "db_name", "name", "count", "lat", "lon",
                  "altitude", "depth", "heading", "speed",            // null = default
                  "host", "loadout", "radar_active", "sonar_active", "hold_position", "autodetectable",
                  "proficiency", "reserve", "group", "notes", "extra": { },
                  "course": null | { "waypoints": [ { "lat", "lon", "altitude", "speed", "depth",   // m, kn, m; null = no change
                                                      "name", "radar", "sonar", "ecm", "weapons", "engage",
-                                                     "wait_minutes", "signal" } ],
+                                                     "wait_minutes", "signal", "arrive_minutes" } ],
                                     "depart_minutes", "finish": "stop|rtb|land|repeat", "land_at": unitId } } ],
   "reference_points": [ { "id", "side", "name", "lat", "lon", "highlighted", "all_sides" } ],
   "zones":   [ { "id", "side", "name", "points": [[lat, lon], ...], "color", "all_sides", "notes" } ],
@@ -50,7 +53,9 @@ of the studio load.
 - `units[].course.waypoints[]`: settings apply on the leg flown *to* the waypoint. `radar`, `sonar`, `ecm`:
   `""` (no change), `active`, `passive`; `weapons`: `""`, `free`, `tight`, `hold`; `engage`: `""`, `leave` (may leave
   the course to attack), `stay`; `wait_minutes`: wait there on arrival (ground units stop, others circle);
-  `signal`: flag set to true on arrival; `depth`: submarines only, metres below the surface (0 = surfaced).
+  `signal`: flag set to true on arrival; `depth`: submarines only, metres below the surface (0 = surfaced);
+  `arrive_minutes`: time on target, minutes after the start (planning only: the course window's *Time it* turns it
+  into a departure and waits).
 - `forecast[]`: `offset_minutes` after the start (entries at 0 or less are ignored; the start weather is `weather`),
   `rainfall` 0-50, `cloud` 0-1, `sea_state` 0-9.
 - `units[].course.finish`: `stop` (carry on), `rtb` (return to its base), `land` (land at `land_at`, a base of the

@@ -114,6 +114,7 @@ def validate(p: Project, db=None) -> list[Issue]:
     if db is not None:
         _check_aircraft_hosts(p, db, units, add)
     _check_courses(p, db, add)
+    _check_forecast(p, add)
 
     # ------------------------------------------------------------------ reference points and zones
     rp_names: Counter = Counter()
@@ -379,3 +380,36 @@ def _check_courses(p: Project, db, add) -> None:
         if fm is not None and fm.lead != u.id and fm.keep_on_station:
             add(WARNING, "Courses", f"{label}: is a member of formation '{fm.name}' and follows its lead; plot the "
                                     "course on the lead instead.", u.id)
+        from .course_plan import hms, plan_course
+        plan = plan_course(p, u, db)
+        if plan is None:
+            continue
+        for lg in plan.legs:
+            if lg.need_kn is not None:
+                add(WARNING, "Courses", f"{label}: reaches waypoint {lg.n} about {hms(lg.diff_s)} after its time on "
+                                        f"target (H+{hms(lg.target_s)}); " +
+                    ("it cannot get there in time." if lg.need_kn == float("inf") else
+                     f"it would need about {lg.need_kn:,.0f} kn. Use 'Time it' in the course window.") , u.id)
+        if plan.tot_depart_s is not None and plan.tot_depart_s < 0:
+            add(WARNING, "Courses", f"{label}: to meet its first time on target it would have to leave "
+                                    f"{hms(-plan.tot_depart_s)} before the scenario starts.", u.id)
+        if plan.range_nm is not None and plan.fuel_nm > plan.range_nm:
+            add(WARNING, "Courses", f"{label}: the route is about {plan.fuel_nm:,.0f} nm but the estimated range "
+                                    f"with its loadout is about {plan.range_nm:,.0f} nm; it may run out of fuel.",
+                u.id)
+
+
+def _check_forecast(p: Project, add) -> None:
+    """Timed weather changes (Scenario tab > Weather Forecast...)."""
+    total_min = p.clock.duration_days * 1440 + p.clock.duration_hours * 60 + p.clock.duration_minutes
+    seen = {}
+    for e in p.forecast:
+        if e.offset_minutes <= 0:
+            add(INFO, "Weather", f"A forecast change at {e.offset_minutes} min is ignored; the weather at the start is "
+                                 "set above the forecast.", "")
+        elif total_min and e.offset_minutes >= total_min:
+            add(WARNING, "Weather", f"A forecast change at {e.offset_minutes} min comes after the scenario ends "
+                                    f"({total_min} min), so it never happens.", "")
+        if e.offset_minutes in seen:
+            add(WARNING, "Weather", f"Two forecast changes at {e.offset_minutes} min; only one of them will stick.", "")
+        seen[e.offset_minutes] = e

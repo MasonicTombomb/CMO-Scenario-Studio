@@ -3,6 +3,7 @@
 | Keys | Action |
 | --- | --- |
 | [[Ctrl+N]] | New scenario |
+| [[Ctrl+Shift+N]] | New scenario from the wizard |
 | [[Ctrl+O]] | Open a project |
 | [[Ctrl+S]] | Save |
 | [[Ctrl+Shift+S]] | Save as |
@@ -27,7 +28,10 @@
 | Mouse wheel, [[+]], [[-]] | Zoom |
 | Drag with the left button | Pan, or move the unit under the mouse |
 | [[Esc]] | Stop the current tool, or select nothing |
-| [[Delete]] | Delete the selected object |
+| [[Delete]] | Delete the selected object (or all the selected units) |
+| [[Ctrl]]-click | Add a unit to the selection, or take it out |
+| [[Shift]]-drag | Select the units inside a box |
+| [[Ctrl+A]] | Select every unit on screen |
 | [[Enter]] / double-click | Finish drawing an area, or adding waypoints in the course window |
 | [[Backspace]] | Remove the last corner (or waypoint) while drawing |
 
@@ -163,6 +167,19 @@ Template
 Signal
 :   A flag a unit sets when it reaches a waypoint of its course, so an event can react (Chapter 14).
 
+Time on target
+:   When a unit should reach a waypoint. **Time it** in the course window plans the departure to meet it.
+
+OPORD
+:   Operation order: the five-paragraph military order (situation, mission, execution, service support, command
+    and signal). The briefing pack writes one for each side (Chapter 18).
+
+INTSUM
+:   Intelligence summary: Annex A of the briefing pack.
+
+DTG
+:   Date-time group: a time written as day, hours, minutes, zone, month and year, such as *120400Z MAY 30*.
+
 Variant
 :   Another build of the same scenario, usually with a different side played by the computer.
 
@@ -182,6 +199,7 @@ Zulu
 | Item | Does |
 | --- | --- |
 | New scenario... | Start a new project (Chapter 3) |
+| New scenario from wizard... | Sides, bases, fighters, patrol areas, a bomber probe and events in a few clicks (Chapter 4) |
 | Open... / Open recent | Open a project |
 | Open example project... | Open Baltic Sentinel (Chapter 5) |
 | Save / Save as... | Save the project |

@@ -34,7 +34,19 @@ folder, export with the installed copy, silent uninstall) and writes the zip and
 
 ## Publishing
 
-Bump `src/cmo_studio/__init__.py` and `pyproject.toml`, add `docs/releases/<version>.md`, commit, then push a tag:
+Bump the version in `src/cmo_studio/__init__.py`, `pyproject.toml` and the User Manual's About page
+(`docs/manual/user/00-about.md`), turn `## Unreleased` in `CHANGELOG.md` into `## <version> — <date>`, add
+`docs/releases/<version>.md`, rebuild the manuals (`python tools/make_manuals.py`) and commit. Then check:
+
+```bash
+python tools/release_check.py
+```
+
+It runs both test suites and checks that the version is the same everywhere, the changelog and release notes are
+in place, the PDFs were rebuilt from the current sources (`docs/manuals/manual-sources.sha256`), every build table
+reaches `Build_Scenario.lua`, nothing is uncommitted, `main` is not behind GitHub and the tag is free. The release
+workflow runs the same checks (`--ci`, without the tests and the git state) and stops before publishing if any
+fail. When it says *Ready to release*, push a tag:
 
 ```bash
 git tag -a v1.6.0 -m "CMO Scenario Studio 1.6.0"

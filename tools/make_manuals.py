@@ -204,6 +204,34 @@ def find_chrome() -> str:
     raise SystemExit("Chrome or Edge is needed to print the PDFs (set CHROME).")
 
 
+DIGEST = OUT / "manual-sources.sha256"
+
+
+def source_files() -> list[Path]:
+    """Everything the PDFs are made from: the Markdown sources and the pictures."""
+    files: set[Path] = set()
+    for src, *_rest in MANUALS.values():
+        if isinstance(src, list):
+            files.update((SRC / x).resolve() for x in src)
+        else:
+            files.update(p.resolve() for p in (SRC / src).glob("*.md"))
+    files.update(p.resolve() for p in (SRC / "img").glob("*.png"))
+    return sorted(files)
+
+
+def sources_digest() -> str:
+    """A fingerprint of the sources and the version (shown on every page). Text is hashed with LF line endings, so
+    a checkout that converts them (git autocrlf) gives the same digest."""
+    import hashlib
+    h = hashlib.sha256(f"version {__version__}\n".encode())
+    for f in source_files():
+        data = f.read_bytes()
+        if f.suffix == ".md":
+            data = data.replace(b"\r\n", b"\n")
+        h.update(f.relative_to(ROOT).as_posix().encode() + b"\0" + hashlib.sha256(data).digest())
+    return h.hexdigest()
+
+
 def build(key: str) -> Path:
     _src, _title, pdf_name, _blurb = MANUALS[key]
     OUT.mkdir(parents=True, exist_ok=True)
@@ -227,3 +255,6 @@ if __name__ == "__main__":
     keys = sys.argv[1:] or list(MANUALS)
     for k in keys:
         build(k)
+    if set(keys) == set(MANUALS):     # both built from the current sources: record it for tools/release_check.py
+        DIGEST.write_text(sources_digest() + "\n", encoding="utf-8")
+        print(f"{DIGEST.relative_to(ROOT)}  (sources fingerprint)")

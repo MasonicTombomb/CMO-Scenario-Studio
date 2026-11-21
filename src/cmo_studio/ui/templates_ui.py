@@ -16,7 +16,7 @@ from PyQt6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QDialog, Q
                              QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
 
 from ..model.templates import (TemplateComponent, TemplateLibrary, UnitTemplate, default_library, load_library,
-                               place_template, resolve, template_from_units)
+                               place_template, place_templates, resolve, template_from_units)
 from ..geo import format_latlon, parse_latlon
 from .widgets import CoordEdit, IdCombo, hint_label
 
@@ -138,6 +138,9 @@ class TemplatePlacerDialog(QDialog):
         self.resize(1350, 760)
         self.lib, self.source = current_library(ctx)
         self.placed_ids: list[str] = []
+        self.placed_sites = 0
+        self.ticked: list[str] = []        # template ids ticked for placing together, in the order ticked
+        self._filling = False
         w = ctx.window
         if lat is None or lon is None:
             lat, lon = (w.map_page.map.center() if w is not None and hasattr(w, "map_page") else (0.0, 0.0))
@@ -161,8 +164,17 @@ class TemplatePlacerDialog(QDialog):
         self.tree.setSortingEnabled(False)
         self.tree.setColumnWidth(0, 300)
         self.tree.currentItemChanged.connect(self._pick)
-        self.tree.itemDoubleClicked.connect(lambda it, _c: it.data(0, Qt.ItemDataRole.UserRole) and self._place())
+        self.tree.itemChanged.connect(self._tick_changed)
+        self.tree.itemDoubleClicked.connect(lambda it, _c: it.data(0, Qt.ItemDataRole.UserRole) and
+                                            self._place(only_current=True))
         ll.addWidget(self.tree)
+        trow = QHBoxLayout()
+        self.ticked_label = hint_label("Tick several templates (or a whole category) to place them all at once.")
+        trow.addWidget(self.ticked_label, 1)
+        self.untick_btn = QPushButton("Untick all")
+        self.untick_btn.clicked.connect(self._untick_all)
+        trow.addWidget(self.untick_btn)
+        ll.addLayout(trow)
         lib_btn = QPushButton("Edit template library...")
         lib_btn.clicked.connect(self._edit_library)
         ll.addWidget(lib_btn)
@@ -235,6 +247,7 @@ class TemplatePlacerDialog(QDialog):
     def _fill(self, *_):
         words = self.filter.text().lower().split()
         cur = self._tpl().id if self._tpl() else ""
+        self._filling = True
         self.tree.clear()
         for cat in self.lib.all_categories():
             items = [t for t in self.lib.templates if t.category == cat and
@@ -245,11 +258,15 @@ class TemplatePlacerDialog(QDialog):
             f = head.font(0)
             f.setBold(True)
             head.setFont(0, f)
+            head.setFlags(head.flags() | Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsAutoTristate)
+            head.setToolTip(0, "Tick to place every template shown in this category")
             self.tree.addTopLevelItem(head)
             for t in items:
                 it = QTreeWidgetItem([t.name, str(t.unit_count)])
                 it.setData(0, Qt.ItemDataRole.UserRole, t.id)
                 it.setToolTip(0, t.description)
+                it.setFlags(it.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+                it.setCheckState(0, Qt.CheckState.Checked if t.id in self.ticked else Qt.CheckState.Unchecked)
                 head.addChild(it)
                 if t.id == cur:
                     self.tree.setCurrentItem(it)
@@ -266,10 +283,75 @@ class TemplatePlacerDialog(QDialog):
             first = self.tree.topLevelItem(0)
             if first and first.childCount():
                 self.tree.setCurrentItem(first.child(0))
+        self._filling = False
+        self._pick()
+
+    # ------------------------------------------------------------------ ticking several
+    def _tick_changed(self, item: QTreeWidgetItem, column: int) -> None:
+        tid = item.data(0, Qt.ItemDataRole.UserRole)
+        if self._filling or column != 0 or not tid:
+            return
+        on = item.checkState(0) == Qt.CheckState.Checked
+        if on and tid not in self.ticked:
+            self.ticked.append(tid)
+        elif not on and tid in self.ticked:
+            self.ticked.remove(tid)
+        self._pick()
+
+    def _untick_all(self) -> None:
+        self.ticked.clear()
+        self._fill()
+        self._pick()
+
+    def to_place(self) -> list[UnitTemplate]:
+        """The ticked templates, or the highlighted one when none is ticked."""
+        tpls = [t for t in (self.lib.template(i) for i in self.ticked) if t is not None]
+        if tpls:
+            return tpls
+        t = self._tpl()
+        return [t] if t is not None else []
+
+    def _multi(self) -> bool:
+        """Several templates will be placed (anything but the highlighted one on its own)."""
+        t = self._tpl()
+        return len(self.ticked) > 1 or (len(self.ticked) == 1 and (t is None or t.id != self.ticked[0]))
+
+    def _update_multi(self) -> None:
+        tpls = self.to_place()
+        multi = self._multi()
+        self.place_btn.setEnabled(bool(tpls))
+        self.place_btn.setText(f"Place {len(tpls)} templates" if len(tpls) > 1 else "Place")
+        self.site.setEnabled(not multi)
+        self.site.setToolTip("Each ticked template keeps its own site name." if multi else "")
+        self.untick_btn.setEnabled(bool(self.ticked))
+        if not self.ticked:
+            self.ticked_label.setText("Tick several templates (or a whole category) to place them all at once.")
+            return
+        names = ", ".join(t.name for t in tpls[:6]) + (f" and {len(tpls) - 6} more" if len(tpls) > 6 else "")
+        real = sum(1 for t in tpls if t.location)
+        where = ""
+        if multi:
+            if real and self.real.isChecked():
+                where = (" Real sites go to their own positions" + ("; the others in a row east of the position."
+                                                                     if real < len(tpls) else "."))
+            else:
+                where = " They go in a row east of the position, spaced so they do not overlap."
+        self.ticked_label.setText(f"<b>{len(tpls)} ticked</b> ({sum(t.unit_count for t in tpls)} units): {names}."
+                                  + where)
 
     def _pick(self, *_):
+        if self._filling:
+            return
         t = self._tpl()
-        self.place_btn.setEnabled(t is not None)
+        multi = self._multi()
+        # 'At the real site': for one template, its own; for several, whether any of them has a real site
+        has_real = any(x.location for x in self.to_place()) if multi else bool(t and t.location)
+        self.real.blockSignals(True)
+        self.real.setEnabled(has_real)
+        self.real.setChecked(has_real)
+        self.real.blockSignals(False)
+        self._sync_position()
+        self._update_multi()
         if t is None:
             return
         self.title.setText(f"{t.name}  ({t.unit_count} units)")
@@ -279,11 +361,6 @@ class TemplatePlacerDialog(QDialog):
             self._last_site_default = t.site or t.name
             self.site.setText(self._last_site_default)
             self.site.setModified(False)
-        self.real.blockSignals(True)
-        self.real.setEnabled(bool(t.location))
-        self.real.setChecked(bool(t.location))
-        self.real.blockSignals(False)
-        self._real_toggled(bool(t.location))
         db = self.ctx.db
         self.parts.setRowCount(0)
         for comp in t.components:
@@ -305,21 +382,31 @@ class TemplatePlacerDialog(QDialog):
 
     def _coords(self, lat, lon):
         self.lat, self.lon = lat, lon
-        if not self.real.isChecked():
+        if not self.real.isChecked() or self._multi():
             self.free_pos = (lat, lon)
 
-    def _real_toggled(self, on: bool):
+    def _sync_position(self) -> None:
+        """The position box: the real site of one real-world template, else where the others go."""
         t = self._tpl()
-        if on and t is not None and t.location:
+        fixed = not self._multi() and self.real.isChecked() and t is not None and bool(t.location)
+        if fixed:
             self.lat, self.lon = t.location
             self.heading.setValue(t.heading)
         else:
             self.lat, self.lon = self.free_pos
         self.coords.set_coords(self.lat, self.lon)
-        self.coords.setEnabled(not (on and t is not None and t.location))
+        self.coords.setEnabled(not fixed)
 
-    def _place(self):
-        t = self._tpl()
+    def _real_toggled(self, _on: bool):
+        self._sync_position()
+        if not self._filling:
+            self._update_multi()
+
+    def _place(self, only_current: bool = False):
+        if not only_current and self._multi():
+            self._place_many()
+            return
+        t = self._tpl() if only_current or not self.ticked else self.lib.template(self.ticked[0])
         sid = self.side.current_id()
         if t is None or not sid:
             return
@@ -328,6 +415,7 @@ class TemplatePlacerDialog(QDialog):
                                  heading=self.heading.value(), site_name=self.site.text().strip() or t.name,
                                  group=self.group.isChecked())
         self.placed_ids = [u.id for u in res.units]
+        self.placed_sites = 1
         msg = f"Placed {len(res.units)} unit(s) of '{t.name}'."
         if res.skipped:
             msg += f" Skipped (not in this database): {', '.join(res.skipped)}"
@@ -335,6 +423,28 @@ class TemplatePlacerDialog(QDialog):
         self.ctx.status(msg)
         if res.units:
             self.ctx.doc.select(res.units[0].id)
+        self.accept()
+
+    def _place_many(self):
+        tpls = self.to_place()
+        sid = self.side.current_id()
+        if not tpls or not sid:
+            return
+        with self.ctx.doc.modify(f"Place {len(tpls)} templates", "units"):
+            results = place_templates(self.ctx.project, tpls, self.ctx.db, sid, *self.free_pos,
+                                      heading=self.heading.value(), real_sites=self.real.isChecked(),
+                                      group=self.group.isChecked())
+        self.placed_ids = [u.id for _t, res in results for u in res.units]
+        self.placed_sites = len(results)
+        msg = f"Placed {len(results)} templates, {len(self.placed_ids)} unit(s): " + \
+            ", ".join(t.name for t, _r in results) + "."
+        skipped = [f"{t.name}: {', '.join(res.skipped)}" for t, res in results if res.skipped]
+        if skipped:
+            QMessageBox.information(self, "Templates placed",
+                                    msg + "\n\nSkipped (not in this database):\n" + "\n".join(skipped))
+        self.ctx.status(msg)
+        if self.placed_ids:
+            self.ctx.doc.select(self.placed_ids[0])
         self.accept()
 
     def _edit_library(self):

@@ -55,7 +55,23 @@
         "s_e2e978db": "N"
       },
       "briefing_html": "<h1>Situation</h1>\n<p>A Russian surface action group of two Steregushchiy corvettes and a Karakurt missile ship is in the eastern\nGulf of Finland, covered by Su-35S fighters and an S-400 battalion near Kingisepp.</p>\n\n<h1>Mission</h1>\n<p>Keep Allied airspace and the sea lanes open, and keep Russian warships away from Hogland.</p>\n\n<h1>Execution</h1>\n<ul>\n\t<li>Weapons tight in the air until the enemy shows hostile intent.</li>\n\t<li>Finnish F-35As can be readied after three hours (75% chance).</li>\n</ul>\n\n<h1>Command and Signal</h1>\n<p>+10 points per Russian unit destroyed, +1 every 30 minutes Hogland stays free.</p>",
-      "export_briefing": true
+      "export_briefing": true,
+      "orders": {
+        "operation": "",
+        "originator": "",
+        "classification": "",
+        "situation": "",
+        "mission": "",
+        "intent": "",
+        "concept": "",
+        "enemy_assessment": "",
+        "mlcoa": "",
+        "mdcoa": "",
+        "roe": "",
+        "sustainment": "",
+        "command": "",
+        "exact_positions": false
+      }
     },
     {
       "id": "s_2bea36ad",
@@ -74,7 +90,23 @@
         "s_e2e978db": "N"
       },
       "briefing_html": "<h1>Situation</h1>\n<p>NATO has deployed Typhoons to Amari and Finnish Hornets are on alert at Rissala.</p>\n\n<h1>Mission</h1>\n<p>Show the flag in the Gulf of Finland and put warships off Hogland.</p>\n\n<h1>Execution</h1>\n<p>The strike on the Finnish patrol boat is released after four hours.</p>\n\n<h1>Command and Signal</h1>\n<p>+50 for reaching Hogland, +10 per NATO unit destroyed.</p>",
-      "export_briefing": true
+      "export_briefing": true,
+      "orders": {
+        "operation": "",
+        "originator": "",
+        "classification": "",
+        "situation": "",
+        "mission": "",
+        "intent": "",
+        "concept": "",
+        "enemy_assessment": "",
+        "mlcoa": "",
+        "mdcoa": "",
+        "roe": "",
+        "sustainment": "",
+        "command": "",
+        "exact_positions": false
+      }
     },
     {
       "id": "s_e2e978db",
@@ -91,7 +123,23 @@
         "s_2bea36ad": "N"
       },
       "briefing_html": "",
-      "export_briefing": false
+      "export_briefing": false,
+      "orders": {
+        "operation": "",
+        "originator": "",
+        "classification": "",
+        "situation": "",
+        "mission": "",
+        "intent": "",
+        "concept": "",
+        "enemy_assessment": "",
+        "mlcoa": "",
+        "mdcoa": "",
+        "roe": "",
+        "sustainment": "",
+        "command": "",
+        "exact_positions": false
+      }
     }
   ],
   "units": [

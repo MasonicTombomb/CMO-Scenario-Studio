@@ -84,6 +84,10 @@ offset when you click **OK**.
 The build generates a hidden, one-shot CMO event for each row; each event checks the scenario
 clock every minute and calls `ScenEdit_SetWeather` as soon as the offset time is reached.
 
+The changes appear on the **Timeline** (Chapter 19) as the *Weather forecast* row, and the map's **Clock** shows the
+weather at any moment (Chapter 8). The Issues panel warns about changes after the scenario ends and two changes at
+the same time.
+
 !!! tip
     Use the forecast to model deteriorating conditions, a storm blowing through, or clearing
     weather after a rain squall.

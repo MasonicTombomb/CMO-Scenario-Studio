@@ -76,6 +76,25 @@ Each new unit is selected so you can name it straight away in the inspector.
 - Press [[Delete]] to delete the selected object, or use **Delete unit** in the inspector. [[Ctrl+Z]] brings it back.
 - Click an empty part of the map, or press [[Esc]], to select nothing.
 
+### Several units at once
+
+![Three ships selected together](img/map_multi.png)
+
+- **[[Ctrl]]-click** units to add them to the selection, or to take one out again.
+- **[[Shift]]-drag** on an empty part of the map to draw a box: every unit inside it is selected. Hold [[Ctrl]] too
+  to add to what is already selected.
+- **[[Ctrl+A]]** selects every unit on screen.
+
+Selected units have a yellow ring, and a note at the top right says how many there are. Then:
+
+- **Drag any one of them** to move them all by the same amount. A formation kept on station moves as a whole.
+- **Right-click** one of them (or an empty spot) for: **Edit selected...** (change fields on all of them, Chapter
+  10), **Same course for all...** (plot one course in the course window and every selected unit gets it, Chapter
+  14), **Add to mission...**, **Make formation...**, **Delete *n* units** and **Clear selection**.
+- [[Delete]] deletes them all (it asks first). [[Esc]] or a click on empty map clears the selection.
+
+Each of these is one change: one [[Ctrl+Z]] undoes it.
+
 ## How things are drawn
 
 | You see | It is |
@@ -87,6 +106,25 @@ Each new unit is selected so you can name it straight away in the inspector.
 | Small diamond | A reference point (yellow when highlighted) |
 | Dashed lines from one unit to others | A formation: the lead joined to its members |
 | Dashed line through numbered circles | A unit's course; a dotted last leg means it returns, lands elsewhere or loops. Select the unit to drag its waypoints |
+
+## The scenario clock
+
+The **Clock** slider under the map runs through the scenario. Drag it to any moment to see:
+
+![The map clock at H+1:22](img/map_clock.png)
+
+1. **The clock**: from the start (left) to the end of the scenario (right).
+2. **The time**: hours and minutes after the start, and the Zulu date and time.
+3. **Start**: back to the start, where the map is as you edit it.
+4. **What is happening**: the weather at that moment (with any forecast change, Chapter 6), the timed events that
+   have fired so far, and how many units with a course are shown and on the move.
+5. **Units with a course** shown where they should be at that moment, as a yellow ring with what each is doing:
+   *heading for IP*, *waiting at Tanker*, *returning to Amari AB*, *course finished*. Aircraft still in their base
+   are not shown until they take off.
+
+Everything is an estimate from the course timings (Chapter 14), the forecast and the event triggers: nothing is
+run in CMO. Units without a course stay where they start. The clock is a good way to spot timing problems, such as
+a strike arriving before its escort or two flights at the same point at the same time.
 
 ## The right-click menu
 

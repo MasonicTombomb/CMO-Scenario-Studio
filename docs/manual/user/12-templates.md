@@ -20,7 +20,8 @@ map and choose **Place unit template here...**.
 ![Placing a unit template](img/dialog_template_placer.png)
 
 1. **Search**: type part of a name, place or feature: `lossiemouth`, `airfield`, `HAS`, `radar`, `port`.
-2. **Template list**, grouped by category, with the number of units in each.
+2. **Template list**, grouped by category, with the number of units in each. Click a template to see it; tick
+   its box to place several at once (see *Placing several at once* below).
 3. **Parts**: every component, how many, and the database entry each one uses. Red rows were not found in your
    database and will be left out.
 4. **Site name**: units are named after it, for example *Amari Control Tower*, *Amari HAS 1*.
@@ -31,10 +32,35 @@ map and choose **Place unit template here...**.
 8. **Group the site in CMO and keep it together on the map**: leave ticked. The site moves and rotates as one, and
    CMO treats it as one group.
 9. **Preview** of the layout, to scale, north at the top.
-10. **Place**.
+10. **Place**: places the highlighted template, or every ticked one (the button then reads *Place 3 templates*).
+11. **Ticked**: how many templates are ticked, their units, and where they will go. **Untick all** clears them.
 
 After placing, the map shows the site. To move it, drag any part. To rotate it, select its formation on the
 **Formations** tab and change **Orientation**.
+
+## Placing several at once
+
+Tick the box beside each template you want, then click **Place *n* templates**. Ticking a category's box ticks
+every template shown in it (search first to narrow it down). Ticks are kept while you search, so you can find and
+tick templates one after another.
+
+- **Real-world templates** (the UK sites) go to their own positions and orientations, as long as **At the real
+  site** is ticked. Each keeps its own site name, so units are called *Fairford Control Tower*, *Benson Hangar 1*
+  and so on, and each site is its own group.
+- **Other templates** go in a row running east from **Position**, spaced so they do not overlap, all facing
+  **Orientation**. Untick **At the real site** to put real-world ones in the row too.
+- **Site name** is greyed out: each template uses its own.
+- Everything is placed as **one change**: one [[Ctrl+Z]] removes them all.
+- The map then zooms out to show every placed site.
+
+!!! example "RAF Fairford, RAF Benson and RAF Lossiemouth together"
+    1. Open **Tools > Place unit template...** ([[Ctrl+T]]).
+    2. Type `raf` in the search box.
+    3. Tick **RAF Fairford**, **RAF Benson** and **RAF Lossiemouth**. The line under the list reads *3 ticked*.
+    4. Check **Side**, leave **At the real site** ticked, and click **Place 3 templates**.
+
+A template that is ticked is placed even when another one is highlighted; double-click a template to place just
+that one.
 
 ## Real UK sites
 

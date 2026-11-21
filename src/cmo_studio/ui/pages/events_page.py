@@ -179,9 +179,13 @@ class EventsPage(Page):
         new = QPushButton("New ▾")
         menu = QMenu(self)
         menu.addAction("Blank event", lambda: self._new(None))
+        menu.addAction("From a recipe...", lambda: self._from_recipe(""))
         menu.addSeparator()
-        for key, label in TEMPLATES:
-            menu.addAction(label, lambda k=key: self._new(k))
+        from ...model.event_recipes import RECIPES
+        for cat in dict.fromkeys(r.category for r in RECIPES):
+            sub_menu = menu.addMenu(cat)
+            for r in (x for x in RECIPES if x.category == cat):
+                sub_menu.addAction(r.name + "...", lambda rid=r.id: self._from_recipe(rid))
         new.setMenu(menu)
         row.addWidget(new)
         for text, fn in (("Duplicate", self._dup), ("Delete", self._delete)):
@@ -364,6 +368,14 @@ class EventsPage(Page):
         self.eid = e.id
         self.sel = ("", -1)
         self.refresh()
+
+    def _from_recipe(self, rid: str):
+        from ..recipe_dialog import RecipeDialog
+        dlg = RecipeDialog(self.ctx, rid, self)
+        if dlg.exec() and dlg.event is not None:
+            self.eid = dlg.event.id
+            self.sel = ("", -1)
+            self.refresh()
 
     def _dup(self):
         e = self._ev()

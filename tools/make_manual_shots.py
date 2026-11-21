@@ -10,6 +10,7 @@ reported and skipped.
 
 from __future__ import annotations
 
+import copy
 import os
 import sys
 import time
@@ -253,18 +254,21 @@ def main():
         Waypoint(59.05, 25.95, 9000, 450, name="Climb", radar="active", weapons="tight"),
         Waypoint(59.75, 26.9, 9000, 480, name="Tanker", wait_minutes=15, signal="TANKER_DONE"),
         Waypoint(59.65, 28.1, 150, 540, name="IP", radar="passive", ecm="active", weapons="free", engage="leave",
-                 signal="STRIKE_AT_IP"),
+                 signal="STRIKE_AT_IP", arrive_minutes=75),
         Waypoint(59.35, 27.3, 6000, 480, name="Egress", radar="active", weapons="tight")], 20, "rtb")
     dlg = CourseDialog(w, jet.id)
     dlg.resize(1360, 900)
     dlg.show()
     pump(app, 0.5)
     dlg.fit()
+    dlg.time_it()              # departure worked out from the time on target at the IP
     dlg.select(2)
     pump(app, 6)
     shot("dialog_course", dlg, [(1, dlg.map), (2, "Add waypoints"), (3, dlg.table), (4, dlg.leg_box),
                                 (5, ("row", "Weapons:")), (6, ("row", "Wait there:")), (7, dlg.chart),
-                                (8, dlg.depart), (9, dlg.finish), (10, dlg.summary)])
+                                (8, dlg.depart), (9, dlg.finish), (10, dlg.summary), (11, dlg.range_label),
+                                (12, ("row", "Arrive at:")), (13, dlg.time_btn), (14, "Library ▾")])
+    timed = copy.deepcopy(dlg.course)
     dlg._orig = dlg.course     # not dirty: close without asking
     dlg.reject()
     form = w.map_page.unit_form
@@ -272,10 +276,28 @@ def main():
     pump(app, 0.3)
     cb = form.course_box
     shot("unit_course", cb, [(1, form.course_info), (2, "Edit course..."), (3, "Clear")])
+    # 4c. The map clock part way through that sortie
+    jet.course = timed
+    mp = w.map_page
+    mp._clock_reset()
+    mp.map.fit([(amari.lat, amari.lon)] + [(x.lat, x.lon) for x in timed.waypoints])
+    mp.clock.setValue(timed.depart_minutes + 40)
+    pump(app, 4)
+    shot("map_clock", mp, [(1, mp.clock), (2, mp.clock_label), (3, "Start"), (4, mp.clock_info),
+                           (5, mp.map)])
+    mp.clock.setValue(0)
     jet.course = None
+    mp._clock_reset()
     form.refresh()
     w.doc.select(ship.id)
     pump(app, 0.2)
+    # 4d. Several units selected together: the Russian ships
+    ru_ships = [u for u in p.units if u.type == "Ship" and p.side_name(u.side) == "Russia"]
+    mp.map.fit([(u.lat, u.lon) for u in ru_ships])
+    mp.map.set_multi([u.id for u in ru_ships])
+    pump(app, 4)
+    shot("map_multi", mp.map, [])
+    mp.map.set_multi([])
 
     # 5. Database dock
     shot("database_dock", w.db_browser, [
@@ -340,8 +362,8 @@ def main():
                                          (3, "Insert snippet ▾"), (4, "Check syntax")],
          prepare=lambda: w.scripts_page.list.setCurrentRow(0) if hasattr(w.scripts_page, "list") else None)
     page(w.briefings_page, "tab_briefings", [
-        (1, "Prepend automatic header (author, date, location, sides, duration, ratings)"), (2, "Insert ▾")],
-        prepare=lambda: None)
+        (1, "Prepend automatic header (author, date, location, sides, duration, ratings)"), (2, "Insert ▾"),
+        (3, "Briefing pack (PDF)...")], prepare=lambda: None)
     page(w.export_page, "tab_export", [
         (1, "1. Check"), (2, "Validate"), (3, "Dry-run build"), (4, "2. Export"), (5, "Install into the CMO folder"),
         (6, "Export to a folder (e.g. a git repository)"), (7, "Export as a .zip"),
@@ -363,10 +385,33 @@ def main():
     pump(app, 0.3)
     w.timeline_page._fit()
     pump(app, 0.3)
-    shot("tab_timeline", w.timeline_page, [(1, "Filter events, missions and courses..."), (2, "Missions"),
-                                           (3, "Courses"), (4, "Condition-only events"), (5, "Sort by time")])
+    shot("tab_timeline", w.timeline_page, [(1, "Filter events, missions and courses..."), (2, "Missions"), (4, "Weather"),
+                                           (3, "Courses"), (5, "Condition-only events"), (6, "Sort by time")])
 
     # 7. Dialogs
+    from cmo_studio.ui.briefing_pack_dialog import BriefingPackDialog
+    from cmo_studio.ui.recipe_dialog import RecipeDialog
+    from cmo_studio.ui.scenario_wizard import ScenarioWizard
+    nato = next(s for s in p.sides if s.name == "NATO")
+    zone = next((z for z in p.zones if z.side == nato.id), None)
+    rd = RecipeDialog(w.ctx, "area_entered", w)
+
+    def prep_recipe():
+        if zone is not None:
+            rd.set_value("zone", zone.id)
+    dialog_shot(app, "dialog_recipe", rd, [(1, rd.list), (2, rd.desc), (3, rd.box), (4, "Create event")],
+                prepare=prep_recipe)
+    bp = BriefingPackDialog(w.ctx, nato.id, w)
+    dialog_shot(app, "dialog_briefing_pack", bp, [(1, bp.side), (2, ("row", "Operation:")), (3, bp.fields["mission"]),
+                                                  (4, bp.preview), (5, "Save PDF..."), (6, "Use as CMO briefing")],
+                wait=1.0)
+    wiz = ScenarioWizard([d.name for d in w.dbm.available()], w.dbm.db.path.name if w.dbm.db else "", w.dbm.db, w)
+
+    def prep_wiz():
+        wiz.next()
+        wiz.next()
+    dialog_shot(app, "dialog_wizard", wiz, [(1, wiz.region), (2, wiz.squadron), (3, wiz.bases), (4, wiz.areas),
+                                            (5, wiz.probe), (6, wiz.events)], prepare=prep_wiz)
     from cmo_studio.ui.dialogs import NewProjectDialog, SettingsDialog
     dialog_shot(app, "dialog_settings", SettingsDialog(w.settings, w), [
         (1, ("row", "CMO folder:")), (2, "Browse..."), (3, "Detect"), (4, ("row", "Autosave (to a .autosave copy):")),
@@ -400,12 +445,26 @@ def main():
     from cmo_studio.ui.templates_ui import TemplateLibraryDialog, TemplatePlacerDialog
     tp = TemplatePlacerDialog(w.ctx, 59.411, 24.832, w)
 
-    def prep_tp():
-        tp.filter.setText("lossiemouth")
+    def prep_tp():   # three UK bases ticked, Lossiemouth highlighted
+        from PyQt6.QtCore import Qt as _Qt
+        tp.filter.setText("raf")
+        lossie = None
+        for i in range(tp.tree.topLevelItemCount()):
+            head = tp.tree.topLevelItem(i)
+            for k in range(head.childCount()):
+                it = head.child(k)
+                tid = it.data(0, _Qt.ItemDataRole.UserRole)
+                if tid in ("uk_ab_fairford", "uk_ab_benson", "uk_ab_lossiemouth"):
+                    it.setCheckState(0, _Qt.CheckState.Checked)
+                if tid == "uk_ab_lossiemouth":
+                    lossie = it
+        tp.tree.setCurrentItem(lossie)
+        tp.tree.scrollToItem(lossie)
     dialog_shot(app, "dialog_template_placer", tp, [
         (1, tp.filter), (2, tp.tree), (3, tp.parts), (4, ("row", "Site name:")), (5, ("row", "Side:")),
         (6, tp.real), (7, ("row", "Orientation / runway heading:")),
-        (8, "Group the site in CMO and keep it together on the map"), (9, tp.preview), (10, "Place")],
+        (8, "Group the site in CMO and keep it together on the map"), (9, tp.preview), (10, tp.place_btn),
+        (11, tp.ticked_label)],
         prepare=prep_tp)
     tl = TemplateLibraryDialog(w.ctx, w)
     dialog_shot(app, "dialog_template_library", tl, [(1, "Import..."), (2, "Export..."), (3, "Reset to defaults"),

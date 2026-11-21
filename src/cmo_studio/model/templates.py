@@ -327,6 +327,32 @@ def place_template(project: Project, tpl: UnitTemplate, db, side: str, lat: floa
     return PlaceResult(units, formation, skipped)
 
 
+def template_radius_m(tpl: UnitTemplate) -> float:
+    """How far the template's furthest unit lies from its centre, in metres."""
+    return max((math.hypot(x, y) for c in tpl.components for x, y in c.positions), default=0.0)
+
+
+def place_templates(project: Project, tpls: list[UnitTemplate], db, side: str, lat: float, lon: float,
+                    heading: float = 0.0, real_sites: bool = True, group: bool = True,
+                    gap_m: float = 1000.0) -> list[tuple[UnitTemplate, PlaceResult]]:
+    """Place several templates in one go. With ``real_sites``, real-world templates go to their own position and
+    orientation; every other template goes in a row running east from (lat, lon), spaced so they do not overlap.
+    Each keeps its own site name. Does not touch undo."""
+    out = []
+    here: Optional[tuple[float, float]] = None
+    prev_r = 0.0
+    for t in tpls:
+        if real_sites and t.location:
+            res = place_template(project, t, db, side, t.location[0], t.location[1], heading=t.heading, group=group)
+        else:
+            r = template_radius_m(t)
+            here = (lat, lon) if here is None else destination(here[0], here[1], 90.0, (prev_r + r + gap_m) / 1000.0)
+            prev_r = r
+            res = place_template(project, t, db, side, here[0], here[1], heading=heading, group=group)
+        out.append((t, res))
+    return out
+
+
 def template_from_units(project: Project, unit_ids: list[str], name: str, category: str = "Custom",
                         description: str = "", lib: Optional[TemplateLibrary] = None) -> UnitTemplate:
     """A template from existing units: positions relative to the first unit, oriented to its heading."""

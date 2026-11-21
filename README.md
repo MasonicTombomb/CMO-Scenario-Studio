@@ -19,7 +19,7 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
   finger-four, ladder, wall, ground wedge, coil, SAM dispersal and more, plus custom stations) with spacing,
   orientation, altitude step, mirror and jitter controls and a live preview. Create new units straight into a
   formation from the database, or group existing ones; they are built as CMO groups with formation stations.
-- **Event timeline** — every event, mission and unit course on the scenario clock: one-shot moments, random
+- **Event timeline** — every event, mission, unit course and weather change on the scenario clock: one-shot moments, random
   windows, repeating ticks, condition triggers and estimated time en route, with problems flagged (outside the
   scenario, same-minute clashes, missions ending before they start). Double-click to edit.
 - **Search everything** (Ctrl+K) — jump to any unit, mission, event, area, formation, script line or command.
@@ -40,8 +40,8 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Unit templates** — 80 pre-grouped sites (670 units in all) dropped in one go: airfields of every size,
   hardened and dispersed air bases, FARPs, command posts and C3 bunkers, communications, SIGINT and EW sites, radar
   and SAM sites, barracks, FOBs, depots, ports and naval bases, missile sites and civil infrastructure. Name it,
-  orient it, place it; it stays together as a CMO group. Editable JSON library, and any selection can be saved as a
-  new template.
+  orient it, place it; it stays together as a CMO group. Tick several (or a whole category) to place them all at
+  once. Editable JSON library, and any selection can be saved as a new template.
 - **Callsigns** — name aircraft from an editable JSON library of 38 air arms (NATO and beyond), ~365 squadrons
   and 1,100+ callsign words, by detected country and role (fighter, strike, SEAD, AEW, tanker, MPA, helicopters...),
   in flights: `TARTAN 11–14`, `SOKOL-21`... Rename, add or share entries in the built-in library editor.
@@ -57,10 +57,21 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Courses** — plot the exact route of any aircraft, ship, submarine or ground unit in a course window with a map,
   a table of legs and a flight (or depth) profile. Each leg sets altitude or submarine depth, speed, radar / sonar / jammers, weapons
   free / tight / hold and whether to leave the course to attack; waypoints can hold the unit for a while or raise a
-  flag for events. Aircraft at a base take off at their departure time and return or land at another base.
+  flag for events. Aircraft at a base take off at their departure time and return or land at another base. Set a
+  **time on target** and *Time it* plans the departure and waits; routes are checked against the aircraft's range
+  with its loadout; save courses to a library or copy them to other units.
+- **New Scenario wizard** — sides, real UK air bases (or a generic base) with fighter squadrons on combat air patrol,
+  patrol areas, an enemy bomber probe on a plotted course and the usual events, in a few clicks.
+- **Briefing packs** — a NATO-style operation order for each side (five paragraphs, intelligence summary, air
+  tasking schedule with times on target, weather annex), generated from the scenario, editable, printed to PDF or
+  used as the CMO briefing. Flight schedules can also go straight into a briefing.
+- **Scenario clock** — drag the clock under the map to see where every unit with a course should be at any moment,
+  with the weather and the timed events so far.
 - **Weather forecast** — schedule weather changes at any point after the scenario starts: set an offset in minutes
   and new temperature, rainfall, cloud and sea state; the build generates a one-shot event per change that fires
   `ScenEdit_SetWeather` at the right time. Initial conditions are still set at T+0 on the Scenario tab.
+- **Event recipes** — common events (points for kills, victory, reinforcements, missions on a signal, messages)
+  from a short form.
 - **Events** — triggers (time, date, delay, unit destroyed/damaged/detected, area entry, points...), conditions,
   probability and actions (message, score, end scenario, mission on/off, flags, spawn reinforcements, Lua), with
   templates and a live preview of the generated Lua.

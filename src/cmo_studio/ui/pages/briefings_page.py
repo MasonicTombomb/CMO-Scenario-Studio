@@ -59,6 +59,7 @@ class BriefingsPage(Page):
         menu = QMenu(self)
         menu.addAction("Order of battle: this side", lambda: self._oob(own=True))
         menu.addAction("Order of battle: enemy sides", lambda: self._oob(own=False))
+        menu.addAction("Flight schedule: this side", self._schedule)
         menu.addAction("Briefing skeleton (OPORD)", lambda: self.editor.insertPlainText(DEFAULT_BRIEFING))
         menu.addAction("Image (from the scenario folder)", lambda: self.editor.insertPlainText(
             '<img src="picture.jpg" width="600">\n'))
@@ -66,6 +67,11 @@ class BriefingsPage(Page):
             "<table>\n\t<tr><th>Unit</th><th>Task</th></tr>\n\t<tr><td></td><td></td></tr>\n</table>\n"))
         ins.setMenu(menu)
         bar.addWidget(ins)
+        self.pack_btn = QPushButton("Briefing pack (PDF)...")
+        self.pack_btn.setToolTip("A NATO-style operation order with an intelligence summary, air tasking schedule "
+                                 "and weather annex for this side, printed to PDF")
+        self.pack_btn.clicked.connect(self._pack)
+        bar.addWidget(self.pack_btn)
         ml.addLayout(bar)
         self.auto = QCheckBox("Prepend automatic header (author, date, location, sides, duration, ratings)")
         self.auto.toggled.connect(self._auto)
@@ -192,6 +198,20 @@ class BriefingsPage(Page):
         sel = cur.selectedText().replace(" ", "\n")
         items = [s.strip() for s in sel.split("\n") if s.strip()] or ["item"]
         cur.insertText("<ul>\n" + "".join(f"\t<li>{re.sub('<[^>]+>', '', i)}</li>\n" for i in items) + "</ul>\n")
+
+    def _schedule(self):
+        from ...model.briefing_pack import flight_schedule_html
+        kind, oid = self.target
+        sides = [oid] if kind == "side" else [s.id for s in self.project.sides]
+        out = [(f"<h3>{self.project.side_name(sid)}</h3>\n" if kind != "side" else "") +
+               flight_schedule_html(self.project, sid, self.ctx.db, title=kind == "side") for sid in sides]
+        self.editor.insertPlainText("\n".join(out) + "\n")
+
+    def _pack(self):
+        from ..briefing_pack_dialog import BriefingPackDialog
+        kind, oid = self.target
+        BriefingPackDialog(self.ctx, oid if kind == "side" else "", self).exec()
+        self.refresh()
 
     def _oob(self, own: bool):
         kind, oid = self.target

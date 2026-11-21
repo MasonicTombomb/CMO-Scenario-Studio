@@ -253,3 +253,111 @@ def test_official_uk_boundaries():
     aaras = [a for a in areas.areas if a.id.startswith("uk_aara_")]
     assert len(aaras) == 15
     assert "notional" in areas.area("uk_cap_moray").description.lower()
+
+
+# ------------------------------------------------------------------ several templates at once
+TRIO = ("uk_ab_fairford", "uk_ab_benson", "uk_ab_lossiemouth")
+
+
+def test_place_several_templates_at_their_real_sites(lib):
+    from cmo_studio.model.templates import place_templates
+    p = new_project("Three bases", "DB3K_519.db3")
+    sid = p.sides[0].id
+    tpls = [lib.template(t) for t in TRIO]
+    out = place_templates(p, tpls, None, sid, 50.0, 0.0)
+    assert [t.id for t, _r in out] == list(TRIO)
+    assert len(p.units) == sum(t.unit_count for t in tpls)
+    for t, res in out:
+        assert res.units and res.formation is not None and res.formation.name == t.site
+        assert all(distance_km(u.lat, u.lon, *t.location) < 6 for u in res.units)   # each at its own site
+        assert all(u.name.startswith(t.site) for u in res.units)                      # and its own names
+
+
+def test_templates_without_a_site_go_in_a_row_without_overlapping(lib):
+    from cmo_studio.model.templates import place_templates, template_radius_m
+    p = new_project("Row", "DB3K_519.db3")
+    sid = p.sides[0].id
+    tpls = [lib.template(t) for t in ("af_2000", "af_3200", "uk_ab_benson", "af_4000")]
+    out = place_templates(p, tpls, None, sid, 58.0, 24.0, heading=90.0)
+    centres = [res.formation for _t, res in out]
+    leads = [p.unit(f.lead) for f in centres]
+    benson = lib.template("uk_ab_benson")
+    assert distance_km(leads[2].lat, leads[2].lon, *benson.location) < 6           # the real one at its site
+    row = [leads[0], leads[1], leads[3]]
+    assert all(abs(u.lat - 58.0) < 0.02 for u in row)                               # due east of the point
+    assert row[0].lon < row[1].lon < row[2].lon
+    gap = (template_radius_m(tpls[0]) + template_radius_m(tpls[1])) / 1000
+    assert distance_km(row[0].lat, row[0].lon, row[1].lat, row[1].lon) >= gap      # no overlap
+    # not at their real sites when asked: all four in the row
+    p2 = new_project("Row2", "DB3K_519.db3")
+    out2 = place_templates(p2, tpls, None, p2.sides[0].id, 58.0, 24.0, real_sites=False)
+    assert all(abs(p2.unit(r.formation.lead).lat - 58.0) < 0.05 for _t, r in out2)
+
+
+def _tick(dlg, tid):
+    from PyQt6.QtCore import Qt
+    for i in range(dlg.tree.topLevelItemCount()):
+        head = dlg.tree.topLevelItem(i)
+        for k in range(head.childCount()):
+            it = head.child(k)
+            if it.data(0, Qt.ItemDataRole.UserRole) == tid:
+                it.setCheckState(0, Qt.CheckState.Checked)
+                return it
+    raise AssertionError(tid)
+
+
+def test_placer_ticks_several_templates(window):
+    w, app, _ = window
+    from PyQt6.QtCore import Qt
+
+    from cmo_studio.ui.templates_ui import TemplatePlacerDialog
+    lib_ = default_library()
+    before = len(w.doc.project.units)
+    dlg = TemplatePlacerDialog(w.ctx, 58.5, 23.5, w)
+    assert dlg.place_btn.text() == "Place" and not dlg.untick_btn.isEnabled()
+    dlg.filter.setText("raf")
+    for tid in TRIO:
+        _tick(dlg, tid)
+    assert dlg.ticked == list(TRIO)
+    assert dlg.place_btn.text() == "Place 3 templates" and not dlg.site.isEnabled()
+    assert "3 ticked" in dlg.ticked_label.text() and "RAF Fairford" in dlg.ticked_label.text()
+    assert "own positions" in dlg.ticked_label.text()
+    dlg.filter.setText("lossie")                         # ticks survive a new search
+    assert dlg.ticked == list(TRIO)
+    head = dlg.tree.topLevelItem(0)
+    lossie = next(head.child(k) for k in range(head.childCount())
+                  if head.child(k).data(0, Qt.ItemDataRole.UserRole) == "uk_ab_lossiemouth")
+    assert lossie.checkState(0) == Qt.CheckState.Checked
+    assert head.checkState(0) == Qt.CheckState.PartiallyChecked           # Kinloss also matches, not ticked
+    dlg._place()
+    assert dlg.placed_sites == 3
+    total = sum(lib_.template(t).unit_count for t in TRIO)
+    assert len(w.doc.project.units) == before + total
+    names = {u.name for u in w.doc.project.units}
+    assert {"Fairford Control Tower", "Lossiemouth Control Tower"} <= names
+    w.doc.undo()                                          # one undo step for all three
+    assert len(w.doc.project.units) == before
+
+
+def test_placer_category_tick_and_untick(window):
+    w, app, _ = window
+    from PyQt6.QtCore import Qt
+
+    from cmo_studio.ui.templates_ui import TemplatePlacerDialog
+    dlg = TemplatePlacerDialog(w.ctx, 58.5, 23.5, w)
+    dlg.filter.setText("twin-runway")
+    head = dlg.tree.topLevelItem(0)
+    head.setCheckState(0, Qt.CheckState.Checked)          # the whole category as shown
+    assert len(dlg.ticked) == head.childCount() >= 2
+    assert dlg.place_btn.text() == f"Place {head.childCount()} templates"
+    assert not dlg.real.isEnabled()                       # none has a real site: a row from the position
+    assert "row east" in dlg.ticked_label.text() and dlg.coords.isEnabled()
+    dlg._untick_all()
+    assert dlg.ticked == [] and dlg.place_btn.text() == "Place" and dlg.site.isEnabled()
+    # one ticked, another highlighted: the ticked one is placed, by itself
+    _tick(dlg, dlg.tree.topLevelItem(0).child(1).data(0, Qt.ItemDataRole.UserRole))
+    dlg.tree.setCurrentItem(dlg.tree.topLevelItem(0).child(0))
+    assert dlg._multi() and dlg.place_btn.text() == "Place"
+    n = len(w.doc.project.units)
+    dlg._place()
+    assert dlg.placed_sites == 1 and len(w.doc.project.units) > n

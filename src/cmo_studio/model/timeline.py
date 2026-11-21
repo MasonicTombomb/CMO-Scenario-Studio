@@ -32,7 +32,7 @@ class Mark:
 
 @dataclass
 class Row:
-    kind: str                       # 'event' | 'mission' | 'course'
+    kind: str                       # 'event' | 'mission' | 'course' | 'weather'
     obj_id: str
     name: str
     active: bool = True
@@ -195,13 +195,39 @@ def course_rows(p: Project, start: int, end: int) -> list[Row]:
                        f"{hms(plan.end_s - plan.depart_s)} h" + (f" including {waits} min waiting" if waits else "")
                        + f"\nAt the end: {plan.finish}"
                        + ("\nA reinforcement: the course starts once it has arrived" if u.reserve else ""))
+        for lg in plan.legs:
+            if lg.target_s is not None:
+                d = lg.diff_s
+                r.marks.append(Mark(POINT, start + lg.target_s, label=f"on target {lg.n}"))
+                if lg.need_kn is not None:
+                    r.issues.append(f"Reaches waypoint {lg.n} about {hms(d)} after its time on target.")
         if t > end:
             r.issues.append(f"Departs at {fmt_time(t, start)}, after the scenario ends.")
         rows.append(r)
     return rows
 
 
-def build_timeline(p: Project, include_missions: bool = True, include_courses: bool = True) -> Timeline:
+def weather_row(p: Project, start: int, end: int) -> Optional[Row]:
+    """One row for the weather forecast: a diamond at each change."""
+    changes = sorted((e for e in p.forecast if e.offset_minutes > 0), key=lambda e: e.offset_minutes)
+    if not changes:
+        return None
+    w0 = p.weather
+    lines = [f"Start: {w0.temperature:g} °C, rain {w0.rainfall}, cloud {w0.cloud:g}, sea state {w0.sea_state}"]
+    r = Row("weather", "forecast", "Weather forecast", active=True, once=True)
+    for e in changes:
+        t = start + 60 * e.offset_minutes
+        text = f"{e.temperature:g} °C, rain {e.rainfall}, cloud {e.cloud:g}, sea {e.sea_state}"
+        r.marks.append(Mark(POINT, t, label=text))
+        lines.append(f"{fmt_time(t, start)}: {text}")
+        if t > end:
+            r.issues.append(f"The change at {fmt_time(t, start)} comes after the scenario ends.")
+    r.detail = "\n".join(lines)
+    return r
+
+
+def build_timeline(p: Project, include_missions: bool = True, include_courses: bool = True,
+                   include_weather: bool = True) -> Timeline:
     start = p.clock.start_epoch()
     end = start + 60 * (p.clock.duration_days * 1440 + p.clock.duration_hours * 60 + p.clock.duration_minutes)
     if end <= start:
@@ -247,6 +273,8 @@ def build_timeline(p: Project, include_missions: bool = True, include_courses: b
             rows.append(r)
     if include_courses:
         rows += course_rows(p, start, end)
+    if include_weather and (wr := weather_row(p, start, end)) is not None:
+        rows.append(wr)
     # clashes: two one-shot timed events in the same minute
     clashes = []
     points = [(m.start // 60, r) for r in rows if r.kind == "event" and r.active

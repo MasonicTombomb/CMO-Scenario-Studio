@@ -11,7 +11,12 @@ src/cmo_studio/
     enums.py             API vocab: unit types, mission classes, trigger/condition/action specs
     formations.py        formation presets, station geometry, apply/move helpers
     timeline.py          events, missions and courses on the scenario clock, timing problems
-    course_plan.py       plotted-course estimates: legs, settings in force, timings (window, inspector, timeline)
+    course_plan.py       plotted-course estimates: legs, settings in force, timings, time on target, range
+    route_library.py     saved courses (routes.json in the user's data folder)
+    clock.py             the scenario at a moment: course positions, weather, events fired (the map clock)
+    event_recipes.py     event recipes: common events from a few answers
+    briefing_pack.py     flight schedule and the NATO-style operation order / intelligence summary (HTML)
+    scenario_wizard.py   build a scenario skeleton from the New Scenario wizard's choices
     callsigns.py         callsign library (JSON), role detection, flight allocation
     templates.py         unit templates (JSON): DB resolution, placement, save-as-template
     area_library.py      predefined patrol areas (JSON): regions, add as zone + mission, save areas back
@@ -23,6 +28,7 @@ src/cmo_studio/
     compiler.py          project -> build data `D` and per-event Lua
     lua_writer.py        Python value -> Lua literal
     html.py              description/briefing pages, CSS, OOB generator
+    pdf.py               print HTML to PDF (Edge/Chrome headless, Qt fallback)
     exporter.py          folder / zip writer with manifest and backups
     lua/
       Studio_Builder.lua the builder engine appended to Build_Scenario.lua
@@ -52,6 +58,9 @@ src/cmo_studio/
     areas_library_ui.py  patrol area browser with map preview and area library editor
     forms.py             UnitForm, RPForm, ZoneForm (shared by map and pages)
     course_dialog.py     course window: route map, leg table and settings, flight profile chart
+    recipe_dialog.py     event recipe form
+    briefing_pack_dialog.py  edit, preview and print a side's briefing pack
+    scenario_wizard.py   the New Scenario wizard (QWizard)
     widgets.py           code editor, highlighters, pickers, key/value table...
     dialogs.py           settings, new project, about, issues panel
     theme.py             dark Fusion theme
@@ -91,6 +100,9 @@ The PDF manuals in `docs/manuals/` are built, not written by hand:
 - The Reference Manual mixes `docs/manual/reference/*.md` with the reference docs in `docs/` (see `MANUALS` in
   `tools/make_manuals.py`), so those docs have a single source.
 - `python tools/make_manual_shots.py` renders the annotated screenshots into `docs/manual/img/` (needs CMO for the
-  database panel); `python tools/make_manuals.py` prints the PDFs with headless Chrome or Edge.
+  database panel); `python tools/make_manuals.py` prints the PDFs with headless Chrome or Edge and records a
+  fingerprint of their sources in `docs/manuals/manual-sources.sha256`.
+- `python tools/release_check.py` checks a release is ready (version, changelog, notes, PDFs up to date, build
+  tables, tests, git state); the release workflow runs it with `--ci` before publishing.
 - `tests/test_manuals.py` checks every image exists, nothing failed to convert, and the chapter numbers the text
   refers to still hold.

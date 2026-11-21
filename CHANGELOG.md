@@ -1,5 +1,44 @@
 # Changelog
 
+## 1.10.0 — 2026-11-21
+
+- **Select several units on the map.** Ctrl-click, Shift-drag a box, or Ctrl+A; drag one to move them all; right-click
+  for Edit selected, Same course for all, Add to mission, Make formation and Delete; Delete and Esc work too. One
+  undo for each.
+- **Event recipes.** *New ▾* on the Events tab offers ten recipes (points for kills, victory at a score, end when a
+  key unit dies, reinforcements, missions at a time or on a signal, signals, area and timed messages, a warning
+  before the end), each filled in from a short form.
+- **Flight schedule.** *Insert ▾ > Flight schedule* in the briefing editor adds a table of every routed unit:
+  callsign, departure, route, times on target, recovery and codewords.
+- **Briefing packs.** *Briefing pack (PDF)...* on the Briefings tab writes a NATO-style operation order for a side:
+  heading with DTG and task organisation, the five paragraphs, an intelligence summary (order of battle, air
+  defence threat, enemy courses of action), the air tasking schedule with each flight's leg orders, and a weather
+  annex. Everything is generated from the scenario; your own text (saved in the project) replaces any part. Printed
+  to PDF (with EXERCISE banners on every page), for every side at once, or used as the in-game briefing.
+- **New Scenario wizard.** *File > New scenario from wizard...* builds sides, bases, fighters on combat air patrol,
+  patrol areas, an enemy bomber probe and standard events from a few choices.
+
+- **Time on target.** Give a course waypoint an *Arrive at* time; the course window, the Timeline and the Issues
+  panel show whether the unit is on time, early or late (and the speed a late leg needs). **Time it** sets the
+  departure, and adds waits before later waypoints, so the unit arrives on time.
+- **Range check.** For aircraft with a loadout the course window compares the route (waits included) with an
+  estimated range from the database (combat radius and time on station), marks on the profile where the fuel
+  should run out, and the Issues panel warns about routes that are too long.
+- **Map clock.** A *Clock* slider under the map shows where units with a course should be at any moment, with the
+  weather and the timed events fired so far.
+- **Weather on the Timeline.** The forecast is a row of diamonds on the Timeline (double-click to edit it); the
+  Issues panel warns about changes after the end, two changes at the same time and changes at 0 minutes.
+- **Reusing courses.** *Library ▾* in the course window saves a course (with every leg setting) to `routes.json`,
+  uses a saved one (instead, or added to the end), or copies the course to other units in one undo step.
+- **Release checklist.** `tools/release_check.py` checks the version everywhere, changelog, release notes, that the
+  PDFs match their sources, that every build table reaches the build script, both test runs and the git state; the
+  release workflow runs it before publishing.
+
+- **Place several templates at once.** Tick templates in the template placer (or tick a category to take every
+  template shown in it) and click **Place *n* templates**: real UK sites such as RAF Fairford, RAF Benson and RAF
+  Lossiemouth go to their own positions, and other templates go in a row east of the chosen position without
+  overlapping. Ticks survive searching; one undo removes them all; the map zooms out to show every site.
+
 ## 1.9.1 — 2026-11-21
 
 - **Fixed: the weather forecast never reached CMO.** In 1.9.0 the forecast was compiled but left out of

@@ -42,6 +42,9 @@ class MapWidget(QWidget):
     courseFinished = pyqtSignal(str, list)             # unit id, new waypoints [[lat, lon], ...]
     waypointMoved = pyqtSignal(str, int, float, float)  # unit id, waypoint index, lat, lon
     waypointClicked = pyqtSignal(str, int)              # unit id, waypoint index
+    multiChanged = pyqtSignal(list)                     # unit ids selected together (Ctrl-click / Shift-drag)
+    groupMoved = pyqtSignal(list, float, float)         # unit ids, change in latitude, change in longitude
+    multiDeleteRequested = pyqtSignal(list)
     contextRequested = pyqtSignal(float, float, str, object)   # lat, lon, hit id, global QPoint
     cursorMoved = pyqtSignal(float, float)
     deleteRequested = pyqtSignal(str)
@@ -68,6 +71,10 @@ class MapWidget(QWidget):
         self.show_courses = True
         self.course_unit = ""             # unit whose course the Course tool extends
         self.highlight_wp = -1            # waypoint of the selected unit's course to ring (the course window)
+        self.multi: list[str] = []        # units selected together, in the order picked
+        self._band: Optional[tuple[QPointF, QPointF]] = None
+        self.clock_ghosts: list = []      # model.clock.Ghost: estimated positions at the clock time
+        self.clock_text = ""
         self.attribution = ""
         self.place_label = ""
         self._drag_start: Optional[QPointF] = None
@@ -144,6 +151,19 @@ class MapWidget(QWidget):
         self.selected = oid
         self.update()
 
+    def set_multi(self, ids: list[str]) -> None:
+        ids = list(dict.fromkeys(ids))
+        if ids != self.multi:
+            self.multi = ids
+            self.multiChanged.emit(list(ids))
+        self.update()
+
+    def units_in(self, a: QPointF, b: QPointF) -> list[str]:
+        """Units drawn inside the screen rectangle a-b (not those inside a base, not hidden sides)."""
+        r = QRectF(a, b).normalized()
+        return [u.id for u in (self.project.units if self.project else [])
+                if not u.host and self._visible(u.side) and r.contains(self.to_screen(u.lat, u.lon))]
+
     # ------------------------------------------------------------------ coordinates
     def to_screen(self, lat: float, lon: float) -> QPointF:
         x, y = to_world(lat, lon, self.zoom)
@@ -173,8 +193,26 @@ class MapWidget(QWidget):
             if self.show_courses:
                 self._paint_courses(p)
             self._paint_units(p)
+            if self.clock_ghosts:
+                self._paint_clock(p)
         self._paint_draft(p)
         self._paint_measure(p)
+        if self._band is not None:
+            p.setPen(QPen(QColor("#ffd166"), 1.2, Qt.PenStyle.DashLine))
+            fill = QColor("#ffd166")
+            fill.setAlpha(25)
+            p.setBrush(QBrush(fill))
+            p.drawRect(QRectF(*self._band).normalized())
+            p.setBrush(Qt.BrushStyle.NoBrush)
+        if len(self.multi) > 1:
+            text = f"{len(self.multi)} units selected: drag one to move them all, right-click for more, Esc to clear"
+            f = p.font()
+            r = p.fontMetrics().boundingRect(text).adjusted(-8, -5, 8, 5)
+            r.moveTopRight(self.rect().topRight() + QPointF(-10, 10).toPoint())
+            p.fillRect(r, QColor(20, 22, 26, 210))
+            p.setPen(QColor("#ffd166"))
+            p.drawText(r, Qt.AlignmentFlag.AlignCenter, text)
+            p.setFont(f)
         self._paint_scale(p)
         if self.attribution:
             p.setPen(QColor(220, 220, 220, 170))
@@ -350,13 +388,22 @@ class MapWidget(QWidget):
         for u in self.project.units:
             if u.host or not self._visible(u.side):
                 continue
-            pos = (self._drag_pos if (self._drag_mode == "move" and self._drag_id == u.id and self._drag_pos)
-                   else (u.lat, u.lon))
+            pos = (u.lat, u.lon)
+            if self._drag_mode == "move" and self._drag_pos:
+                if self._drag_id == u.id:
+                    pos = self._drag_pos
+                elif self._drag_id in self.multi and u.id in self.multi and self.project.unit(self._drag_id):
+                    lead = self.project.unit(self._drag_id)
+                    pos = (u.lat + self._drag_pos[0] - lead.lat, u.lon + self._drag_pos[1] - lead.lon)
             q = self.to_screen(*pos)
             if not (-40 < q.x() < self.width() + 40 and -40 < q.y() < self.height() + 40):
                 continue
             col = self._side_color(u.side)
-            sel = u.id == self.selected
+            sel = u.id == self.selected or u.id in self.multi
+            if u.id in self.multi:
+                p.setPen(QPen(QColor("#ffd166"), 2))
+                p.setBrush(Qt.BrushStyle.NoBrush)
+                p.drawEllipse(q, 12, 12)
             size = 8 if sel else 6.5
             path = self._unit_path(u.type, size)
             p.save()
@@ -396,6 +443,33 @@ class MapWidget(QWidget):
             p.drawText(pos + QPointF(dx, dy), text)
         p.setPen(col.lighter(150))
         p.drawText(pos, text)
+
+    def _paint_clock(self, p: QPainter) -> None:
+        """Where units with a course should be at the clock time: a ring with the unit's name and what it is doing."""
+        for g in self.clock_ghosts:
+            if not self._visible(g.side):
+                continue
+            q = self.to_screen(g.lat, g.lon)
+            col = QColor(self._side_color(g.side))
+            p.setPen(QPen(QColor("#ffd166"), 2))
+            p.setBrush(QBrush(col))
+            p.drawEllipse(q, 6, 6)
+            p.setBrush(Qt.BrushStyle.NoBrush)
+            p.setPen(QPen(QColor("#ffd166"), 1, Qt.PenStyle.DashLine))
+            p.drawEllipse(q, 11, 11)
+            if self.show_labels:
+                self._label(p, q + QPointF(13, 4), f"{g.name}: {g.status}", QColor("#ffd166"))
+        if self.clock_text:
+            f = p.font()
+            f.setBold(True)
+            p.setFont(f)
+            r = p.fontMetrics().boundingRect(self.clock_text).adjusted(-8, -5, 8, 5)
+            r.moveTopLeft(self.rect().topLeft() + QPointF(10, 10).toPoint())
+            p.fillRect(r, QColor(20, 22, 26, 210))
+            p.setPen(QColor("#ffd166"))
+            p.drawText(r, Qt.AlignmentFlag.AlignCenter, self.clock_text)
+            f.setBold(False)
+            p.setFont(f)
 
     def course_start(self, u) -> tuple[float, float]:
         """Where a unit's course begins: its position, or its base's."""
@@ -567,6 +641,11 @@ class MapWidget(QWidget):
             self._drag_mode = "pan"
             return
         kind, oid, vertex = self.hit(pos)
+        if e.modifiers() & Qt.KeyboardModifier.ShiftModifier and kind != "unit":
+            self._drag_mode = "band"            # Shift-drag: draw a box round units to select them
+            self._band = (pos, pos)
+            self._last = pos
+            return
         if kind in ("unit", "rp"):
             self._drag_mode, self._drag_id = "move", oid
         elif kind in ("vertex", "waypoint"):
@@ -592,6 +671,8 @@ class MapWidget(QWidget):
                 self.viewChanged.emit()
             elif self._drag_mode in ("move", "vertex", "waypoint"):
                 self._drag_pos = (lat, lon)
+            elif self._drag_mode == "band" and self._band is not None:
+                self._band = (self._band[0], pos)
         self.update()
 
     def mouseReleaseEvent(self, e) -> None:
@@ -607,24 +688,48 @@ class MapWidget(QWidget):
             self._drag_start = None
             return
         mode, self._drag_mode = self._drag_mode, ""
+        if mode == "band":
+            band, self._band = self._band, None
+            if band is not None:
+                found = self.units_in(*band)
+                keep = self.multi if e.modifiers() & Qt.KeyboardModifier.ControlModifier else []
+                self.set_multi(keep + found)
+            self._drag_start = None
+            self.update()
+            return
         if self._moved and mode in ("move", "vertex", "waypoint") and self._drag_pos:
             lat, lon = self._drag_pos
-            if mode == "move":
+            lead = self.project.unit(self._drag_id) if (mode == "move" and self.project) else None
+            if mode == "move" and lead is not None and self._drag_id in self.multi and len(self.multi) > 1:
+                self.groupMoved.emit(list(self.multi), lat - lead.lat, lon - lead.lon)
+            elif mode == "move":
                 self.objectMoved.emit(self._drag_id, lat, lon)
             elif mode == "waypoint":
                 self.waypointMoved.emit(self._drag_id, self._drag_vertex, lat, lon)
             else:
                 self.zonePointMoved.emit(self._drag_id, self._drag_vertex, lat, lon)
         elif not self._moved:
-            self._click(pos)
+            self._click(pos, e.modifiers())
         self._drag_pos = None
         self._drag_start = None
         self.update()
 
-    def _click(self, pos: QPointF) -> None:
+    def _click(self, pos: QPointF, mods=Qt.KeyboardModifier.NoModifier) -> None:
         lat, lon = self.to_latlon(pos)
         if self.tool == Tool.SELECT:
             kind, oid, vertex = self.hit(pos)
+            if mods & Qt.KeyboardModifier.ControlModifier and kind == "unit":
+                # Ctrl-click: add or remove a unit (the one already selected joins in)
+                picked = list(self.multi) or ([self.selected] if self.project and self.project.unit(self.selected)
+                                              and not self.project.unit(self.selected).host else [])
+                picked = [i for i in picked if i != oid] if oid in picked else picked + [oid]
+                self.set_multi(picked)
+                self.selected = oid if oid in picked else (picked[-1] if picked else "")
+                self.objectClicked.emit(self.selected)
+                self.update()
+                return
+            if self.multi and not (kind == "unit" and oid in self.multi):
+                self.set_multi([])
             self.selected = oid
             self.objectClicked.emit(oid)
             if kind == "waypoint":
@@ -685,6 +790,8 @@ class MapWidget(QWidget):
         if k == Qt.Key.Key_Escape:
             if self.tool != Tool.SELECT:
                 self.set_tool(Tool.SELECT)
+            elif self.multi:
+                self.set_multi([])
             else:
                 self.selected = ""
                 self.objectClicked.emit("")
@@ -692,8 +799,12 @@ class MapWidget(QWidget):
             self._finish_zone()
         elif k == Qt.Key.Key_Backspace and self.tool in (Tool.ZONE, Tool.COURSE) and self._draft:
             self._draft.pop()
+        elif k == Qt.Key.Key_Delete and len(self.multi) > 1:
+            self.multiDeleteRequested.emit(list(self.multi))
         elif k == Qt.Key.Key_Delete and self.selected:
             self.deleteRequested.emit(self.selected)
+        elif k == Qt.Key.Key_A and e.modifiers() & Qt.KeyboardModifier.ControlModifier and self.tool == Tool.SELECT:
+            self.set_multi(self.units_in(QPointF(0, 0), QPointF(self.width(), self.height())))
         elif k in (Qt.Key.Key_Plus, Qt.Key.Key_Equal):
             self.zoom = min(self.tiles.max_zoom, self.zoom + 1)
             lat, lon = from_world(self.cx, self.cy, self.zoom - 1)

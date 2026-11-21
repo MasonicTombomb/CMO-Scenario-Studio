@@ -18,15 +18,17 @@ the end a dashed red line. Each row is an event (blue), a mission (green) or a u
 
 Missions switched on or off by a timed event show a diamond where that happens. A course row has a diamond where the
 unit takes off from its base or sets off, then a bar for the time it should spend on its route (an estimate from the
-leg speeds and waits, Chapter 14).
+leg speeds and waits, Chapter 14), and a diamond for each time on target. The **Weather forecast** row (light blue)
+has a diamond at each timed weather change (Chapter 6); double-click it to open the forecast.
 
 Controls along the top:
 
 1. **Filter events, missions and courses...**: type part of a name.
 2. **Missions**: show or hide missions.
 3. **Courses**: show or hide unit courses.
-4. **Condition-only events**: show or hide events that have no fixed time.
-5. **Sort by time**: order rows by when they happen instead of as listed.
+4. **Weather**: show or hide the weather forecast row.
+5. **Condition-only events**: show or hide events that have no fixed time.
+6. **Sort by time**: order rows by when they happen instead of as listed.
 
 Hover over a row for details, click it for a full summary on the right, and double-click to open it on the Events or
 Missions tab (or, for a course, to select the unit). [[Ctrl]] + mouse wheel zooms; **Fit** shows the whole scenario.
@@ -39,7 +41,8 @@ The panel on the right lists likely mistakes:
 - random windows outside the scenario;
 - missions that end before they start;
 - events with no triggers (they can never happen);
-- units that set off on their course after the scenario ends;
+- units that set off on their course after the scenario ends, or reach a waypoint after its time on target;
+- weather changes after the scenario ends;
 - two one-off events in the same minute (circled in red), because CMO does not guarantee which runs first.
 
 # Searching everything

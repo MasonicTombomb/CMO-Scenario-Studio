@@ -21,8 +21,8 @@ Every event has four parts. When any **trigger** happens, the studio checks the 
 ![The Events tab](img/tab_events.png)
 
 1. **Event list**: every event, with its triggers in grey underneath.
-2. **New ▾**: make an event, either **Blank event** or one of the ready-made templates (below). **Duplicate** and
-   **Delete** are beside it.
+2. **New ▾**: make an event: a **Blank event**, or one from a **recipe** (below). **Duplicate** and **Delete** are
+   beside it.
 3. **Name**: for you and the timeline; players do not see it unless it is shown in the event log.
 4. **Repeatable**: the event can happen again and again. Unticked, it happens once only.
 5. **Active**: untick to switch the event off without deleting it.
@@ -35,19 +35,31 @@ Every event has four parts. When any **trigger** happens, the studio checks the 
 
 **Shown in event log** makes CMO list the event in its log when it fires.
 
-## Ready-made events (New ▾)
+## Event recipes (New ▾)
 
-| Template | What it creates |
+A **recipe** makes a complete event from a few answers, so you do not have to put triggers, conditions and actions
+together yourself. Choose **New ▾ > From a recipe...**, or a recipe straight from the **New ▾** menu (grouped as
+*Scoring*, *Forces* and *Messages*).
+
+![Making an event from a recipe](img/dialog_recipe.png)
+
+Pick the recipe on the left, fill in the form on the right and click **Create event**. The event appears in the
+list, ready to adjust like any other.
+
+| Recipe | What it makes |
 | --- | --- |
-| Welcome message at start | A message to every side one minute after the start |
-| Score when enemy units are destroyed | The first side scores 10 points each time a unit of the second side (aircraft, ship, submarine or facility) is destroyed. Repeatable. |
-| End scenario when a side reaches a score | When the first side has 500 points: a victory message, then the scenario ends |
-| Message + end scenario at a date/time | A warning message five minutes before the scenario's end time |
-| Reinforcements arrive after a delay | Two hours after the start, the first reinforcement in the project appears, with a message |
-| Message when units enter an area | A message to the first side when the second side's units enter the first area |
-| Run a script every minute | Runs a project script once a minute (for your own Lua, Chapter 17) |
+| Points when units are destroyed | A side scores (or loses) points each time a unit of another side is destroyed: any unit, one type, or one particular unit |
+| Victory at a score | A victory message and the end of the scenario when a side reaches a score |
+| End when a key unit is destroyed | Optional points, a message and the end of the scenario when one unit (a carrier, a headquarters) is destroyed |
+| Reinforcements arrive | A unit appears a set time after the start, with an optional message. The unit is made a reinforcement for you |
+| Start a mission at a time | A mission is switched on a set time after the start (untick the mission's **Active** box) |
+| Start a mission on a signal | A mission is switched on when a flag is set, for example by a course waypoint's **Signal there** (Chapter 14) |
+| Signal when a unit is destroyed | Sets a flag when one unit is destroyed, so other events or missions can follow on |
+| Message when units enter an area | A message to a side when another side's units enter an area, once or every time |
+| Message at a time | A message to one side, or all sides, a set time after the start |
+| Warning before the end | A message a set number of minutes before the scenario ends |
 
-Use a template, then click each trigger and action to adjust it in the **Settings** tab.
+Fields you must fill in (a unit, an area, a mission) are checked before the event is made.
 
 ## Triggers
 
@@ -106,11 +118,11 @@ A **flag** is a named yes/no value saved in the scenario. Use one to remember th
 ## Worked examples
 
 !!! example "Reinforcements after two hours"
-    1. Create the reinforcement unit(s) and tick **Reinforcement** (Chapter 10).
-    2. **New ▾ > Reinforcements arrive after a delay**.
-    3. Click **Spawn unit** and choose the unit; add one **Spawn unit** action per reinforcement.
-    4. Click **Minutes after start (once)** and set **Minutes** (120 = two hours).
-    5. Click **Show message** and write the message.
+    1. Place the unit where it should appear.
+    2. **New ▾ > Forces > Reinforcements arrive...**.
+    3. Choose the **Unit**, set **Minutes after the start** to `120` (two hours), write the message and click
+       **Create event**. The unit becomes a reinforcement (faded on the map).
+    4. For several units, add more **Spawn unit** actions to the event.
 
 !!! example "Points for holding an objective"
     Trigger **Unit remains in area**: **TargetSide** your side, **Area** the objective, **Duration** `0:1:0:0` (one

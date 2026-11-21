@@ -11,14 +11,15 @@ from typing import Optional
 from PyQt6.QtCore import QPointF, QRectF, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen, QPolygonF
 from PyQt6.QtWidgets import (QAbstractItemView, QComboBox, QDialog, QDialogButtonBox, QDoubleSpinBox, QFormLayout,
-                             QGroupBox, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMessageBox, QPushButton,
-                             QSpinBox, QSplitter, QTableWidget, QTableWidgetItem, QToolTip, QVBoxLayout, QWidget)
+                             QGroupBox, QHBoxLayout, QHeaderView, QInputDialog, QLabel, QLineEdit, QListWidget,
+                             QListWidgetItem, QMenu, QMessageBox, QPushButton, QSpinBox, QSplitter, QTableWidget,
+                             QTableWidgetItem, QToolTip, QVBoxLayout, QWidget)
 
-from ..model.course_plan import CoursePlan, Leg, hms, plan_course
+from ..model.course_plan import LATE_S, CoursePlan, Leg, hms, plan_course, plan_times
 from ..model.enums import HOST_TYPES
 from ..model.project import COURSE_FINISH, ENGAGE_SETTING, SENSOR_SETTING, WEAPONS_SETTING, Course, Waypoint
 from .map.map_widget import MapWidget, Tool
-from .widgets import IdCombo, hint_label
+from .widgets import IdCombo, PickerDialog, hint_label
 
 ALT_COL = QColor("#3d8bfd")
 SPEED_COL = QColor("#f5a524")
@@ -179,9 +180,29 @@ class ProfileChart(QWidget):
                 notes.append(f"wait {lg.wait} min")
             if lg.signal:
                 notes.append(f"> {lg.signal}")
+            if lg.target_s is not None:
+                d = lg.diff_s
+                notes.append("on time" if abs(d) <= LATE_S else f"{hms(abs(d))} {'late' if d > 0 else 'early'}")
             if notes:
                 p.setPen(QColor("#ffd166"))
                 p.drawText(QPointF(x + 3, r.top() + 12), ", ".join(notes))
+        # where the fuel should run out (aircraft with a loadout), counting fuel used while waiting
+        if plan.range_nm is not None and plan.fuel_nm > plan.range_nm:
+            left, at = plan.range_nm, None
+            for i, lg in enumerate(plan.legs):
+                if left <= lg.nm:
+                    at = xs[i] + left
+                    break
+                left -= lg.nm + lg.wait / 60 * lg.speed
+                if left <= 0:
+                    at = xs[i + 1]
+                    break
+            if at is not None:
+                x = X(at)
+                p.setPen(QPen(QColor("#e5484d"), 2, Qt.PenStyle.DashLine))
+                p.drawLine(QPointF(x, r.top()), QPointF(x, r.bottom()))
+                p.setPen(QColor("#e5484d"))
+                p.drawText(QPointF(x + 4, r.bottom() - 6), "fuel runs out (est.)")
         # strips
         y = r.bottom() + 6
         for label, colour in self.strips:
@@ -254,7 +275,7 @@ class ProfileChart(QWidget):
 class CourseDialog(QDialog):
     COLS = ["#", "Name", "Altitude", "Speed", "Radar", "Weapons", "Wait", "Leg", "Arrives"]
 
-    def __init__(self, window, unit_id: str, parent=None):
+    def __init__(self, window, unit_id: str, parent=None, also: Optional[list] = None):
         super().__init__(parent or window)
         self.win = window
         self.doc = window.doc
@@ -264,10 +285,12 @@ class CourseDialog(QDialog):
         if u.course is None:
             u.course = Course()
         self._orig = copy.deepcopy(u.course)
+        self.copied_to: set[str] = set()
+        self.also = [i for i in (also or []) if i != unit_id and self.work.unit(i) is not None]
         self.sel = 0 if u.course.waypoints else -1
         self.plan: Optional[CoursePlan] = None
         self._loading = False
-        self.setWindowTitle(f"Course: {u.display_name()}")
+        self.setWindowTitle(f"Course: {u.display_name()}" + (f" and {len(self.also)} more" if self.also else ""))
         self.resize(1320, 900)
         self._build()
         self._load_course_fields()
@@ -288,7 +311,7 @@ class CourseDialog(QDialog):
         return wps[self.sel] if 0 <= self.sel < len(wps) else None
 
     def dirty(self) -> bool:
-        return self.course != self._orig
+        return self.course != self._orig or bool(self.copied_to)
 
     # ------------------------------------------------------------------ layout
     def _build(self) -> None:
@@ -299,6 +322,9 @@ class CourseDialog(QDialog):
         self.summary.setWordWrap(True)
         self.summary.setStyleSheet("font-weight: bold")
         root.addWidget(self.summary)
+        self.range_label = QLabel()
+        self.range_label.setWordWrap(True)
+        root.addWidget(self.range_label)
         vsplit = QSplitter(Qt.Orientation.Vertical)
         top = QSplitter(Qt.Orientation.Horizontal)
 
@@ -325,6 +351,16 @@ class CourseDialog(QDialog):
             bar.addWidget(b)
             self.buttons[key] = b
         bar.addStretch(1)
+        lib = QPushButton("Library ▾")
+        lib.setAutoDefault(False)
+        lib.setToolTip("Save this course for other units or projects, use a saved one, or copy it to other units")
+        menu = QMenu(lib)
+        menu.addAction("Save this course to the library...", self.save_to_library)
+        menu.addAction("Use a saved course...", self.load_from_library)
+        menu.addSeparator()
+        menu.addAction("Copy this course to other units...", self.copy_to_units)
+        lib.setMenu(menu)
+        bar.addWidget(lib)
         lv.addLayout(bar)
         main_map = self.win.map_page.map
         self.map = MapWidget(main_map.tiles)
@@ -436,6 +472,21 @@ class CourseDialog(QDialog):
         self.wait.setToolTip("On arrival, circle here this long before flying on (a holding point, a tanker, a "
                              "time on target)")
         self.wait.valueChanged.connect(self._leg_changed)
+        arow = QHBoxLayout()
+        arow.setContentsMargins(0, 0, 0, 0)
+        self.arrive = QSpinBox()
+        self.arrive.setRange(-1, 60 * 24 * 60)
+        self.arrive.setSuffix(" min after the start")
+        self.arrive.setSpecialValueText("any time")
+        self.arrive.setToolTip("Time on target: when the unit should reach this waypoint. 'Time it' sets the "
+                               "departure and waits to meet it.")
+        self.arrive.valueChanged.connect(self._leg_changed)
+        self.arrive_info = QLabel()
+        arow.addWidget(self.arrive, 1)
+        arow.addWidget(self.arrive_info)
+        self.arrive_row = QWidget()
+        self.arrive_row.setLayout(arow)
+        form.addRow("Arrive at:", self.arrive_row)
         form.addRow("Wait there:", self.wait)
         self.signal = QLineEdit()
         self.signal.setPlaceholderText("optional flag, e.g. STRIKE_AT_IP")
@@ -492,6 +543,12 @@ class CourseDialog(QDialog):
         self.land_at.setMinimumWidth(220)
         self.land_at.currentIndexChanged.connect(self._course_changed)
         row.addWidget(self.land_at)
+        self.time_btn = QPushButton("Time it")
+        self.time_btn.setAutoDefault(False)
+        self.time_btn.setToolTip("Set the departure (and waits) so the unit reaches its waypoints at their 'Arrive at' "
+                                 "times")
+        self.time_btn.clicked.connect(self.time_it)
+        row.addWidget(self.time_btn)
         row.addStretch(1)
         bb = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         for b in bb.buttons():
@@ -533,7 +590,8 @@ class CourseDialog(QDialog):
         """Recompute the plan and redraw the table, chart, map and summary (not the leg fields)."""
         u = self.unit
         c = self.course
-        self.plan = plan_course(self.work, u)
+        ctx = getattr(self.win, "ctx", None)
+        self.plan = plan_course(self.work, u, getattr(ctx, "db", None))
         legs: list[Leg] = self.plan.legs if self.plan else []
         self._loading = True
         self.table.setRowCount(len(legs))
@@ -544,11 +602,21 @@ class CourseDialog(QDialog):
                      "" if level is None else f"{level:,.0f} m",
                      f"{lg.speed:,.0f} kn", _onoff(lg.radar), WCS_TEXT.get(lg.weapons, lg.weapons),
                      f"{lg.wait} min" if lg.wait else "", f"{lg.nm:,.0f} nm", f"H+{hms(lg.t1)}"]
+            if lg.target_s is not None:
+                d = lg.diff_s
+                cells[8] += "  on time" if abs(d) <= LATE_S else f"  {hms(abs(d))} {'late' if d > 0 else 'early'}"
             inherited = {2: not (lg.depth_set if self.plan.sub else lg.alt_set), 3: not lg.speed_set}
             for col, text in enumerate(cells):
                 it = QTableWidgetItem(text)
                 if inherited.get(col) or lg.n == 0:
                     it.setForeground(grey)
+                if col == 8 and lg.target_s is not None:
+                    d = lg.diff_s
+                    it.setForeground(QColor("#30a46c") if abs(d) <= LATE_S else
+                                     QColor("#e5484d") if d > 0 else QColor("#f5a524"))
+                    it.setToolTip(f"Time on target H+{hms(lg.target_s)}" +
+                                  (f"; needs about {lg.need_kn:,.0f} kn on this leg" if lg.need_kn not in
+                                   (None, float('inf')) else "; cannot get there in time" if lg.need_kn else ""))
                 self.table.setItem(r, col, it)
         if 0 <= self.sel < len(legs):
             self.table.selectRow(self.sel)
@@ -564,6 +632,9 @@ class CourseDialog(QDialog):
         for k in ("reverse", "clear"):
             self.buttons[k].setEnabled(has)
         self.land_at.setEnabled(self.finish.currentData() == "land")
+        self.time_btn.setEnabled(bool(self.plan and self.plan.tot_depart_s is not None))
+        self._range_text()
+        self._arrive_hint()
         if not self.plan:
             self.summary.setText(f"{u.display_name()}: no course yet. Click the map to add waypoints; double-click "
                                  "or press Enter to finish.")
@@ -575,6 +646,44 @@ class CourseDialog(QDialog):
             self.summary.setText(
                 f"{u.display_name()} {start} {when}: {len(c.waypoints)} waypoint(s), {pl.total_nm:,.0f} nm, about "
                 f"{hms(pl.end_s - pl.depart_s)} (h:mm){loop}. At the end: {pl.finish}, about H+{hms(pl.end_s)}.")
+
+    def _range_text(self) -> None:
+        pl = self.plan
+        if pl is None or not pl.air:
+            self.range_label.setText("")
+            return
+        if pl.range_nm is None:
+            self.range_label.setText("<span style='color:#8a8f99'>Range: no estimate (choose a loadout to check the "
+                                     "route against it).</span>")
+            return
+        waits = " including waits" if pl.fuel_nm > pl.total_nm + 0.5 else ""
+        if pl.fuel_nm > pl.range_nm:
+            self.range_label.setText(
+                f"<span style='color:#e5484d'><b>Too far:</b> about {pl.fuel_nm:,.0f} nm{waits}, but the range is "
+                f"about {pl.range_nm:,.0f} nm ({pl.range_note}); {pl.fuel_nm - pl.range_nm:,.0f} nm short. Shorten "
+                "the route, choose another loadout, or plan a tanker.</span>")
+        else:
+            self.range_label.setText(
+                f"<span style='color:#30a46c'>Within range:</span> about {pl.fuel_nm:,.0f} nm{waits} of about "
+                f"{pl.range_nm:,.0f} nm ({pl.range_note}).")
+
+    def _arrive_hint(self) -> None:
+        lg = next((x for x in (self.plan.legs if self.plan else []) if x.n == self.sel + 1), None)
+        if lg is None or lg.target_s is None:
+            self.arrive_info.setText(f"H+{hms(lg.t1)} expected" if lg else "")
+            self.arrive_info.setStyleSheet("")
+            return
+        d = lg.diff_s
+        if abs(d) <= LATE_S:
+            text, col = "on time", "#30a46c"
+        elif d < 0:
+            text, col = f"{hms(-d)} early", "#f5a524"
+        else:
+            text = f"{hms(d)} late" + (": cannot make it" if lg.need_kn == float("inf") else
+                                       f": needs {lg.need_kn:,.0f} kn" if lg.need_kn else "")
+            col = "#e5484d"
+        self.arrive_info.setText(f"H+{hms(lg.target_s)}: {text}")
+        self.arrive_info.setStyleSheet(f"color: {col}")
 
     def _load_leg_fields(self) -> None:
         w = self.waypoint()
@@ -592,6 +701,7 @@ class CourseDialog(QDialog):
                         (self.engage, w.engage)):
             cb.setCurrentIndex(max(0, cb.findData(val)))
         self.wait.setValue(int(w.wait_minutes or 0))
+        self.arrive.setValue(-1 if w.arrive_minutes is None else int(w.arrive_minutes))
         self.signal.setText(w.signal)
         self._loading = False
         self._alt_hint()
@@ -632,6 +742,7 @@ class CourseDialog(QDialog):
         w.radar, w.sonar, w.ecm = self.radar.currentData(), self.sonar.currentData(), self.ecm.currentData()
         w.weapons, w.engage = self.weapons.currentData(), self.engage.currentData()
         w.wait_minutes = int(self.wait.value())
+        w.arrive_minutes = None if self.arrive.value() < 0 else int(self.arrive.value())
         w.signal = self.signal.text().strip()
         self._alt_hint()
         self.refresh()
@@ -715,6 +826,83 @@ class CourseDialog(QDialog):
         else:
             self.map.fit(pts)
 
+    def time_it(self) -> None:
+        done = plan_times(self.work, self.unit)
+        if not done:
+            return
+        self._load_course_fields()
+        self._load_leg_fields()
+        self.refresh()
+        self.status.setText(" ".join(done))
+
+    # ------------------------------------------------------------------ library and copying
+    def _library_path(self):
+        return self.win.ctx.settings.data_dir() / "routes.json"
+
+    def save_to_library(self) -> None:
+        from ..model.route_library import RouteLibrary
+        if not self.course.waypoints:
+            QMessageBox.information(self, "Save course", "Add waypoints first.")
+            return
+        name, ok = QInputDialog.getText(self, "Save course to the library", "Name (a saved course with the same name "
+                                        "is replaced):", text=self.course.waypoints[0].name or
+                                        f"{self.unit.display_name()} route")
+        if not ok or not name.strip():
+            return
+        lib = RouteLibrary.load(self._library_path())
+        lib.add(name, self.course, description=f"{len(self.course.waypoints)} waypoint(s), "
+                                               f"{self.plan.total_nm:,.0f} nm" if self.plan else "")
+        lib.save(self._library_path())
+        self.status.setText(f"Saved '{name.strip()}' to the course library ({self._library_path()}).")
+
+    def load_from_library(self) -> None:
+        from ..model.route_library import RouteLibrary
+        lib = RouteLibrary.load(self._library_path())
+        if not lib.routes:
+            QMessageBox.information(self, "Course library", "The library is empty. Use 'Save this course to the "
+                                    "library...' to add one.")
+            return
+        dlg = RoutePickDialog(lib, self)
+        if not dlg.exec() or dlg.chosen is None:
+            if dlg.changed:
+                lib.save(self._library_path())
+            return
+        if dlg.changed:
+            lib.save(self._library_path())
+        r = dlg.chosen
+        c = copy.deepcopy(r.course)
+        if dlg.append and self.course.waypoints:
+            self.course.waypoints.extend(c.waypoints)
+        else:
+            self.course.waypoints = c.waypoints
+            self.course.depart_minutes, self.course.finish, self.course.land_at = c.depart_minutes, c.finish, ""
+            self._load_course_fields()
+        self.select(0 if self.sel < 0 else self.sel)
+        self.fit()
+        self.status.setText(f"Used '{r.name}'.")
+
+    def copy_to_units(self) -> None:
+        u = self.unit
+        if not self.course.waypoints:
+            QMessageBox.information(self, "Copy course", "Add waypoints first.")
+            return
+        items = [(f"{x.display_name()}  [{x.type}]" + ("  (has a course)" if x.course and x.course.waypoints
+                                                      else ""), x.id)
+                 for x in self.work.units if x.id != u.id and x.side == u.side and x.type != "Facility"]
+        dlg = PickerDialog("Copy this course to...", items, parent=self)
+        if not dlg.exec():
+            return
+        ids = [i for i in dlg.selected_ids() if self.work.unit(i) is not None]
+        for i in ids:
+            other = self.work.unit(i)
+            c = copy.deepcopy(self.course)
+            if c.finish == "land" and other.type != "Aircraft":
+                c.finish, c.land_at = "stop", ""
+            other.course = c
+        self.copied_to.update(ids)
+        self.map.update()
+        self.status.setText(f"Copied to {len(ids)} unit(s); saved with OK." if ids else "Nothing copied.")
+
     # ------------------------------------------------------------------ closing
     def save(self) -> None:
         real = self.doc.project.unit(self.uid)
@@ -722,9 +910,21 @@ class CourseDialog(QDialog):
             self.reject()
             return
         new = copy.deepcopy(self.course) if self.course.waypoints else None
-        if new != real.course:
-            with self.doc.modify(f"Edit course for {real.name}", "units"):
+        for i in self.also:                   # 'Same course for all': the others get this course as saved
+            other = self.work.unit(i)
+            c = copy.deepcopy(self.course) if self.course.waypoints else None
+            if c is not None and c.finish == "land" and other.type != "Aircraft":
+                c.finish, c.land_at = "stop", ""
+            other.course = c
+            self.copied_to.add(i)
+        copies = {i: copy.deepcopy(self.work.unit(i).course) for i in self.copied_to
+                  if self.work.unit(i) is not None and self.doc.project.unit(i) is not None}
+        if new != real.course or copies:
+            label = f"Edit course for {real.name}" + (f" (and copy it to {len(copies)})" if copies else "")
+            with self.doc.modify(label, "units"):
                 real.course = new
+                for i, c in copies.items():
+                    self.doc.project.unit(i).course = c
         self.accept()
 
     def reject(self) -> None:
@@ -735,7 +935,65 @@ class CourseDialog(QDialog):
         super().reject()
 
 
-def edit_course(window, unit_id: str) -> bool:
+class RoutePickDialog(QDialog):
+    """Choose a saved course: use it instead of this one, add it to the end, or delete saved ones."""
+
+    def __init__(self, lib, parent=None):
+        super().__init__(parent)
+        self.lib = lib
+        self.chosen = None
+        self.append = False
+        self.changed = False
+        self.setWindowTitle("Course library")
+        self.resize(520, 420)
+        lay = QVBoxLayout(self)
+        self.list = QListWidget()
+        lay.addWidget(self.list, 1)
+        self._fill()
+        self.list.itemDoubleClicked.connect(lambda *_: self._use(False))
+        row = QHBoxLayout()
+        for text, fn in (("Use instead", lambda: self._use(False)), ("Add to the end", lambda: self._use(True)),
+                         ("Delete", self._delete)):
+            b = QPushButton(text)
+            b.setAutoDefault(False)
+            b.clicked.connect(fn)
+            row.addWidget(b)
+        row.addStretch(1)
+        close = QPushButton("Close")
+        close.clicked.connect(self.reject)
+        row.addWidget(close)
+        lay.addLayout(row)
+        lay.addWidget(hint_label("Saved courses keep their waypoints and every leg setting. A landing base is not "
+                                 "kept: 'Land at another base' comes back as 'Return to its base'."))
+
+    def _fill(self):
+        self.list.clear()
+        for r in self.lib.routes:
+            it = QListWidgetItem(f"{r.name}  ({r.waypoint_count} waypoint(s))" +
+                                 (f"  {r.description}" if r.description else ""))
+            it.setData(Qt.ItemDataRole.UserRole, r.id)
+            self.list.addItem(it)
+        if self.list.count():
+            self.list.setCurrentRow(0)
+
+    def _current(self):
+        it = self.list.currentItem()
+        return self.lib.route(it.data(Qt.ItemDataRole.UserRole)) if it else None
+
+    def _use(self, append: bool):
+        self.chosen, self.append = self._current(), append
+        if self.chosen is not None:
+            self.accept()
+
+    def _delete(self):
+        r = self._current()
+        if r is not None:
+            self.lib.remove(r.id)
+            self.changed = True
+            self._fill()
+
+
+def edit_course(window, unit_id: str, also: Optional[list] = None) -> bool:
     """Open the course window for a unit; True if the course was saved."""
     u = window.doc.project.unit(unit_id)
     if u is None:
@@ -744,4 +1002,4 @@ def edit_course(window, unit_id: str) -> bool:
         QMessageBox.information(window, "Course", f"{u.name} is a facility; facilities cannot move.")
         return False
     window.map_page.map.set_tool(Tool.SELECT)
-    return CourseDialog(window, unit_id).exec() == QDialog.DialogCode.Accepted
+    return CourseDialog(window, unit_id, also=also).exec() == QDialog.DialogCode.Accepted

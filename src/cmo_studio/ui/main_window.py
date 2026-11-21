@@ -161,6 +161,7 @@ class MainWindow(QMainWindow):
         mb = self.menuBar()
         f = mb.addMenu("&File")
         self._action(f, "&New scenario...", self.new_project, QKeySequence.StandardKey.New)
+        self._action(f, "New scenario from &wizard...", self.new_from_wizard, "Ctrl+Shift+N")
         self._action(f, "&Open...", self.open_project, QKeySequence.StandardKey.Open)
         self.recent_menu = f.addMenu("Open &recent")
         self.recent_menu.aboutToShow.connect(self._fill_recent)
@@ -275,6 +276,23 @@ class MainWindow(QMainWindow):
             p.sides.clear()
         self.doc.load(p)
         self.tabs.setCurrentWidget(self.scenario_page)
+
+    def new_from_wizard(self):
+        """Sides, bases, fighters, patrol areas, a probe and events from a few choices."""
+        from .scenario_wizard import ScenarioWizard
+        if not self._confirm_discard():
+            return
+        dbs = [x.name for x in self.dbm.available()]
+        wiz = ScenarioWizard(dbs, self.dbm.db.path.name if self.dbm.db else "", self.dbm.db, self)
+        if not wiz.exec() or wiz.result_ is None:
+            return
+        self.doc.load(wiz.result_.project)
+        self.tabs.setCurrentWidget(self.map_page)
+        self.map_page.map.fit_project()
+        msg = "Scenario built from the wizard."
+        if wiz.result_.notes:
+            QMessageBox.information(self, "New scenario", msg + "\n\n" + "\n".join(wiz.result_.notes))
+        self.statusBar().showMessage(msg + " Check the Issues panel, then edit anything you like.", 8000)
 
     def open_project(self, path: Optional[str] = None):
         if not self._confirm_discard():
@@ -616,7 +634,11 @@ class MainWindow(QMainWindow):
         if dlg.exec() and dlg.placed_ids:
             self.tabs.setCurrentWidget(self.map_page)
             first = self.doc.project.unit(dlg.placed_ids[0])
-            if first:
+            if first and dlg.placed_sites > 1:     # several sites: zoom out to show them all
+                units = [self.doc.project.unit(i) for i in dlg.placed_ids]
+                self.map_page.map.fit([(u.lat, u.lon) for u in units if u is not None and not u.host])
+                self.doc.select(first.id, None)
+            elif first:
                 self.map_page.map.center_on(first.lat, first.lon, max(self.map_page.map.zoom, 12))
                 self.doc.select(first.id, None)
 
