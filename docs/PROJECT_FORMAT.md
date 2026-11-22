@@ -32,7 +32,8 @@ of the studio load.
   "reference_points": [ { "id", "side", "name", "lat", "lon", "highlighted", "all_sides" } ],
   "zones":   [ { "id", "side", "name", "points": [[lat, lon], ...], "color", "all_sides", "notes" } ],
   "missions":[ { "id", "side", "name", "mclass", "subtype", "zone", "prosecution_zone", "destination",
-                 "units": [ids], "targets": [ids], "options": { }, "notes" } ],
+                 "units": [ids], "targets": [ids], "options": { }, "notes",
+                 "intercept": null | { "logic": "all|any", "in_area", "near", "near_nm", "defend": unitId, ... } } ],
   "events":  [ { "id", "name", "repeatable", "active", "shown", "probability",
                  "triggers":   [ { "type", "params": { } } ],
                  "conditions": [ { "type", "params": { } } ],
@@ -61,7 +62,8 @@ of the studio load.
 - `units[].course.finish`: `stop` (carry on), `rtb` (return to its base), `land` (land at `land_at`, a base of the
   same side), `repeat` (fly the course again). `depart_minutes` counts from the scenario start.
 - `missions[].mclass`: `patrol` (`aaw asw naval land mixed sead`), `strike` (`air land sea sub`), `support`,
-  `ferry`, `mining`, `mineclearing`, `cargo`.
+  `ferry`, `mining`, `mineclearing`, `cargo`, `intercept` (conditions in `intercept`; the fields and their defaults are
+  the `Intercept` dataclass in [`model/project.py`](../src/cmo_studio/model/project.py)).
 - `formations[].preset` is a key from [`model/formations.py`](../src/cmo_studio/model/formations.py) (`line_ahead`, `circular_screen`, `finger_four`, `ground_wedge`...); `params` holds only the values that differ from the preset.
 - Trigger, condition and action types and their `params` are listed in
   [`src/cmo_studio/model/enums.py`](../src/cmo_studio/model/enums.py). Ids inside params refer to project objects

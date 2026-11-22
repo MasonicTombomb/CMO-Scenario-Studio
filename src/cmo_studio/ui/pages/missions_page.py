@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import (QCheckBox, QComboBox, QFormLayout, QGroupBox, QHBox
 
 from ...model.enums import MISSION_CLASS_LABELS, MISSION_CLASSES, MISSION_NEEDS_ZONE, MISSION_OPTIONS
 from ...model.project import Mission
+from ..intercept_form import InterceptForm
 from ..widgets import IdCombo, IdListEditor, KeyValueTable, hint_label
 from .base import AppContext, Binder, Page
 
@@ -75,6 +76,12 @@ class MissionsPage(Page):
         f.addRow("Destination:", self.dest)
         v.addWidget(g)
 
+        self.intercept = InterceptForm()
+        self.intercept.edited.connect(self._intercept)
+        self.intercept.presetChosen.connect(self._intercept_preset)
+        self.intercept.unitsChosen.connect(self._intercept_units)
+        v.addWidget(self.intercept)
+
         g = QGroupBox("Options")
         f = QFormLayout(g)
         self.opt_widgets = {}
@@ -138,7 +145,7 @@ class MissionsPage(Page):
         m = self._m()
         p = self.project
         return [(f"{u.display_name()}  -  {u.db_name}" + ("  [reinforcement]" if u.reserve else ""), u.id)
-                for u in p.units if m and u.side == m.side]
+                for u in p.units if m and u.side == m.side and (m.mclass != "intercept" or u.type == "Aircraft")]
 
     def _target_choices(self):
         m = self._m()
@@ -153,6 +160,31 @@ class MissionsPage(Page):
         with self.edit(f"Mission {attr}", "missions"):
             setattr(m, attr, value)
         self._load()
+
+    # ------------------------------------------------------------------ intercepts
+    def _intercept(self, attr, value):
+        from ...model.intercept import intercept_of
+        m = self._m()
+        if m is None or getattr(intercept_of(m), attr) == value:
+            return
+        with self.edit("Intercept conditions", "missions", merge=f"ic.{m.id}.{attr}"):
+            setattr(intercept_of(m), attr, value)
+        self.intercept.load(self.project, m)
+
+    def _intercept_preset(self, key):
+        from ...model.intercept import PRESETS, apply_preset
+        m = self._m()
+        if m is not None:
+            with self.edit(f"Intercept preset: {PRESETS[key][0]}", "missions"):
+                apply_preset(m, key)
+            self._load()
+
+    def _intercept_units(self, ids):
+        m = self._m()
+        if m is not None and ids:
+            with self.edit("Put aircraft on call", "missions"):
+                m.units = m.units + list(ids)
+            self._load()
 
     def _opt(self, key, value):
         m = self._m()
@@ -221,6 +253,8 @@ class MissionsPage(Page):
         self.side.set_items([(s.name, s.id) for s in p.sides], keep=False)
         self.b.load()
         enabled = m is not None
+        if not enabled:
+            self.intercept.setVisible(False)
         for w in (self.name, self.side, self.mclass, self.subtype, self.zone, self.pzone, self.dest, self.units,
                   self.targets, self.extra, self.notes, *self.opt_widgets.values()):
             w.setEnabled(enabled)
@@ -239,7 +273,7 @@ class MissionsPage(Page):
                  for z in p.zones if z.side == m.side or z.all_sides]
         self.zone.set_items(zones, blank="(none)", keep=False)
         self.zone.set_current_id(m.zone)
-        self.zone.setEnabled(m.mclass in MISSION_NEEDS_ZONE or m.mclass == "strike")
+        self.zone.setEnabled(m.mclass in MISSION_NEEDS_ZONE or m.mclass in ("strike", "intercept"))
         self.pzone.set_items(zones, blank="(none)", keep=False)
         self.pzone.set_current_id(m.prosecution_zone)
         self.pzone.setEnabled(m.mclass == "patrol")
@@ -264,6 +298,9 @@ class MissionsPage(Page):
         tl = {u.id: f"{u.display_name()}  ({p.side_name(u.side)})" for u in p.units}
         self.targets.set_ids(m.targets, tl)
         self.tgt_box.setVisible(m.mclass == "strike")
+        self.intercept.setVisible(m.mclass == "intercept")
+        if m.mclass == "intercept":
+            self.intercept.load(p, m)
 
     def _pick(self, cur, _prev=None):
         if cur is not None:

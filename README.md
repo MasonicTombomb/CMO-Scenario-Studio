@@ -32,12 +32,12 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
   for the London and Scottish FIRs (QRA South/North), the ranges' danger areas and air-to-air refuelling areas
   AARA 1-14, plus eight interception sectors tiling the FIR, approach zones, CAP stations and AEW orbits.
   Editable JSON library; save your own areas into it.
-- **UK military sites** — 101 real UK sites at their actual positions (1575 units): 46 air bases laid
+- **UK military sites** — 101 real UK sites at their actual positions (1831 units): 46 air bases laid
   out from OpenStreetMap with every mapped runway at its real heading and length (82 runways), 108 hardened
   aircraft shelters, 286 hangars, aprons, control towers, radars, fuel and munitions storage; plus naval bases,
   radar heads, command centres, comms and intelligence sites, depots and garrisons. Place a whole base at its real
   location in one go.
-- **Unit templates** — 80 pre-grouped sites (670 units in all) dropped in one go: airfields of every size,
+- **Unit templates** — 80 pre-grouped sites (678 units in all) dropped in one go: airfields of every size,
   hardened and dispersed air bases, FARPs, command posts and C3 bunkers, communications, SIGINT and EW sites, radar
   and SAM sites, barracks, FOBs, depots, ports and naval bases, missile sites and civil infrastructure. Name it,
   orient it, place it; it stays together as a CMO group. Tick several (or a whole category) to place them all at
@@ -54,6 +54,8 @@ side, unit, mission and event through CMO's Lua API, the runtime scripts the eve
 - **Sides** — awareness, proficiency, computer-only, starting score, doctrine and a full posture matrix.
 - **Missions** — patrol, strike, support, ferry, mining, mine clearing and cargo, with areas, prosecution areas,
   assigned units, strike targets and `ScenEdit_SetMission` options.
+- **Intercept missions** — aircraft on call at a base that launch when the conditions you tick are met: inside an area,
+  within range, hostile or unknown, inbound, altitude, speed, unidentified, emitting, raid size, time window, flag.
 - **Courses** — plot the exact route of any aircraft, ship, submarine or ground unit in a course window with a map,
   a table of legs and a flight (or depth) profile. Each leg sets altitude or submarine depth, speed, radar / sonar / jammers, weapons
   free / tight / hold and whether to leave the course to attack; waypoints can hold the unit for a while or raise a

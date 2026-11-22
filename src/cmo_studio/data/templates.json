@@ -2065,7 +2065,7 @@
       "id": "ab_road_base",
       "name": "Road base / dispersed strip",
       "category": "Airfields (multi unit)",
-      "description": "A highway strip with camouflaged revetments and mobile fuel and munitions (Swedish Bas 90, Finnish, Swiss, Polish and Taiwanese practice). Hard to find, hard to close.",
+      "description": "A highway strip with camouflaged revetments and mobile fuel and munitions (Swedish Bas 90, Finnish, Swiss, Polish and Taiwanese practice). Hard to find, hard to close. Runway access points connect the parking to the runways.",
       "tags": [
         "airbase",
         "dispersal"
@@ -2158,6 +2158,32 @@
           "x": -300.0,
           "y": 0.0,
           "hold": true
+        },
+        {
+          "label": "Runway Access Point",
+          "db": {
+            "type": "Facility",
+            "name": "Runway Access Point (Medium Aircraft)",
+            "dbid": 307
+          },
+          "at": [
+            [
+              80.0,
+              -720.0
+            ],
+            [
+              80.0,
+              -240.0
+            ],
+            [
+              80.0,
+              240.0
+            ],
+            [
+              80.0,
+              720.0
+            ]
+          ]
         }
       ]
     },
@@ -2165,7 +2191,7 @@
       "id": "ab_expeditionary",
       "name": "Expeditionary airfield (short tactical strip)",
       "category": "Airfields (multi unit)",
-      "description": "Austere strip for tactical transports and STOVL jets, with bladder fuel and tented support.",
+      "description": "Austere strip for tactical transports and STOVL jets, with bladder fuel and tented support. Runway access points connect the parking to the runways.",
       "tags": [
         "airbase",
         "expeditionary"
@@ -2264,6 +2290,32 @@
           "x": 300.0,
           "y": 500.0,
           "radar": true
+        },
+        {
+          "label": "Runway Access Point",
+          "db": {
+            "type": "Facility",
+            "name": "Runway Access Point (Medium Aircraft)",
+            "dbid": 307
+          },
+          "at": [
+            [
+              80.0,
+              -324.0
+            ],
+            [
+              80.0,
+              -108.0
+            ],
+            [
+              80.0,
+              108.0
+            ],
+            [
+              80.0,
+              324.0
+            ]
+          ]
         }
       ]
     },

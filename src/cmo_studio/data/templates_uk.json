@@ -19,7 +19,7 @@
    "name": "Army Aviation Centre Middle Wallop",
    "category": "UK - Air bases",
    "site": "Middle Wallop",
-   "description": "Home of Army Air Corps training. Runways: 17/35 (1,181 m), 08/26 (1,096 m). 0 hardened aircraft shelters, 5 hangars, 9 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Home of Army Air Corps training. Runways: 17/35 (1,181 m), 08/26 (1,096 m). 0 hardened aircraft shelters, 5 hangars, 9 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -148,6 +148,40 @@
      },
      "x": 376.3,
      "y": 1124.3
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       30.6,
+       431.5
+      ],
+      [
+       63.2,
+       150.0
+      ],
+      [
+       95.8,
+       -131.6
+      ],
+      [
+       128.3,
+       -413.1
+      ],
+      [
+       -43.7,
+       623.6
+      ],
+      [
+       741.2,
+       704.7
+      ]
+     ]
     }
    ]
   },
@@ -156,7 +190,7 @@
    "name": "RAF Barkston Heath",
    "category": "UK - Air bases",
    "site": "Barkston Heath",
-   "description": "Relief landing ground for Cranwell flying training. Runways: 06/24 (1,868 m), 10/28 (1,318 m), 18/36 (915 m). 0 hardened aircraft shelters, 2 hangars, 3 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Relief landing ground for Cranwell flying training. Runways: 06/24 (1,868 m), 10/28 (1,318 m), 18/36 (915 m). 0 hardened aircraft shelters, 2 hangars, 3 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -257,6 +291,48 @@
      },
      "x": 884.3,
      "y": 103.3
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -524.2,
+       -428.8
+      ],
+      [
+       -146.1,
+       -187.9
+      ],
+      [
+       232.0,
+       53.0
+      ],
+      [
+       610.1,
+       293.9
+      ],
+      [
+       -762.5,
+       -290.4
+      ],
+      [
+       164.3,
+       -494.2
+      ],
+      [
+       294.5,
+       178.7
+      ],
+      [
+       321.0,
+       -479.5
+      ]
+     ]
     }
    ]
   },
@@ -265,7 +341,7 @@
    "name": "RAF Benson",
    "category": "UK - Air bases",
    "site": "Benson",
-   "description": "Support helicopters: Puma HC2 (retiring) and the Chinook/Puma support hub. Runways: 01/19 (1,825 m). 0 hardened aircraft shelters, 5 hangars, 10 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Support helicopters: Puma HC2 (retiring) and the Chinook/Puma support hub. Runways: 01/19 (1,825 m). 0 hardened aircraft shelters, 5 hangars, 10 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -391,6 +467,32 @@
      },
      "x": 950.1,
      "y": 407.4
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -11.1,
+       -661.8
+      ],
+      [
+       49.1,
+       -227.9
+      ],
+      [
+       109.3,
+       205.9
+      ],
+      [
+       169.5,
+       639.8
+      ]
+     ]
     }
    ]
   },
@@ -399,7 +501,7 @@
    "name": "RAF Brize Norton",
    "category": "UK - Air bases",
    "site": "Brize Norton",
-   "description": "Air mobility hub: Voyager tankers/transports, A400M Atlas and C-17 Globemaster. Runways: 07/25 (3,050 m). 0 hardened aircraft shelters, 4 hangars, 2 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Air mobility hub: Voyager tankers/transports, A400M Atlas and C-17 Globemaster. Runways: 07/25 (3,050 m). 0 hardened aircraft shelters, 4 hangars, 2 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -542,6 +644,32 @@
      },
      "x": -476.1,
      "y": -594.8
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -1075.9,
+       -233.3
+      ],
+      [
+       -373.7,
+       -26.6
+      ],
+      [
+       328.5,
+       180.1
+      ],
+      [
+       1030.7,
+       386.8
+      ]
+     ]
     }
    ]
   },
@@ -550,7 +678,7 @@
    "name": "Colerne Airfield",
    "category": "UK - Air bases",
    "site": "Colerne",
-   "description": "Army barracks and University Air Squadron airfield. Runways: 07/25 (1,096 m), 01/19 (888 m). 0 hardened aircraft shelters, 9 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "Army barracks and University Air Squadron airfield. Runways: 07/25 (1,096 m), 01/19 (888 m). 0 hardened aircraft shelters, 9 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -654,6 +782,40 @@
      },
      "x": 147.3,
      "y": -317.5
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -391.6,
+       -93.6
+      ],
+      [
+       -153.0,
+       17.2
+      ],
+      [
+       85.6,
+       127.9
+      ],
+      [
+       324.2,
+       238.7
+      ],
+      [
+       -444.6,
+       -86.2
+      ],
+      [
+       -388.8,
+       550.7
+      ]
+     ]
     }
    ]
   },
@@ -662,7 +824,7 @@
    "name": "RAF Coningsby",
    "category": "UK - Air bases",
    "site": "Coningsby",
-   "description": "Typhoon squadrons holding Quick Reaction Alert (South), the Typhoon OCU and the Battle of Britain Memorial Flight. Runways: 07/25 (2,744 m). 0 hardened aircraft shelters, 15 hangars, 16 fuel tanks.",
+   "description": "Typhoon squadrons holding Quick Reaction Alert (South), the Typhoon OCU and the Battle of Britain Memorial Flight. Runways: 07/25 (2,744 m). 0 hardened aircraft shelters, 15 hangars, 16 fuel tanks. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -862,6 +1024,32 @@
      },
      "x": -386.9,
      "y": 179.9
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -964.2,
+       -229.2
+      ],
+      [
+       -337.9,
+       -25.7
+      ],
+      [
+       288.4,
+       177.8
+      ],
+      [
+       914.8,
+       381.3
+      ]
+     ]
     }
    ]
   },
@@ -870,7 +1058,7 @@
    "name": "RAF Cosford",
    "category": "UK - Air bases",
    "site": "Cosford",
-   "description": "Defence technical training and the RAF Museum. Runways: 06/24 (1,118 m). 0 hardened aircraft shelters, 11 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "Defence technical training and the RAF Museum. Runways: 06/24 (1,118 m). 0 hardened aircraft shelters, 11 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -1006,6 +1194,32 @@
      },
      "x": -212.7,
      "y": 339.1
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -384.0,
+       -144.8
+      ],
+      [
+       -156.2,
+       -3.0
+      ],
+      [
+       71.6,
+       138.8
+      ],
+      [
+       299.4,
+       280.6
+      ]
+     ]
     }
    ]
   },
@@ -1014,7 +1228,7 @@
    "name": "RAF Cranwell",
    "category": "UK - Air bases",
    "site": "Cranwell",
-   "description": "RAF College: officer training and elementary/multi-engine flying training. Runways: 08/26 (2,081 m), 01/19 (1,462 m). 0 hardened aircraft shelters, 5 hangars, 8 fuel tanks.",
+   "description": "RAF College: officer training and elementary/multi-engine flying training. Runways: 08/26 (2,081 m), 01/19 (1,462 m). 0 hardened aircraft shelters, 5 hangars, 8 fuel tanks. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -1160,6 +1374,40 @@
      },
      "x": -1397.6,
      "y": 232.3
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -753.3,
+       -15.8
+      ],
+      [
+       -257.9,
+       47.6
+      ],
+      [
+       237.5,
+       111.1
+      ],
+      [
+       732.9,
+       174.5
+      ],
+      [
+       441.0,
+       -750.1
+      ],
+      [
+       591.2,
+       291.7
+      ]
+     ]
     }
    ]
   },
@@ -1168,7 +1416,7 @@
    "name": "RNAS Culdrose",
    "category": "UK - Air bases",
    "site": "Culdrose",
-   "description": "Merlin HM2 anti-submarine helicopters and naval aviation training. Runways: 11/29 (1,830 m), 18/36 (1,056 m), 07/25 (1,045 m). 0 hardened aircraft shelters, 12 hangars, 7 munitions bunkers, 6 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Merlin HM2 anti-submarine helicopters and naval aviation training. Runways: 11/29 (1,830 m), 18/36 (1,056 m), 07/25 (1,045 m). 0 hardened aircraft shelters, 12 hangars, 7 munitions bunkers, 6 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -1420,6 +1668,48 @@
        24.5
       ]
      ]
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -638.3,
+       181.5
+      ],
+      [
+       -233.4,
+       11.3
+      ],
+      [
+       171.4,
+       -158.8
+      ],
+      [
+       576.3,
+       -329.0
+      ],
+      [
+       90.4,
+       362.3
+      ],
+      [
+       110.3,
+       -397.7
+      ],
+      [
+       -494.6,
+       -26.0
+      ],
+      [
+       176.4,
+       314.4
+      ]
+     ]
     }
    ]
   },
@@ -1428,7 +1718,7 @@
    "name": "Dishforth Airfield",
    "category": "UK - Air bases",
    "site": "Dishforth",
-   "description": "Army airfield and barracks in North Yorkshire. Runways: 15/33 (1,517 m). 0 hardened aircraft shelters, 1 hangars, control tower placed beside the main apron (not mapped); runway mapped as disused in OpenStreetMap but still in place.",
+   "description": "Army airfield and barracks in North Yorkshire. Runways: 15/33 (1,517 m). 0 hardened aircraft shelters, 1 hangars, control tower placed beside the main apron (not mapped); runway mapped as disused in OpenStreetMap but still in place. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -1496,6 +1786,32 @@
      },
      "x": 494.3,
      "y": 290.4
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -197.5,
+       515.4
+      ],
+      [
+       -19.3,
+       197.9
+      ],
+      [
+       158.9,
+       -119.6
+      ],
+      [
+       337.0,
+       -437.1
+      ]
+     ]
     }
    ]
   },
@@ -1504,7 +1820,7 @@
    "name": "RAF Fairford",
    "category": "UK - Air bases",
    "site": "Fairford",
-   "description": "USAF bomber forward operating location (B-52, B-1, B-2). Runways: 09/27 (3,046 m). 0 hardened aircraft shelters, 3 hangars, 15 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "USAF bomber forward operating location (B-52, B-1, B-2). Runways: 09/27 (3,046 m). 0 hardened aircraft shelters, 3 hangars, 15 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -1655,6 +1971,32 @@
      },
      "x": 769.0,
      "y": 315.9
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -1098.7,
+       41.7
+      ],
+      [
+       -368.1,
+       67.2
+      ],
+      [
+       362.5,
+       92.7
+      ],
+      [
+       1093.1,
+       118.2
+      ]
+     ]
     }
    ]
   },
@@ -1663,7 +2005,7 @@
    "name": "RAF Halton",
    "category": "UK - Air bases",
    "site": "Halton",
-   "description": "Recruit training; grass airfield. Runways: 02/20 (1,161 m), 07/25 (868 m). 0 hardened aircraft shelters, 0 hangars, 4 fuel tanks, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Recruit training; grass airfield. Runways: 02/20 (1,161 m), 07/25 (868 m). 0 hardened aircraft shelters, 0 hangars, 4 fuel tanks, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -1744,6 +2086,40 @@
      },
      "x": 473.9,
      "y": -367.7
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -64.1,
+       -420.7
+      ],
+      [
+       28.9,
+       -158.0
+      ],
+      [
+       121.9,
+       104.6
+      ],
+      [
+       214.9,
+       367.3
+      ],
+      [
+       -345.2,
+       -297.2
+      ],
+      [
+       245.4,
+       -92.7
+      ]
+     ]
     }
    ]
   },
@@ -1752,7 +2128,7 @@
    "name": "RAF Henlow",
    "category": "UK - Air bases",
    "site": "Henlow",
-   "description": "Grass airfield and Air Cadet gliding (station due to close). Runways: 02/20 (1,291 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped); runway mapped as disused in OpenStreetMap but still in place.",
+   "description": "Grass airfield and Air Cadet gliding (station due to close). Runways: 02/20 (1,291 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped); runway mapped as disused in OpenStreetMap but still in place. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -1796,6 +2172,32 @@
      "x": 412.4,
      "y": -69.6,
      "host": true
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -69.2,
+       -466.5
+      ],
+      [
+       27.6,
+       -172.2
+      ],
+      [
+       124.4,
+       122.2
+      ],
+      [
+       221.2,
+       416.5
+      ]
+     ]
     }
    ]
   },
@@ -1804,7 +2206,7 @@
    "name": "RAF Honington",
    "category": "UK - Air bases",
    "site": "Honington",
-   "description": "Home of the RAF Regiment and its force protection units. Runways: 09/27 (2,745 m). 0 hardened aircraft shelters, 7 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "Home of the RAF Regiment and its force protection units. Runways: 09/27 (2,745 m). 0 hardened aircraft shelters, 7 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -1887,6 +2289,32 @@
      },
      "x": 52.9,
      "y": -346.0
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -964.7,
+       -228.6
+      ],
+      [
+       -313.5,
+       -128.9
+      ],
+      [
+       337.7,
+       -29.3
+      ],
+      [
+       988.9,
+       70.4
+      ]
+     ]
     }
    ]
   },
@@ -1895,7 +2323,7 @@
    "name": "JHC Flying Station Aldergrove",
    "category": "UK - Air bases",
    "site": "Aldergrove",
-   "description": "Army Air Corps in Northern Ireland, sharing Belfast International Airport's runways. Runways: 07/25 (2,780 m), 17/35 (1,891 m). 0 hardened aircraft shelters, 9 hangars, 11 fuel tanks.",
+   "description": "Army Air Corps in Northern Ireland, sharing Belfast International Airport's runways. Runways: 07/25 (2,780 m), 17/35 (1,891 m). 0 hardened aircraft shelters, 9 hangars, 11 fuel tanks. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -2071,6 +2499,40 @@
      },
      "x": 475.1,
      "y": 794.6
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -874.9,
+       -492.4
+      ],
+      [
+       -269.3,
+       -212.6
+      ],
+      [
+       336.4,
+       67.3
+      ],
+      [
+       942.1,
+       347.2
+      ],
+      [
+       -687.5,
+       -137.4
+      ],
+      [
+       -264.5,
+       -1431.5
+      ]
+     ]
     }
    ]
   },
@@ -2079,7 +2541,7 @@
    "name": "Keevil Airfield",
    "category": "UK - Air bases",
    "site": "Keevil",
-   "description": "Army tactical airfield for transport aircraft training. Runways: 06/24 (1,825 m), 12/30 (1,280 m), 01/19 (1,250 m). 0 hardened aircraft shelters, 3 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "Army tactical airfield for transport aircraft training. Runways: 06/24 (1,825 m), 12/30 (1,280 m), 01/19 (1,250 m). 0 hardened aircraft shelters, 3 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -2160,6 +2622,48 @@
      },
      "x": 183.5,
      "y": -298.1
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Small Aircraft)",
+      "dbid": 827
+     },
+     "at": [
+      [
+       -517.7,
+       -412.4
+      ],
+      [
+       -144.6,
+       -182.9
+      ],
+      [
+       228.4,
+       46.6
+      ],
+      [
+       601.5,
+       276.1
+      ],
+      [
+       -668.2,
+       -56.6
+      ],
+      [
+       111.7,
+       -547.7
+      ],
+      [
+       -56.6,
+       -730.7
+      ],
+      [
+       148.9,
+       145.5
+      ]
+     ]
     }
    ]
   },
@@ -2168,7 +2672,7 @@
    "name": "Kinloss Barracks",
    "category": "UK - Air bases",
    "site": "Kinloss",
-   "description": "Former RAF Kinloss, now an Army barracks; the runway remains a relief airfield for Lossiemouth. Runways: 07/25 (2,370 m). 8 hardened aircraft shelters, 13 hangars, 1 fuel tanks; runway mapped as disused in OpenStreetMap but still in place.",
+   "description": "Former RAF Kinloss, now an Army barracks; the runway remains a relief airfield for Lossiemouth. Runways: 07/25 (2,370 m). 8 hardened aircraft shelters, 13 hangars, 1 fuel tanks; runway mapped as disused in OpenStreetMap but still in place. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -2387,6 +2891,32 @@
      },
      "x": 503.4,
      "y": 779.1
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -778.2,
+       -358.9
+      ],
+      [
+       -241.7,
+       -169.9
+      ],
+      [
+       294.8,
+       19.0
+      ],
+      [
+       831.3,
+       207.9
+      ]
+     ]
     }
    ]
   },
@@ -2395,7 +2925,7 @@
    "name": "RAF Lakenheath",
    "category": "UK - Air bases",
    "site": "Lakenheath",
-   "description": "USAF 48th Fighter Wing: F-35A and F-15E. Runways: 05/23 (2,743 m). 58 hardened aircraft shelters, 14 hangars, 40 munitions bunkers, 80 fuel tanks.",
+   "description": "USAF 48th Fighter Wing: F-35A and F-15E. Runways: 05/23 (2,743 m). 58 hardened aircraft shelters, 14 hangars, 40 munitions bunkers, 80 fuel tanks. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -3015,6 +3545,32 @@
        927.2
       ]
      ]
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -770.7,
+       -622.6
+      ],
+      [
+       -226.8,
+       -251.6
+      ],
+      [
+       317.0,
+       119.4
+      ],
+      [
+       860.8,
+       490.4
+      ]
+     ]
     }
    ]
   },
@@ -3023,7 +3579,7 @@
    "name": "RAF Leeming",
    "category": "UK - Air bases",
    "site": "Leeming",
-   "description": "Air combat support units and a forward operating base for Typhoon; hardened shelter sites. Runways: 16/34 (2,291 m), 03/21 (793 m). 6 hardened aircraft shelters, 7 hangars, 8 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Air combat support units and a forward operating base for Typhoon; hardened shelter sites. Runways: 16/34 (2,291 m), 03/21 (793 m). 6 hardened aircraft shelters, 7 hangars, 8 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -3183,6 +3739,40 @@
      },
      "x": -373.0,
      "y": -67.7
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -266.5,
+       784.6
+      ],
+      [
+       -40.2,
+       283.5
+      ],
+      [
+       186.0,
+       -217.6
+      ],
+      [
+       412.3,
+       -718.8
+      ],
+      [
+       -166.3,
+       478.8
+      ],
+      [
+       106.1,
+       980.6
+      ]
+     ]
     }
    ]
   },
@@ -3191,7 +3781,7 @@
    "name": "Leuchars Station",
    "category": "UK - Air bases",
    "site": "Leuchars",
-   "description": "Former RAF Leuchars, now an Army station; the airfield remains as a diversion. Runways: 08/26 (2,586 m). 0 hardened aircraft shelters, 21 hangars, 8 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Former RAF Leuchars, now an Army station; the airfield remains as a diversion. Runways: 08/26 (2,586 m). 0 hardened aircraft shelters, 21 hangars, 8 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -3345,6 +3935,32 @@
      },
      "x": 544.1,
      "y": -435.7
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -932.9,
+       -53.6
+      ],
+      [
+       -318.6,
+       34.9
+      ],
+      [
+       295.7,
+       123.4
+      ],
+      [
+       910.0,
+       212.0
+      ]
+     ]
     }
    ]
   },
@@ -3353,7 +3969,7 @@
    "name": "RAF Little Rissington",
    "category": "UK - Air bases",
    "site": "Little Rissington",
-   "description": "Air Cadet gliding airfield. Runways: 04/22 (1,311 m), 09/27 (1,074 m), 13/31 (975 m). 0 hardened aircraft shelters, 1 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "Air Cadet gliding airfield. Runways: 04/22 (1,311 m), 09/27 (1,074 m), 13/31 (975 m). 0 hardened aircraft shelters, 1 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -3425,6 +4041,48 @@
      },
      "x": 274.9,
      "y": -216.7
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -355.3,
+       -320.8
+      ],
+      [
+       -160.3,
+       -73.9
+      ],
+      [
+       34.7,
+       173.0
+      ],
+      [
+       229.7,
+       420.0
+      ],
+      [
+       -317.8,
+       137.1
+      ],
+      [
+       452.7,
+       203.1
+      ],
+      [
+       -310.1,
+       7.9
+      ],
+      [
+       219.7,
+       -452.7
+      ]
+     ]
     }
    ]
   },
@@ -3433,7 +4091,7 @@
    "name": "RAF Lossiemouth",
    "category": "UK - Air bases",
    "site": "Lossiemouth",
-   "description": "Typhoon squadrons holding Quick Reaction Alert (North) and the P-8A Poseidon maritime patrol force. Runways: 05/23 (2,764 m), 10/28 (1,850 m). 18 hardened aircraft shelters, 12 hangars, 7 munitions bunkers, 32 fuel tanks.",
+   "description": "Typhoon squadrons holding Quick Reaction Alert (North) and the P-8A Poseidon maritime patrol force. Runways: 05/23 (2,764 m), 10/28 (1,850 m). 18 hardened aircraft shelters, 12 hangars, 7 munitions bunkers, 32 fuel tanks. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -3771,6 +4429,40 @@
        -536.5
       ]
      ]
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -632.3,
+       -772.4
+      ],
+      [
+       -172.3,
+       -294.5
+      ],
+      [
+       287.6,
+       183.5
+      ],
+      [
+       747.6,
+       661.5
+      ],
+      [
+       -77.2,
+       73.6
+      ],
+      [
+       1246.5,
+       -74.8
+      ]
+     ]
     }
    ]
   },
@@ -3779,7 +4471,7 @@
    "name": "MOD St Athan",
    "category": "UK - Air bases",
    "site": "St Athan",
-   "description": "Defence technical training and maintenance in South Wales. Runways: 07/25 (1,768 m). 0 hardened aircraft shelters, 5 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "Defence technical training and maintenance in South Wales. Runways: 07/25 (1,768 m). 0 hardened aircraft shelters, 5 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -3896,6 +4588,32 @@
      },
      "x": 181.5,
      "y": 643.0
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -632.4,
+       -107.4
+      ],
+      [
+       -226.2,
+       15.3
+      ],
+      [
+       180.0,
+       137.9
+      ],
+      [
+       586.2,
+       260.5
+      ]
+     ]
     }
    ]
   },
@@ -3904,7 +4622,7 @@
    "name": "RAF Marham",
    "category": "UK - Air bases",
    "site": "Marham",
-   "description": "The UK F-35B Lightning force. Runways: 06/24 (2,783 m), 01/19 (1,864 m). 7 hardened aircraft shelters, 21 hangars, 7 munitions bunkers, 17 fuel tanks.",
+   "description": "The UK F-35B Lightning force. Runways: 06/24 (2,783 m), 01/19 (1,864 m). 7 hardened aircraft shelters, 21 hangars, 7 munitions bunkers, 17 fuel tanks. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -4229,6 +4947,40 @@
        -180.7
       ]
      ]
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -780.4,
+       -633.4
+      ],
+      [
+       -229.9,
+       -255.1
+      ],
+      [
+       320.5,
+       123.2
+      ],
+      [
+       871.0,
+       501.5
+      ],
+      [
+       313.5,
+       -769.7
+      ],
+      [
+       511.9,
+       557.6
+      ]
+     ]
     }
    ]
   },
@@ -4237,7 +4989,7 @@
    "name": "RNAS Merryfield",
    "category": "UK - Air bases",
    "site": "Merryfield",
-   "description": "Relief landing ground for Yeovilton. Runways: 09/27 (1,771 m), 03/21 (1,238 m), 16/34 (1,161 m). 0 hardened aircraft shelters, 0 hangars, one representative hangar (none mapped).",
+   "description": "Relief landing ground for Yeovilton. Runways: 09/27 (1,771 m), 03/21 (1,238 m), 16/34 (1,161 m). 0 hardened aircraft shelters, 0 hangars, one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -4321,6 +5073,48 @@
      "x": 470.0,
      "y": -129.8,
      "host": true
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -627.9,
+       -136.4
+      ],
+      [
+       -204.6,
+       -98.6
+      ],
+      [
+       218.8,
+       -60.8
+      ],
+      [
+       642.1,
+       -23.0
+      ],
+      [
+       -74.1,
+       -86.0
+      ],
+      [
+       292.7,
+       726.4
+      ],
+      [
+       75.6,
+       564.0
+      ],
+      [
+       340.9,
+       -228.7
+      ]
+     ]
     }
    ]
   },
@@ -4329,7 +5123,7 @@
    "name": "RAF Mildenhall",
    "category": "UK - Air bases",
    "site": "Mildenhall",
-   "description": "USAF 100th Air Refueling Wing (KC-135) and special operations aircraft. Runways: 10/28 (2,808 m). 0 hardened aircraft shelters, 7 hangars, 71 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "USAF 100th Air Refueling Wing (KC-135) and special operations aircraft. Runways: 10/28 (2,808 m). 0 hardened aircraft shelters, 7 hangars, 71 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -4474,6 +5268,32 @@
      },
      "x": -722.5,
      "y": -425.0
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -1002.4,
+       152.9
+      ],
+      [
+       -346.3,
+       -0.9
+      ],
+      [
+       309.8,
+       -154.8
+      ],
+      [
+       965.9,
+       -308.7
+      ]
+     ]
     }
    ]
   },
@@ -4482,7 +5302,7 @@
    "name": "MoD Boscombe Down",
    "category": "UK - Air bases",
    "site": "Boscombe Down",
-   "description": "Aircraft test and evaluation (QinetiQ / Air Warfare Centre). Runways: 05/23 (3,205 m), 17/35 (1,462 m), 05N/23N (766 m). 11 hardened aircraft shelters, 7 hangars, 7 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Aircraft test and evaluation (QinetiQ / Air Warfare Centre). Runways: 05/23 (3,205 m), 17/35 (1,462 m), 05N/23N (766 m). 11 hardened aircraft shelters, 7 hangars, 7 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -4693,6 +5513,48 @@
      },
      "x": 749.4,
      "y": 1432.9
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -938.8,
+       -675.5
+      ],
+      [
+       -347.0,
+       -184.1
+      ],
+      [
+       244.8,
+       307.2
+      ],
+      [
+       836.6,
+       798.6
+      ],
+      [
+       1319.6,
+       305.8
+      ],
+      [
+       1565.4,
+       -717.8
+      ],
+      [
+       -499.6,
+       -135.6
+      ],
+      [
+       -75.8,
+       217.5
+      ]
+     ]
     }
    ]
   },
@@ -4701,7 +5563,7 @@
    "name": "RAF Mona",
    "category": "UK - Air bases",
    "site": "Mona",
-   "description": "Relief landing ground for RAF Valley. Runways: 04/22 (1,579 m). 0 hardened aircraft shelters, 0 hangars, 3 fuel tanks, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Relief landing ground for RAF Valley. Runways: 04/22 (1,579 m). 0 hardened aircraft shelters, 0 hangars, 3 fuel tanks, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -4766,6 +5628,32 @@
      },
      "x": 82.2,
      "y": -466.3
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -281.7,
+       -500.2
+      ],
+      [
+       -51.5,
+       -199.1
+      ],
+      [
+       178.6,
+       101.9
+      ],
+      [
+       408.8,
+       403.0
+      ]
+     ]
     }
    ]
   },
@@ -4774,7 +5662,7 @@
    "name": "Netheravon Airfield",
    "category": "UK - Air bases",
    "site": "Netheravon",
-   "description": "Army parachuting airfield on Salisbury Plain. Runways: 11/29 (1,092 m), 06/24 (653 m), 04/22 (641 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Army parachuting airfield on Salisbury Plain. Runways: 11/29 (1,092 m), 06/24 (653 m), 04/22 (641 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -4858,6 +5746,48 @@
      "x": -364.0,
      "y": -284.0,
      "host": true
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -398.6,
+       45.4
+      ],
+      [
+       -149.3,
+       -35.6
+      ],
+      [
+       99.9,
+       -116.6
+      ],
+      [
+       349.2,
+       -197.6
+      ],
+      [
+       -929.8,
+       -711.8
+      ],
+      [
+       -539.6,
+       -449.6
+      ],
+      [
+       -99.2,
+       -72.0
+      ],
+      [
+       202.3,
+       277.4
+      ]
+     ]
     }
    ]
   },
@@ -4866,7 +5796,7 @@
    "name": "RAF Northolt",
    "category": "UK - Air bases",
    "site": "Northolt",
-   "description": "No. 32 (The Royal) Squadron and VIP/communications flying for London. Runways: 07/25 (1,683 m). 0 hardened aircraft shelters, 5 hangars, 7 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "No. 32 (The Royal) Squadron and VIP/communications flying for London. Runways: 07/25 (1,683 m). 0 hardened aircraft shelters, 5 hangars, 7 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -4996,6 +5926,32 @@
      },
      "x": -663.5,
      "y": 301.7
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -596.5,
+       -133.1
+      ],
+      [
+       -217.2,
+       5.7
+      ],
+      [
+       162.2,
+       144.5
+      ],
+      [
+       541.5,
+       283.3
+      ]
+     ]
     }
    ]
   },
@@ -5004,7 +5960,7 @@
    "name": "RAF Odiham",
    "category": "UK - Air bases",
    "site": "Odiham",
-   "description": "The Chinook heavy-lift helicopter force. Runways: 09/27 (1,839 m). 0 hardened aircraft shelters, 6 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "The Chinook heavy-lift helicopter force. Runways: 09/27 (1,839 m). 0 hardened aircraft shelters, 6 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5136,6 +6092,32 @@
      },
      "x": -426.0,
      "y": 567.6
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -657.7,
+       109.9
+      ],
+      [
+       -216.8,
+       89.9
+      ],
+      [
+       224.1,
+       69.9
+      ],
+      [
+       665.0,
+       49.9
+      ]
+     ]
     }
    ]
   },
@@ -5144,7 +6126,7 @@
    "name": "RNAS Predannack",
    "category": "UK - Air bases",
    "site": "Predannack",
-   "description": "Relief landing ground for Culdrose and the fire training school. Runways: 05/23 (1,820 m), 18/36 (1,404 m), 09/27 (1,308 m), 13/31 (883 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Relief landing ground for Culdrose and the fire training school. Runways: 05/23 (1,820 m), 18/36 (1,404 m), 09/27 (1,308 m), 13/31 (883 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5225,6 +6207,56 @@
      "x": 328.5,
      "y": -206.5,
      "host": true
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -404.9,
+       -521.3
+      ],
+      [
+       -97.1,
+       -211.3
+      ],
+      [
+       210.7,
+       98.6
+      ],
+      [
+       518.4,
+       408.5
+      ],
+      [
+       141.2,
+       492.8
+      ],
+      [
+       158.8,
+       -518.0
+      ],
+      [
+       -687.7,
+       -249.2
+      ],
+      [
+       254.1,
+       -249.2
+      ],
+      [
+       -208.1,
+       -25.2
+      ],
+      [
+       298.3,
+       -409.6
+      ]
+     ]
     }
    ]
   },
@@ -5233,7 +6265,7 @@
    "name": "RMB Chivenor",
    "category": "UK - Air bases",
    "site": "Chivenor",
-   "description": "Royal Marines base and search and rescue airfield in Devon. Runways: 09/27 (1,924 m), 15/33 (1,276 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Royal Marines base and search and rescue airfield in Devon. Runways: 09/27 (1,924 m), 15/33 (1,276 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5304,6 +6336,40 @@
      "x": -173.4,
      "y": 986.5,
      "host": true
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -692.9,
+       77.6
+      ],
+      [
+       -231.2,
+       79.2
+      ],
+      [
+       230.6,
+       80.8
+      ],
+      [
+       692.4,
+       82.4
+      ],
+      [
+       -314.4,
+       795.6
+      ],
+      [
+       140.8,
+       -2.5
+      ]
+     ]
     }
    ]
   },
@@ -5312,7 +6378,7 @@
    "name": "RAF Shawbury",
    "category": "UK - Air bases",
    "site": "Shawbury",
-   "description": "Defence Helicopter Flying School (Juno and Jupiter). Runways: 18/36 (1,831 m), 05/23 (1,375 m). 0 hardened aircraft shelters, 13 hangars, 6 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Defence Helicopter Flying School (Juno and Jupiter). Runways: 18/36 (1,831 m), 05/23 (1,375 m). 0 hardened aircraft shelters, 13 hangars, 6 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5449,6 +6515,40 @@
      },
      "x": 1371.7,
      "y": -191.9
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -81.2,
+       659.0
+      ],
+      [
+       -80.4,
+       219.6
+      ],
+      [
+       -79.6,
+       -219.9
+      ],
+      [
+       -78.8,
+       -659.3
+      ],
+      [
+       -396.4,
+       -21.8
+      ],
+      [
+       302.4,
+       679.5
+      ]
+     ]
     }
    ]
   },
@@ -5457,7 +6557,7 @@
    "name": "Stornoway (NATO forward operating base)",
    "category": "UK - Air bases",
    "site": "Stornoway",
-   "description": "Civil airport with a NATO forward operating base for fighters and maritime patrol aircraft in the Outer Hebrides. Runways: 18/36 (2,088 m), 06/24 (1,000 m). 0 hardened aircraft shelters, 1 hangars, 3 fuel tanks.",
+   "description": "Civil airport with a NATO forward operating base for fighters and maritime patrol aircraft in the Outer Hebrides. Runways: 18/36 (2,088 m), 06/24 (1,000 m). 0 hardened aircraft shelters, 1 hangars, 3 fuel tanks. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5546,6 +6646,40 @@
      },
      "x": 371.1,
      "y": -508.1
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       4.9,
+       755.9
+      ],
+      [
+       54.7,
+       257.3
+      ],
+      [
+       104.5,
+       -241.4
+      ],
+      [
+       154.3,
+       -740.0
+      ],
+      [
+       -268.3,
+       -211.8
+      ],
+      [
+       355.3,
+       148.2
+      ]
+     ]
     }
    ]
   },
@@ -5554,7 +6688,7 @@
    "name": "RAF Syerston",
    "category": "UK - Air bases",
    "site": "Syerston",
-   "description": "Central Gliding School and Air Cadet gliding. Runways: 06/24 (1,810 m), 11/29 (559 m). 0 hardened aircraft shelters, 0 hangars, 7 fuel tanks, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Central Gliding School and Air Cadet gliding. Runways: 06/24 (1,810 m), 11/29 (559 m). 0 hardened aircraft shelters, 0 hangars, 7 fuel tanks, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5635,6 +6769,40 @@
      },
      "x": -158.5,
      "y": -548.2
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -541.7,
+       -370.9
+      ],
+      [
+       -156.0,
+       -171.0
+      ],
+      [
+       229.6,
+       28.9
+      ],
+      [
+       615.3,
+       228.8
+      ],
+      [
+       -460.2,
+       -108.3
+      ],
+      [
+       -78.3,
+       -235.3
+      ]
+     ]
     }
    ]
   },
@@ -5643,7 +6811,7 @@
    "name": "Ternhill Airfield",
    "category": "UK - Air bases",
    "site": "Ternhill",
-   "description": "Relief landing ground for Shawbury and Army barracks. Runways: 04/22 (968 m), 10/28 (905 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Relief landing ground for Shawbury and Army barracks. Runways: 04/22 (968 m), 10/28 (905 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5715,6 +6883,40 @@
      "x": -103.2,
      "y": 351.4,
      "host": true
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -295.1,
+       -201.9
+      ],
+      [
+       -137.6,
+       -31.1
+      ],
+      [
+       20.0,
+       139.6
+      ],
+      [
+       177.5,
+       310.4
+      ],
+      [
+       -469.5,
+       123.8
+      ],
+      [
+       174.3,
+       23.0
+      ]
+     ]
     }
    ]
   },
@@ -5723,7 +6925,7 @@
    "name": "RAF Topcliffe",
    "category": "UK - Air bases",
    "site": "Topcliffe",
-   "description": "Relief landing ground and Army barracks (Alanbrooke Barracks). Runways: 02/20 (1,826 m), 13/31 (1,256 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Relief landing ground and Army barracks (Alanbrooke Barracks). Runways: 02/20 (1,826 m), 13/31 (1,256 m). 0 hardened aircraft shelters, 0 hangars, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5799,6 +7001,40 @@
      "x": -509.4,
      "y": 79.0,
      "host": true
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -319.4,
+       -580.1
+      ],
+      [
+       -156.0,
+       -173.5
+      ],
+      [
+       7.5,
+       233.1
+      ],
+      [
+       171.0,
+       639.8
+      ],
+      [
+       -572.8,
+       142.1
+      ],
+      [
+       159.8,
+       -388.1
+      ]
+     ]
     }
    ]
   },
@@ -5807,7 +7043,7 @@
    "name": "Upavon Airfield",
    "category": "UK - Air bases",
    "site": "Upavon",
-   "description": "Army headquarters site with a grass airfield. Runways: 05/23 (1,041 m), 07/25 (923 m). 0 hardened aircraft shelters, 3 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "Army headquarters site with a grass airfield. Runways: 05/23 (1,041 m), 07/25 (923 m). 0 hardened aircraft shelters, 3 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -5887,6 +7123,40 @@
      },
      "x": 241.8,
      "y": -253.0
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -326.2,
+       -201.1
+      ],
+      [
+       -145.6,
+       -28.5
+      ],
+      [
+       35.0,
+       144.1
+      ],
+      [
+       215.7,
+       316.8
+      ],
+      [
+       -394.6,
+       205.1
+      ],
+      [
+       230.6,
+       430.2
+      ]
+     ]
     }
    ]
   },
@@ -5895,7 +7165,7 @@
    "name": "RAF Valley",
    "category": "UK - Air bases",
    "site": "Valley",
-   "description": "Advanced fast-jet training on the Hawk T2 (IV(R) Squadron). Runways: 13/31 (2,290 m), 01/19 (1,572 m). 0 hardened aircraft shelters, 10 hangars.",
+   "description": "Advanced fast-jet training on the Hawk T2 (IV(R) Squadron). Runways: 13/31 (2,290 m), 01/19 (1,572 m). 0 hardened aircraft shelters, 10 hangars. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -6044,6 +7314,40 @@
      },
      "x": -206.3,
      "y": 511.7
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -577.0,
+       594.2
+      ],
+      [
+       -157.8,
+       238.8
+      ],
+      [
+       261.3,
+       -116.7
+      ],
+      [
+       680.5,
+       -472.2
+      ],
+      [
+       -369.6,
+       -194.1
+      ],
+      [
+       -245.4,
+       930.9
+      ]
+     ]
     }
    ]
   },
@@ -6052,7 +7356,7 @@
    "name": "RAF Waddington",
    "category": "UK - Air bases",
    "site": "Waddington",
-   "description": "ISTAR hub: RC-135W Rivet Joint, Protector and Shadow. Runways: 02/20 (2,940 m). 0 hardened aircraft shelters, 9 hangars, 10 fuel tanks.",
+   "description": "ISTAR hub: RC-135W Rivet Joint, Protector and Shadow. Runways: 02/20 (2,940 m). 0 hardened aircraft shelters, 9 hangars, 10 fuel tanks. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -6233,6 +7537,32 @@
      },
      "x": -97.6,
      "y": 1169.1
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Very Large Aircraft)",
+      "dbid": 353
+     },
+     "at": [
+      [
+       -467.3,
+       -953.0
+      ],
+      [
+       -205.3,
+       -297.9
+      ],
+      [
+       56.7,
+       357.3
+      ],
+      [
+       318.8,
+       1012.4
+      ]
+     ]
     }
    ]
   },
@@ -6241,7 +7571,7 @@
    "name": "Wattisham Flying Station",
    "category": "UK - Air bases",
    "site": "Wattisham",
-   "description": "Army Air Corps Apache AH-64E attack helicopters. Runways: 05/23 (2,423 m). 0 hardened aircraft shelters, 6 hangars, control tower placed beside the main apron (not mapped).",
+   "description": "Army Air Corps Apache AH-64E attack helicopters. Runways: 05/23 (2,423 m). 0 hardened aircraft shelters, 6 hangars, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -6336,6 +7666,32 @@
      },
      "x": 376.1,
      "y": -73.8
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -594.7,
+       -643.1
+      ],
+      [
+       -162.5,
+       -254.0
+      ],
+      [
+       269.6,
+       135.1
+      ],
+      [
+       701.8,
+       524.2
+      ]
+     ]
     }
    ]
   },
@@ -6344,7 +7700,7 @@
    "name": "RAF Wittering",
    "category": "UK - Air bases",
    "site": "Wittering",
-   "description": "Home of the A4 Force engineering and logistics wing; relief airfield. Runways: 07/25 (2,757 m), 29/11 (346 m). 0 hardened aircraft shelters, 0 hangars, 3 fuel tanks, control tower placed beside the main apron (not mapped), one representative hangar (none mapped).",
+   "description": "Home of the A4 Force engineering and logistics wing; relief airfield. Runways: 07/25 (2,757 m), 29/11 (346 m). 0 hardened aircraft shelters, 0 hangars, 3 fuel tanks, control tower placed beside the main apron (not mapped), one representative hangar (none mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -6441,6 +7797,40 @@
      },
      "x": -1931.6,
      "y": -859.7
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -927.7,
+       -361.8
+      ],
+      [
+       -293.9,
+       -171.7
+      ],
+      [
+       339.9,
+       18.4
+      ],
+      [
+       973.6,
+       208.6
+      ],
+      [
+       -1657.8,
+       0.2
+      ],
+      [
+       -1420.4,
+       -75.1
+      ]
+     ]
     }
    ]
   },
@@ -6449,7 +7839,7 @@
    "name": "RAF Woodvale",
    "category": "UK - Air bases",
    "site": "Woodvale",
-   "description": "University Air Squadron and Air Experience Flight. Runways: 03/21 (1,648 m), 08/26 (1,060 m). 0 hardened aircraft shelters, 3 hangars.",
+   "description": "University Air Squadron and Air Experience Flight. Runways: 03/21 (1,648 m), 08/26 (1,060 m). 0 hardened aircraft shelters, 3 hangars. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -6539,6 +7929,40 @@
      },
      "x": 377.3,
      "y": 159.2
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Medium Aircraft)",
+      "dbid": 307
+     },
+     "at": [
+      [
+       -231.2,
+       -552.2
+      ],
+      [
+       -31.1,
+       -211.1
+      ],
+      [
+       169.1,
+       130.1
+      ],
+      [
+       369.2,
+       471.2
+      ],
+      [
+       -469.6,
+       -356.6
+      ],
+      [
+       283.2,
+       -230.6
+      ]
+     ]
     }
    ]
   },
@@ -6547,7 +7971,7 @@
    "name": "RAF Wyton",
    "category": "UK - Air bases",
    "site": "Wyton",
-   "description": "Defence intelligence hub (Pathfinder) and air experience flying. Runways: 09/27 (2,507 m). 0 hardened aircraft shelters, 5 hangars, 10 fuel tanks; runway mapped as disused in OpenStreetMap but still in place.",
+   "description": "Defence intelligence hub (Pathfinder) and air experience flying. Runways: 09/27 (2,507 m). 0 hardened aircraft shelters, 5 hangars, 10 fuel tanks; runway mapped as disused in OpenStreetMap but still in place. Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -6632,6 +8056,32 @@
      },
      "x": -1308.2,
      "y": -1433.3
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -885.0,
+       -194.0
+      ],
+      [
+       -288.2,
+       -117.6
+      ],
+      [
+       308.6,
+       -41.1
+      ],
+      [
+       905.4,
+       35.3
+      ]
+     ]
     }
    ]
   },
@@ -6640,7 +8090,7 @@
    "name": "RNAS Yeovilton",
    "category": "UK - Air bases",
    "site": "Yeovilton",
-   "description": "Wildcat and Commando Merlin helicopters (Commando Helicopter Force). Runways: 08/26 (2,293 m), 04/22 (1,464 m). 0 hardened aircraft shelters, 15 hangars, 18 fuel tanks, control tower placed beside the main apron (not mapped).",
+   "description": "Wildcat and Commando Merlin helicopters (Commando Helicopter Force). Runways: 08/26 (2,293 m), 04/22 (1,464 m). 0 hardened aircraft shelters, 15 hangars, 18 fuel tanks, control tower placed beside the main apron (not mapped). Runway access points connect the parking to the runways.",
    "tags": [
     "UK",
     "real",
@@ -6858,6 +8308,40 @@
      },
      "x": 578.1,
      "y": 602.1
+    },
+    {
+     "label": "Runway Access Point",
+     "db": {
+      "type": "Facility",
+      "name": "Runway Access Point (Large Aircraft)",
+      "dbid": 306
+     },
+     "at": [
+      [
+       -829.1,
+       -19.7
+      ],
+      [
+       -282.8,
+       46.4
+      ],
+      [
+       263.6,
+       112.5
+      ],
+      [
+       809.9,
+       178.6
+      ],
+      [
+       148.6,
+       -300.8
+      ],
+      [
+       784.4,
+       539.9
+      ]
+     ]
     }
    ]
   },
@@ -9072,8 +10556,8 @@
     "remote radar head"
    ],
    "location": [
-    52.897,
-    1.388
+    52.893037,
+    1.400577
    ],
    "heading": 0.0,
    "components": [

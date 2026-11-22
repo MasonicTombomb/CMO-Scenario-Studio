@@ -376,6 +376,9 @@ def compile_build_data(project: Project) -> dict:
     D["FORMATIONS"] = compile_formations(project)
     missions = []
     for ms in project.missions:
+        if ms.mclass == "intercept":
+            missions.append(intercept_mission(project, ms))
+            continue
         rec: dict[str, Any] = {"side": project.side_name(ms.side), "name": ms.name, "class": ms.mclass}
         if ms.subtype and ms.mclass in ("patrol", "strike"):
             rec["sub"] = ms.subtype
@@ -401,9 +404,9 @@ def compile_build_data(project: Project) -> dict:
         if e.offset_minutes > 0
     ]
     D["EVENTS"] = [compile_event(project, e) for e in project.events]
-    rev = route_event(project)
-    if rev is not None:
-        D["EVENTS"].append(compile_event(project, rev))
+    for ev in (route_event(project), intercept_event(project)):
+        if ev is not None:
+            D["EVENTS"].append(compile_event(project, ev))
     D["SPECIALS"] = [{"side": project.side_name(a.side), "name": a.name, "desc": a.description,
                       "repeatable": bool(a.repeatable), "active": bool(a.active), "script": a.script}
                      for a in project.special_actions]
@@ -502,6 +505,89 @@ def route_event(project: Project) -> Optional[Event]:
     return Event(id=ROUTE_EVENT_ID, name="Studio: unit courses", repeatable=True,
                  triggers=[Trigger("RegularTime", {"Interval": ONE_MINUTE})],
                  actions=[Action("LuaScript", {"Code": "if StudioRoutesTick then StudioRoutesTick() end"})])
+
+
+WCS_FOR = {"identify": 2, "tight": 1, "free": 0}      # weapon control status: hold, tight, free
+HALF_MINUTE = 3          # RegularTime interval index
+
+
+def intercept_mission(project: Project, ms) -> dict:
+    """An intercept is a native Air Intercept mission, built switched off and empty: the runtime's intercept manager
+    adds targets and aircraft (see compile_intercepts)."""
+    from ..model.intercept import intercept_of
+    ic = intercept_of(ms)
+    opts = {k: v for k, v in ms.options.items() if v not in ("", None)}
+    opts.setdefault("flightSize", max(1, int(ic.per_contact)))
+    opts.setdefault("useFlightSize", False)
+    opts["isactive"] = False
+    return {"side": project.side_name(ms.side), "name": ms.name, "class": "strike", "sub": "air", "units": [],
+            "targets": [], "opts": opts, "wcs": WCS_FOR.get(ic.roe, 2), "radar": bool(ic.radar)}
+
+
+def compile_intercepts(project: Project) -> list[dict]:
+    """Launch conditions for the runtime's intercept manager (STUDIO.INTERCEPTS in LuaInit.lua)."""
+    from ..model.intercept import home, intercept_of
+    out = []
+    start = project.clock.start_epoch()
+    for ms in project.missions:
+        if ms.mclass != "intercept" or not project.side(ms.side):
+            continue
+        ic = intercept_of(ms)
+        units = [project.unit(i) for i in ms.units]
+        units = [u for u in units if u is not None and u.type == "Aircraft" and u.side == ms.side]
+        at = home(project, ms)
+        zone = project.zone(ms.zone) if ms.zone else None
+        cond: dict[str, Any] = {}
+        if ic.in_area:
+            cond["area"] = True
+        if ic.near:
+            cond["near"] = float(ic.near_nm)
+        if ic.posture:
+            cond["posture"] = {k: True for k in ic.postures}
+        if ic.inbound:
+            cond["inbound"] = float(ic.inbound_deg)
+        if ic.altitude:
+            cond["altitude"] = [float(ic.alt_min), float(ic.alt_max)]
+        if ic.speed:
+            cond["speed"] = float(ic.speed_min)
+        for k in ("unidentified", "emitting"):
+            if getattr(ic, k):
+                cond[k] = True
+        if ic.tracked:
+            cond["tracked"] = int(60 * ic.tracked_min)
+        r: dict[str, Any] = {
+            "id": ms.id, "side": project.side_name(ms.side), "mission": ms.name,
+            "names": [n for u in units for n in unit_names(u)], "armed": ms.options.get("isactive", True) is not False,
+            "logic": "any" if ic.logic == "any" else "all", "c": cond, "missiles": bool(ic.missiles),
+            "per": max(1, int(ic.per_contact)), "max": max(1, int(ic.max_contacts)), "reserve": max(0, int(ic.reserve)),
+            "down": int(60 * max(0.5, float(ic.stand_down_min))), "message": bool(ic.message),
+        }
+        if at is not None:
+            r["home"] = [round(at.lat, 5), round(at.lon, 5)]
+        if ic.in_area and zone is not None and len(zone.points) >= 3:
+            r["area"] = [[round(a, 5), round(b, 5)] for a, b in zone.points]
+        if ic.raid:
+            r["raid"] = max(1, int(ic.raid_min))
+        if ic.window:
+            if ic.window_from:
+                r["from"] = start + 60 * int(ic.window_from)
+            if ic.window_to:
+                r["to"] = start + 60 * int(ic.window_to)
+        if ic.flag and ic.flag_key.strip():
+            r["flag"] = ic.flag_key.strip()
+        if ic.signal.strip():
+            r["signal"] = ic.signal.strip()
+        out.append(r)
+    return out
+
+
+def intercept_event(project: Project) -> Optional[Event]:
+    """A twice-a-minute event that runs StudioInterceptTick(), when there is an intercept mission."""
+    if not any(m.mclass == "intercept" for m in project.missions):
+        return None
+    return Event(id="e_studio_intercepts", name="Studio: intercepts", repeatable=True,
+                 triggers=[Trigger("RegularTime", {"Interval": HALF_MINUTE})],
+                 actions=[Action("LuaScript", {"Code": "if StudioInterceptTick then StudioInterceptTick() end"})])
 
 
 def compile_reserves(project: Project) -> dict:

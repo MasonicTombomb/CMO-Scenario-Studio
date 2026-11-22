@@ -57,6 +57,7 @@ DOCTRINE_FIELDS: dict[str, tuple[str, str, tuple]] = {
 # --------------------------------------------------------------------------- missions
 MISSION_CLASSES: dict[str, tuple[str, ...]] = {
     "patrol": ("aaw", "asw", "naval", "land", "mixed", "sead"),
+    "intercept": (),
     "strike": ("air", "land", "sea", "sub"),
     "support": (),
     "ferry": (),
@@ -67,6 +68,7 @@ MISSION_CLASSES: dict[str, tuple[str, ...]] = {
 
 MISSION_CLASS_LABELS: dict[str, str] = {
     "patrol": "Patrol",
+    "intercept": "Intercept (aircraft on call at a base)",
     "strike": "Strike",
     "support": "Support (AEW / tanker / orbit)",
     "ferry": "Ferry",

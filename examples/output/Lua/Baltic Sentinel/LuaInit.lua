@@ -23,6 +23,7 @@ STUDIO.RESERVES = {
   },
 }
 STUDIO.ROUTES = {}
+STUDIO.INTERCEPTS = {}
 
 local ok, err = pcall(ScenEdit_RunScript, STUDIO.PATH .. 'Studio_Runtime.lua')
 if not ok then print('[' .. STUDIO.TITLE .. '] Could not load Studio_Runtime.lua: ' .. tostring(err)) end

@@ -180,6 +180,12 @@ INTSUM
 DTG
 :   Date-time group: a time written as day, hours, minutes, zone, month and year, such as *120400Z MAY 30*.
 
+QRA
+:   Quick reaction alert: fighters kept ready to launch. In the studio, an **Intercept** mission (Chapter 14).
+
+Runway access point
+:   The part of an airbase that lets aircraft taxi from their parking to the runway.
+
 Variant
 :   Another build of the same scenario, usually with a different side played by the computer.
 
@@ -220,6 +226,7 @@ Zulu
 | Dry-run build (CMO Lua) | 21 |
 | Loadout viewer... | 10 |
 | Place unit template... / Template library... | 12 |
+| Repair air bases... (add missing runway access points) | 24 |
 | Add patrol area from library... / Area library... | 13 |
 | Assign callsigns to aircraft... / Callsign library... | 10 |
 | Create units in formation... | 11 |

@@ -76,7 +76,8 @@ The UK sites are in the categories starting **UK -**:
 | UK - Nuclear, Logistics and munitions, Army garrisons | AWE Aldermaston and Burghfield, Glen Douglas, Kineton, Catterick, Tidworth, Colchester and more |
 
 Air base runways are at their real positions, headings and lengths. CMO only has a few runway lengths (from 450 m to
-4,000 m), so each runway uses the nearest one; the real length is shown in the preview. Where OpenStreetMap does
+4,000 m), so each runway uses the nearest one; the real length is shown in the preview. Runway access points beside
+each runway connect it to the hangars and aprons: aircraft cannot taxi without them. Where OpenStreetMap does
 not show a base's control tower or hangars, the template adds one and says so in its description.
 
 ## Using national equipment

@@ -51,7 +51,7 @@ def test_uk_templates_have_real_locations(lib):
 
 def test_lossiemouth_matches_the_real_base(lib):
     t = lib.template("uk_ab_lossiemouth")
-    runways = {c.label: c for c in t.components if c.label.startswith("Runway")}
+    runways = {c.label: c for c in t.components if c.label.startswith("Runway") and "Access" not in c.label}
     assert set(runways) == {"Runway 05/23", "Runway 10/28"}
     assert abs(runways["Runway 05/23"].length - 2764) < 30 and abs(runways["Runway 10/28"].length - 1850) < 30
     assert 40 < runways["Runway 05/23"].hdg < 50 and 92 < runways["Runway 10/28"].hdg < 100
@@ -98,7 +98,7 @@ def test_save_as_template_keeps_relative_headings():
     lib = default_library()
     t = lib.template("uk_ab_lossiemouth")
     res = place_template(p, t, None, p.sides[0].id, *t.location)
-    rws = [u.id for u in res.units if "Runway" in u.name]
+    rws = [u.id for u in res.units if "Runway" in u.name and "Access" not in u.name]
     units = [p.unit(i) for i in rws]
     tpl = template_from_units(p, rws, "Two runways")
     expect = round((units[1].heading - units[0].heading) % 360.0, 1)

@@ -113,6 +113,11 @@ def validate(p: Project, db=None) -> list[Issue]:
                     add(ERROR, "Database", f"{label}: loadout {u.loadout} does not belong to '{entry.name}'.", u.id)
     if db is not None:
         _check_aircraft_hosts(p, db, units, add)
+    if db is not None:
+        from .airbase import cannot_fly
+        for u, site, why in cannot_fly(p, db):
+            add(ERROR, "Air bases", f"{u.name or '(unnamed)'} can never take off: {why}. "
+                                    "Tools > Repair air bases fixes this.", u.id)
     _check_courses(p, db, add)
     _check_forecast(p, add)
 
@@ -162,7 +167,11 @@ def validate(p: Project, db=None) -> list[Issue]:
         if ms.mclass == "ferry" and not ms.destination:
             add(WARNING, "Missions", f"{label}: no destination chosen.", ms.id)
         if ms.mclass == "strike" and not ms.targets:
-            add(INFO, "Missions", f"{label}: no targets assigned yet.", ms.id)
+            add(INFO, "Missions", f"{label}: no targets assigned yet." + (
+                " CMO launches it at the first air contact of any kind; for aircraft that launch on conditions use an "
+                "Intercept mission." if ms.subtype == "air" else ""), ms.id)
+        if ms.mclass == "intercept":
+            _check_intercept(p, ms, label, add)
         for uid in ms.units:
             u = units.get(uid)
             if not u:
@@ -328,6 +337,44 @@ def _check_aircraft_hosts(p: Project, db, units: dict, add) -> None:
         if biggest_room and used > biggest_room:
             add(WARNING, "Units", f"'{host.name}' has room for {biggest_room} aircraft but {used} start there; "
                                   "CMO refuses the extra ones. Spread them over more hangars or shelters.", hid)
+
+
+def _check_intercept(p: Project, ms, label: str, add) -> None:
+    from .intercept import home, intercept_of, ticked
+    ic = intercept_of(ms)
+    aircraft = [u for u in (p.unit(i) for i in ms.units) if u is not None and u.type == "Aircraft"]
+    n = sum(max(1, u.count) for u in aircraft)
+    if not aircraft:
+        add(ERROR, "Missions", f"{label}: no aircraft on call. Choose an air base or assign aircraft.", ms.id)
+    for u in (p.unit(i) for i in ms.units):
+        if u is not None and u.type != "Aircraft":
+            add(ERROR, "Missions", f"{label}: {u.name} is not an aircraft.", ms.id)
+    for u in aircraft:
+        if not u.host:
+            add(WARNING, "Missions", f"{label}: {u.name} starts in the air, not at a base.", ms.id)
+        other = [m.name for m in p.missions if m.id != ms.id and u.id in m.units and m.mclass != "intercept"]
+        if other:
+            add(WARNING, "Missions", f"{label}: {u.name} is also on '{other[0]}', so it may be away when needed.", ms.id)
+        if u.course and u.course.waypoints:
+            add(WARNING, "Missions", f"{label}: {u.name} also has a course, so it may be away when needed.", ms.id)
+    if aircraft and n - int(ic.reserve) < int(ic.per_contact):
+        add(ERROR, "Missions", f"{label}: {n} aircraft on call with {ic.reserve} kept in reserve cannot launch "
+                               f"{ic.per_contact}.", ms.id)
+    if not ticked(ic):
+        add(WARNING, "Missions", f"{label}: no conditions ticked, so it launches at every air contact.", ms.id)
+    zone = p.zone(ms.zone) if ms.zone else None
+    if ic.in_area and (zone is None or len(zone.points) < 3):
+        add(ERROR, "Missions", f"{label}: 'inside the intercept area' is ticked but no area is chosen.", ms.id)
+    if ic.posture and not ic.postures:
+        add(ERROR, "Missions", f"{label}: 'is classed as' is ticked but no class is.", ms.id)
+    if (ic.near or ic.inbound) and home(p, ms) is None:
+        add(ERROR, "Missions", f"{label}: nothing to measure distance from; assign aircraft or choose a unit.", ms.id)
+    if ic.altitude and ic.alt_min >= ic.alt_max:
+        add(ERROR, "Missions", f"{label}: the lowest altitude is not below the highest.", ms.id)
+    if ic.window and ic.window_to and ic.window_to <= ic.window_from:
+        add(ERROR, "Missions", f"{label}: its time window ends before it starts.", ms.id)
+    if ic.flag and not ic.flag_key.strip():
+        add(ERROR, "Missions", f"{label}: 'only once this flag is set' is ticked but no flag is given.", ms.id)
 
 
 def _check_courses(p: Project, db, add) -> None:

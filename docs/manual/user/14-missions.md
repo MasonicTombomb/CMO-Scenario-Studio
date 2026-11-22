@@ -24,6 +24,7 @@ filter above the list shows one side's missions; a new mission belongs to that s
 | Class | What the units do | Needs |
 | --- | --- | --- |
 | Patrol | Stay in an area and engage what they find there. | An area with 3+ corners; optionally a **Prosecution area**, a larger area they may chase targets into |
+| Intercept (aircraft on call at a base) | Wait at their base and launch when the conditions you tick are met (see *Intercept missions*). | Aircraft at a base; an area if you tick *inside the intercept area* |
 | Strike | Attack specific targets. | **Strike targets**: enemy units chosen with **Add targets** |
 | Support (AEW / tanker / orbit) | Fly an orbit: airborne early warning, tanker, jammer, reconnaissance. | An area to orbit in |
 | Ferry | Fly to another base and land there. | A **Destination** base |
@@ -42,7 +43,8 @@ filter above the list shows one side's missions; a new mission belongs to that s
 | Mixed | Anything. |
 | SEAD | Enemy air defences: radars and missile sites (suppression of enemy air defences). |
 
-**Strike types**: *Air* (intercept aircraft), *Land*, *Sea* (ships) and *Sub* (submarines).
+**Strike types**: *Air* (attack aircraft; with no targets CMO launches it at the first air contact of any kind, so use
+an **Intercept** mission for aircraft on alert), *Land*, *Sea* (ships) and *Sub* (submarines).
 
 ## Options
 
@@ -82,6 +84,73 @@ than stopping the build.
 !!! warning "Units belong to their side's missions only"
     A unit can only be assigned to a mission of its own side. If you move a unit to another side, the studio removes
     it from the old side's missions.
+
+## Intercept missions
+
+An **intercept** mission keeps aircraft on call at their base, like a real quick reaction alert (QRA), and launches
+them only when the conditions you tick are met.
+
+![An intercept mission](img/mission_intercept.png)
+
+1. **Aircraft on call**: choose an **Air base** and click **Put its aircraft on call**, or add aircraft one by one
+   under **Assigned units**.
+2. **Launch when a contact...**: tick conditions and fill in their values. Choose whether a contact must meet **ALL**
+   the ticked conditions or **ANY** of them. **Presets ▾** ticks a ready-made set to start from.
+3. **...and (always required as well)**: conditions about the situation rather than one contact.
+4. **Response**: how many aircraft go, and what they do.
+5. **The summary** at the bottom says in plain English what the mission will do. Read it: it is the quickest check.
+
+| Condition | A contact meets it when |
+| --- | --- |
+| Is inside the intercept area | It is inside the mission's **Area** (a QRA area from the area library, or one you drew) |
+| Is close to | It is within so many nautical miles of the aircraft's base, or of a unit you choose (a carrier, a tanker) |
+| Is classed as | Your side regards it as *Hostile*, *Unfriendly*, *Unknown* or *Neutral*; tick any of them |
+| Is heading towards us | Its course points at the base (or chosen unit) within this angle |
+| Altitude between | It is between these altitudes, in metres. Use a low band for low-level raiders |
+| Is at least this fast | It is doing this many knots or more |
+| Is not identified yet | Your side does not know what class of aircraft it is |
+| Is emitting (radar on) | Your side has detected an emission from it |
+| Has been tracked for | Your side has held it for at least this long, so a single blip does not scramble a flight |
+| Also launch against missiles | Cruise missiles count as well as aircraft |
+
+| Always required | Meaning |
+| --- | --- |
+| At least this many such contacts | Wait for a raid of this size |
+| Only between these times | Minutes after the start of the scenario |
+| Only once this flag is set | A course signal (*Signal there*), a recipe or any event that sets a flag |
+
+| Response | Meaning |
+| --- | --- |
+| Aircraft per contact / Contacts at once | Two aircraft for each of up to two contacts launches four at most |
+| Keep in reserve | Aircraft that never leave, so the base is not emptied |
+| Orders | *Intercept and identify* (weapons hold), *Engage if hostile* (weapons tight) or *Engage* (weapons free) |
+| Stand down after | How long after a contact stops meeting the conditions before the aircraft go home |
+| Radars on once launched | Otherwise they go silent |
+| Tell the side | A message when aircraft scramble and stand down |
+| Set a flag on launch | So other events can follow on |
+
+To switch an intercept on or off during the scenario, set **Active** to *No* to start with it off and use the
+**Activate / deactivate mission** action, or the recipe *Start a mission on a signal*.
+
+!!! example "QRA North from Lossiemouth"
+    1. **Patrol areas...** > add *QRA North area (Scottish FIR)* (Chapter 13).
+    2. **New mission**, **Class** **Intercept**, **Area** the QRA area.
+    3. **Presets ▾ > Quick reaction alert**. Under **Aircraft on call** choose **Lossiemouth** and click **Put its
+       aircraft on call**.
+    4. The summary reads *Launches 2 aircraft per contact ... when an aircraft is inside ... and is hostile or
+       unfriendly or unknown*.
+
+!!! note "What happens in CMO"
+    The mission appears in CMO's mission editor as an *Air Intercept* strike that is switched off and empty. A
+    generated event, **Studio: intercepts**, looks at the side's contacts every half minute of game time. When one
+    meets the conditions it becomes a target, aircraft are assigned and the mission is switched on; CMO flies the
+    intercept. When no target is left the aircraft are sent home and it is switched off again. Aircraft that are
+    still rearming are not chosen, and progress is saved with the game. Your side must **detect** a contact before it
+    can react: give it radars.
+
+!!! warning "The aircraft must be able to take off"
+    An aircraft that is assigned but says it is waiting for a taxiway is at a base with no runway access points. See
+    *Aircraft wait for a taxiway* in Chapter 24.
 
 ## Courses: a route without a mission
 

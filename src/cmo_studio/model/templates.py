@@ -212,6 +212,8 @@ def load_library(user_path: Optional[str | Path] = None) -> tuple[TemplateLibrar
             pass
         else:
             merge_new_builtins(lib, builtin)
+            from .airbase import add_missing_access
+            add_missing_access(lib, builtin)      # saved before 1.11: aircraft could not taxi at these bases
             return lib, str(user_path)
     builtin.known_builtins = [t.id for t in builtin.templates]
     return builtin, "built-in default"

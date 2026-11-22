@@ -344,6 +344,29 @@ def main():
         (5, "Options"), (6, "Assigned units")],
         prepare=lambda: w.missions_page.list.setCurrentRow(1))
 
+    # an intercept mission, in memory only
+    from cmo_studio.model.intercept import aircraft_at, apply_preset, intercept_of
+    from cmo_studio.model.project import Mission
+    nato_id = next(x.id for x in p.sides if x.name == "NATO")
+    zid = next(z.id for z in p.zones if z.side == nato_id and z.name == "CAP_EST")
+    im = Mission(side=nato_id, name="QRA Estonia", mclass="intercept", subtype="", zone=zid)
+    apply_preset(im, "qra")
+    intercept_of(im).tracked, intercept_of(im).reserve = True, 1
+    im.units = aircraft_at(p, nato_id, next((p.unit(u.host).group or p.unit(u.host).name) for u in p.units
+                                            if u.type == "Aircraft" and u.host and u.side == nato_id))
+    p.missions.append(im)
+    mpg = w.missions_page
+    mpg.mid = im.id
+    w.tabs.setCurrentWidget(mpg)
+    mpg.refresh()
+    pump(app, 0.4)
+    f_ic = mpg.intercept
+    shot("mission_intercept", f_ic, [(1, f_ic.base), (2, f_ic.logic), (3, f_ic.boxes["raid"]),
+                                     (4, f_ic.values["per_contact"]), (5, f_ic.summary)])
+    p.missions.remove(im)
+    mpg.mid = ""
+    mpg.refresh()
+
     def sel_event():
         w.events_page.list.setCurrentRow(4)
         pump(app, 0.2)

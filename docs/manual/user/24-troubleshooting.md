@@ -46,6 +46,12 @@ Find the problem in the left column.
 
 ## During play
 
+**Aircraft wait for a taxiway and never take off.** In CMO an aircraft goes from its parking to a *runway access point*
+or *taxiway*, then to the runway. A base built from separate parts needs at least one access point large enough for
+the aircraft, and all its parts in one group. Every UK air base template, and two of the generic ones, had no access
+points until version 1.11. Open the project: the studio offers to add them. (Or **Tools > Repair air bases...**.) Then
+**export and rebuild** the scenario in CMO. The Issues panel lists every aircraft that could never take off, and why.
+
 | Problem | What to do |
 | --- | --- |
 | An event never happens | Look at its **Generated Lua** and the Timeline's timing problems. Check every condition can be true. Check the event is **Active**. |

@@ -13,6 +13,8 @@ src/cmo_studio/
     timeline.py          events, missions and courses on the scenario clock, timing problems
     course_plan.py       plotted-course estimates: legs, settings in force, timings, time on target, range
     route_library.py     saved courses (routes.json in the user's data folder)
+    airbase.py           can aircraft taxi and take off? access points, checks and the repair
+    intercept.py         intercept missions: conditions, presets, plain-English summary
     clock.py             the scenario at a moment: course positions, weather, events fired (the map clock)
     event_recipes.py     event recipes: common events from a few answers
     briefing_pack.py     flight schedule and the NATO-style operation order / intelligence summary (HTML)

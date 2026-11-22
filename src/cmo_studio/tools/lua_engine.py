@@ -188,6 +188,12 @@ def dry_run_build(project, dll_path: str | os.PathLike, variant: Optional[str] =
             if not out:
                 L.run("STUDIO_TEXT = table.concat(STUDIO_OUT or {}, '\\n')", "collect")
                 out = L.get_string("STUDIO_TEXT")
+    if db is not None and out:
+        from ..model.airbase import cannot_fly
+        stuck = [f"WARN: {u.name} can never take off: {why} (Tools > Repair air bases)"
+                 for u, _s, why in cannot_fly(project, db)]
+        if stuck:
+            out += "\n" + "\n".join(stuck)
     errors = [ln for ln in out.splitlines() if ln.startswith(("MOCK SCRIPT ERROR", "MOCK API ERROR", "FAILED")) or
               "ABORTED" in ln or "WARN:" in ln]
     if err:

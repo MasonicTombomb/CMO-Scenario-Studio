@@ -37,7 +37,7 @@ from typing import Optional
 from .. import __version__
 from ..model.project import Project
 from . import html as H
-from .compiler import compile_build_data, compile_reserves, compile_routes, page_names
+from .compiler import compile_build_data, compile_reserves, compile_intercepts, compile_routes, page_names
 from .lua_writer import lua_long_str, lua_str, lua_value
 
 MANIFEST = ".studio_manifest.json"
@@ -183,6 +183,7 @@ ScenEdit_RunScript('/{self.folder}/Build_Scenario.lua')
             f"STUDIO.SIDES = {lua_value([s.name for s in p.sides])}",
             f"STUDIO.RESERVES = {lua_value(compile_reserves(p), 0, 140)}",
             f"STUDIO.ROUTES = {lua_value(compile_routes(p), 0, 140)}",
+            f"STUDIO.INTERCEPTS = {lua_value(compile_intercepts(p), 0, 140)}",
             "",
             "local ok, err = pcall(ScenEdit_RunScript, STUDIO.PATH .. 'Studio_Runtime.lua')",
             "if not ok then print('[' .. STUDIO.TITLE .. '] Could not load Studio_Runtime.lua: ' .. tostring(err)) end",

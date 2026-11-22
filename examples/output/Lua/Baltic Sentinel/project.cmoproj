@@ -843,7 +843,8 @@
       "options": {
         "OneThirdRule": true
       },
-      "notes": ""
+      "notes": "",
+      "intercept": null
     },
     {
       "id": "m_599b4bf6",
@@ -862,7 +863,8 @@
       "options": {
         "OneThirdRule": true
       },
-      "notes": ""
+      "notes": "",
+      "intercept": null
     },
     {
       "id": "m_a4620aa7",
@@ -878,7 +880,8 @@
       ],
       "targets": [],
       "options": {},
-      "notes": ""
+      "notes": "",
+      "intercept": null
     },
     {
       "id": "m_c395e991",
@@ -894,7 +897,8 @@
       ],
       "targets": [],
       "options": {},
-      "notes": ""
+      "notes": "",
+      "intercept": null
     },
     {
       "id": "m_3d776356",
@@ -912,7 +916,8 @@
       ],
       "targets": [],
       "options": {},
-      "notes": ""
+      "notes": "",
+      "intercept": null
     },
     {
       "id": "m_e7189c59",
@@ -930,7 +935,8 @@
       "options": {
         "isactive": false
       },
-      "notes": ""
+      "notes": "",
+      "intercept": null
     }
   ],
   "events": [

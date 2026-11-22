@@ -6,9 +6,9 @@ together (a CMO group in the build) that moves and rotates as one.
 
 The studio ships two kinds:
 
-- **80 generic templates** (670 units) that you place anywhere: airfields of every size, command posts, radar
+- **80 generic templates** (678 units) that you place anywhere: airfields of every size, command posts, radar
   and SAM sites, garrisons, depots, ports and infrastructure.
-- **101 UK real-world sites** (1575 units) at their actual positions: **46 air bases** laid out from
+- **101 UK real-world sites** (1831 units) at their actual positions: **46 air bases** laid out from
   OpenStreetMap - every mapped runway at its real position, heading and length, each hardened aircraft shelter,
   hangar, apron, control tower, radar, fuel farm and munitions bunker - plus naval bases, radar heads, command
   centres, communications and intelligence sites, nuclear sites, munitions depots and garrisons.

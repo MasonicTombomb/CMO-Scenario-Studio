@@ -258,7 +258,14 @@ def build_timeline(p: Project, include_missions: bool = True, include_courses: b
                            f"{('/' + ms.subtype) if ms.subtype else ''}, {len(ms.units)} unit(s)"
                            + ("" if active else "\nStarts inactive")
                            + "".join(f"\nSwitched by event '{e.name}'" for e in switches))
-            if a or b or not active:
+            if ms.mclass == "intercept":
+                from .intercept import describe, intercept_of
+                ic = intercept_of(ms)
+                r.detail += "\n" + describe(p, ms)
+                s0 = start + 60 * ic.window_from if ic.window and ic.window_from else start
+                s1 = start + 60 * ic.window_to if ic.window and ic.window_to else end
+                r.marks.append(Mark(BAND, s0, s1, label="on call" if active else "on call (off at start)"))
+            elif a or b or not active:
                 s = a or start
                 t = b or end
                 r.marks.append(Mark(BAND, s, t, label="active" if active else "inactive at start"))

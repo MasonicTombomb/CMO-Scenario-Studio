@@ -270,6 +270,20 @@ class Database:
             return []
         return [Space(int(t or 0), int(s or 0), int(c or 0)) for t, s, c in rows]
 
+    def runway_code(self, facility_id: int) -> int:
+        """Longest runway of a facility as an EnumRunwayLength code (0: none)."""
+        try:
+            r = self._q("select max(af.RunwayLength) from DataFacilityAircraftFacilities l join DataAircraftFacility af "
+                        "on af.ID = l.ComponentID where l.ID = ? and af.Type in (2001, 2002)", (facility_id,))
+        except sqlite3.Error:
+            return 0
+        return int(r[0][0] or 0) if r else 0
+
+    def aircraft_runway_code(self, aircraft_id: int) -> int:
+        """The runway an aircraft needs, as an EnumRunwayLength code (0: unknown)."""
+        r = self._q("select RunwayLengthCode from DataAircraft where ID=?", (aircraft_id,))
+        return int(r[0][0] or 0) if r else 0
+
     def aircraft_profile(self, aircraft_id: int):
         """Size and rotary-wing flag of an aircraft (model.hosting.Aircraft), or None."""
         from ..model.hosting import ROTARY_CATEGORIES, Aircraft

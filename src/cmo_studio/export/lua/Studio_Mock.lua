@@ -138,6 +138,7 @@ function ScenEdit_SetUnit(t)
   end
   if t.manualAltitude ~= nil then u.manualAltitude = t.manualAltitude end
   if t.manualSpeed ~= nil then u.manualSpeed = t.manualSpeed end
+  if t.rtb then u.rtb = true end
   if t.depth ~= nil then need(tonumber(t.depth), 'SetUnit: depth must be a number'); u.depth = t.depth end
   if t.base ~= nil and t.base ~= false then
     need(MOCK.units[t.base] or ScenEdit_GetUnit({ name = t.base }), 'SetUnit: base not found: ' .. tostring(t.base))
@@ -145,8 +146,11 @@ function ScenEdit_SetUnit(t)
   end
   return u
 end
+local function findMission(name)
+  for _, m in pairs(MOCK.missions) do if m.name == name then return m end end
+end
 function ScenEdit_SetEMCON(kind, id, s)
-  need(MOCK.units[id] or MOCK.sides[id], 'SetEMCON: unknown ' .. tostring(id))
+  need(MOCK.units[id] or MOCK.sides[id] or (kind == 'Mission' and findMission(id)), 'SetEMCON: unknown ' .. tostring(id))
   if MOCK.units[id] then MOCK.units[id].emcon = s end
   return true
 end
@@ -166,11 +170,25 @@ function ScenEdit_AddMission(side, name, class, opts)
   MOCK.missions[key] = { side = side, name = name, class = class, units = {}, targets = {} }
   return { name = name, guid = guid() }
 end
-local function findMission(name)
-  for _, m in pairs(MOCK.missions) do if m.name == name then return m end end
+function ScenEdit_SetMission(side, name, opts)
+  local m = findMission(name)
+  need(m, 'SetMission: no mission ' .. tostring(name))
+  if opts.isactive ~= nil then
+    for _, ic in ipairs(STUDIO and STUDIO.INTERCEPTS or {}) do
+      need(not (opts.isactive and ic.mission == name and #m.targets == 0),
+           'SetMission: intercept ' .. name .. ' switched on with no targets (CMO would launch at anything)')
+    end
+    m.active = opts.isactive
+  end
+  return true
 end
-function ScenEdit_SetMission(side, name, opts) need(findMission(name), 'SetMission: no mission ' .. tostring(name)); return true end
 function ScenEdit_AssignUnitToMission(g, name)
+  if name == 'none' then
+    for _, m in pairs(MOCK.missions) do
+      for i = #m.units, 1, -1 do if m.units[i] == g then table.remove(m.units, i) end end
+    end
+    return true
+  end
   local m = findMission(name)
   need(m, 'AssignUnitToMission: no mission ' .. tostring(name))
   local u = MOCK.units[g]
@@ -185,6 +203,17 @@ function ScenEdit_AssignUnitAsTarget(g, name)
   need(MOCK.units[g], 'AssignUnitAsTarget: unknown unit')
   m.targets[#m.targets + 1] = g
   return true
+end
+function ScenEdit_RemoveUnitAsTarget(g, name)
+  local m = findMission(name)
+  need(m, 'RemoveUnitAsTarget: no mission ' .. tostring(name))
+  for i = #m.targets, 1, -1 do if m.targets[i] == g then table.remove(m.targets, i) end end
+  return true
+end
+-- tests put contacts here: MOCK.contacts[side] = { { guid=, actualunitid=, latitude=, ... }, ... }
+function ScenEdit_GetContacts(side) return (MOCK.contacts or {})[side] or {} end
+function ScenEdit_GetContact(t)
+  for _, c in ipairs((MOCK.contacts or {})[t.side] or {}) do if c.guid == t.guid then return c end end
 end
 
 function ScenEdit_SetEvent(name, t) need(t.mode == 'add', 'SetEvent: mode'); MOCK.events[name] = { triggers = 0, actions = 0 }; return true end

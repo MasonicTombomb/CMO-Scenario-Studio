@@ -95,6 +95,12 @@ function StudioUnitAlive(sel)
 end
 
 function StudioMissionStatus(side, mission, active)
+  for _, ic in ipairs(STUDIO.INTERCEPTS or {}) do      -- an intercept: arm or disarm it (it runs its own mission)
+    if ic.mission == mission and ic.side == side then
+      StudioSetKV('STUDIO_IC_' .. ic.id .. '_OFF', active and '0' or '1')
+      return
+    end
+  end
   local ok, err = pcall(ScenEdit_SetMission, side, mission, { isactive = active and true or false })
   if not ok then StudioLog('Mission "' .. tostring(mission) .. '": ' .. tostring(err)) end
 end
@@ -342,6 +348,271 @@ function StudioRoutesTick(atBuild)
     end
   end
   return given
+end
+
+------------------------------------------------------------------ intercepts (aircraft on call)
+-- STUDIO.INTERCEPTS = { { id=, side=, mission=, names={...}, home={lat,lon}, armed=, logic='all'|'any', c={...conditions},
+--                         area={{lat,lon},...}, missiles=, raid=, from=, to=, flag=, per=, max=, reserve=, down=<seconds>,
+--                         message=, signal= }, ... }
+-- StudioInterceptTick() runs every half minute (a generated event). The mission is a native Air Intercept mission that
+-- is kept switched off. When a contact meets the conditions it becomes a target, aircraft are assigned and the mission
+-- is switched on; when no target is left the aircraft are sent home and it is switched off again. It is never left on
+-- without a target: CMO would then launch at anything it detects.
+--   STUDIO_IC_<id>_T     contacts being intercepted: '<contact>=<target id>=<time last matched> ...'
+--   STUDIO_IC_<id>_U     aircraft scrambled: '<guid> ...'
+--   STUDIO_IC_<id>_SEEN  when each contact was first held: '<contact>=<time> ...'
+--   STUDIO_IC_<id>_OFF   '1' when an event has switched the intercept off
+
+local function nm(lat1, lon1, lat2, lon2)
+  local p1, p2 = math.rad(lat1), math.rad(lat2)
+  local a = math.sin((p2 - p1) / 2) ^ 2 + math.cos(p1) * math.cos(p2) * math.sin(math.rad(lon2 - lon1) / 2) ^ 2
+  return 2 * 3440.065 * math.asin(math.min(1, math.sqrt(a)))
+end
+
+local function bearingTo(lat1, lon1, lat2, lon2)
+  local p1, p2, d = math.rad(lat1), math.rad(lat2), math.rad(lon2 - lon1)
+  return math.deg(math.atan(math.sin(d) * math.cos(p2),
+                            math.cos(p1) * math.sin(p2) - math.sin(p1) * math.cos(p2) * math.cos(d))) % 360
+end
+
+local function insideArea(lat, lon, pts)
+  local inside, j = false, #pts
+  for i = 1, #pts do
+    local yi, xi, yj, xj = pts[i][1], pts[i][2], pts[j][1], pts[j][2]
+    if (yi > lat) ~= (yj > lat) and lon < (xj - xi) * (lat - yi) / (yj - yi) + xi then inside = not inside end
+    j = i
+  end
+  return inside
+end
+
+local function words(s)
+  local t = {}
+  for w in string.gmatch(s or '', '%S+') do t[#t + 1] = w end
+  return t
+end
+
+-- a contact property, or nil if this build does not have it
+local function prop(c, k)
+  local ok, v = pcall(function() return c[k] end)
+  if ok then return v end
+end
+
+local function contactsOf(side)
+  local ok, list = pcall(ScenEdit_GetContacts, side)
+  if not ok or type(list) ~= 'table' then
+    ok, list = pcall(function() return VP_GetSide({ side = side }).contacts end)
+    if not ok or not list then return {} end
+  end
+  local out = {}
+  for _, c in ipairs(list) do
+    if prop(c, 'latitude') == nil and prop(c, 'guid') then
+      local ok2, full = pcall(ScenEdit_GetContact, { side = side, guid = c.guid })
+      if ok2 and full then c = full end
+    end
+    if prop(c, 'guid') and tonumber(prop(c, 'latitude')) and tonumber(prop(c, 'longitude')) then out[#out + 1] = c end
+  end
+  return out
+end
+
+local function isKind(c, missiles)
+  local d = string.lower(tostring(prop(c, 'type_description') or prop(c, 'typed') or ''))
+  local t = prop(c, 'type')
+  if d:find('missile') or t == 1 or t == 'Missile' then return missiles and true or false end
+  if d:find('air') and not d:find('airfield') and not d:find('airbase') then return true end
+  return t == 0 or t == 'Air'
+end
+
+local function identified(c)
+  local v = prop(c, 'classificationlevel')
+  if tonumber(v) then return tonumber(v) >= 3 end
+  v = string.lower(tostring(v or ''))
+  return v:find('class') ~= nil or v:find('precise') ~= nil
+end
+
+local CHECK = {
+  area = function(ic, c) return ic.area ~= nil and insideArea(c.latitude, c.longitude, ic.area) end,
+  near = function(ic, c, v) return ic.home ~= nil and nm(ic.home[1], ic.home[2], c.latitude, c.longitude) <= v end,
+  posture = function(ic, c, v) return v[string.upper(string.sub(tostring(prop(c, 'posture') or 'X'), 1, 1))] == true end,
+  inbound = function(ic, c, v)
+    local h = tonumber(prop(c, 'heading'))
+    if not h or not ic.home then return false end
+    local off = math.abs((h - bearingTo(c.latitude, c.longitude, ic.home[1], ic.home[2]) + 180) % 360 - 180)
+    return off <= v
+  end,
+  altitude = function(ic, c, v)
+    local a = tonumber(prop(c, 'altitude'))
+    return a ~= nil and a >= v[1] and a <= v[2]
+  end,
+  speed = function(ic, c, v) local s = tonumber(prop(c, 'speed')); return s ~= nil and s >= v end,
+  unidentified = function(ic, c) return not identified(c) end,
+  emitting = function(ic, c) local e = prop(c, 'emissions'); return type(e) == 'table' and next(e) ~= nil end,
+  tracked = function(ic, c, v, held) return held >= v end,
+}
+
+local function matches(ic, c, held)
+  if not isKind(c, ic.missiles) then return false end
+  local any, some = false, false
+  for k, v in pairs(ic.c or {}) do
+    some = true
+    local ok, yes = pcall(CHECK[k], ic, c, v, held)
+    if not ok then StudioDebug('intercept ' .. ic.mission .. ' ' .. k .. ': ' .. tostring(yes)); yes = false end
+    if ic.logic == 'any' then
+      if yes then any = true end
+    elseif not yes then
+      return false
+    end
+  end
+  if not some then return true end
+  return ic.logic ~= 'any' or any
+end
+
+local function setMission(ic, on)
+  pcall(ScenEdit_SetMission, ic.side, ic.mission, { isactive = on })
+end
+
+local function airborne(u) return prop(u, 'condition_v') == 'Airborne' end
+
+local function ready(u)
+  local t = tonumber(prop(u, 'readytime_v'))
+  return not t or t <= 0
+end
+
+local function addTarget(ic, c)
+  for _, id in ipairs({ prop(c, 'actualunitid') or false, c.guid }) do
+    if id then
+      local ok, res = pcall(ScenEdit_AssignUnitAsTarget, id, ic.mission)
+      if ok and res ~= false and not (type(res) == 'table' and next(res) == nil) then return id end
+    end
+  end
+end
+
+local function say(ic, text)
+  if ic.message then StudioMsg(ic.side, '<P>' .. text .. '</P>') end
+  StudioDebug(ic.mission .. ': ' .. text)
+end
+
+local function standDown(ic, key, list)
+  setMission(ic, false)
+  for _, g in ipairs(list) do
+    local u = StudioGetUnit(g)
+    if u then
+      pcall(ScenEdit_AssignUnitToMission, g, 'none')
+      if airborne(u) then pcall(ScenEdit_SetUnit, { guid = g, rtb = true }) end
+    end
+  end
+  StudioSetKV(key .. 'U', '')
+  say(ic, ic.mission .. ': stand down. Aircraft returning to base.')
+end
+
+local function intercept(ic, now)
+  local key = 'STUDIO_IC_' .. ic.id .. '_'
+  local off = StudioGetKV(key .. 'OFF', '')
+  local armed = off == '' and ic.armed or off == '0'
+
+  -- what the side sees, and for how long
+  local seen, first = {}, {}
+  for _, w in ipairs(words(StudioGetKV(key .. 'SEEN', ''))) do
+    local g, t = w:match('^(.-)=(%-?%d+)$')
+    if g then first[g] = tonumber(t) end
+  end
+  local good, here = {}, {}
+  local open = armed and now >= (ic.from or now) and now <= (ic.to or now)
+               and (not ic.flag or StudioFlag(ic.flag))
+  if armed then
+    for _, c in ipairs(contactsOf(ic.side)) do
+      first[c.guid] = first[c.guid] or now
+      seen[#seen + 1] = c.guid .. '=' .. first[c.guid]
+      here[c.guid] = c
+      if open and matches(ic, c, now - first[c.guid]) then good[#good + 1] = c end
+    end
+  end
+  StudioSetKV(key .. 'SEEN', table.concat(seen, ' '))
+  if #good < (ic.raid or 1) then good = {} end
+  if ic.home then
+    table.sort(good, function(a, b)
+      return nm(ic.home[1], ic.home[2], a.latitude, a.longitude) < nm(ic.home[1], ic.home[2], b.latitude, b.longitude)
+    end)
+  end
+  local isGood = {}
+  for _, c in ipairs(good) do isGood[c.guid] = true end
+
+  -- targets: keep those that still match (or matched recently), drop the rest, add new ones
+  local targets, n = {}, 0
+  for _, w in ipairs(words(StudioGetKV(key .. 'T', ''))) do
+    local g, id, last = w:match('^(.-)=(.-)=(%-?%d+)$')
+    if g then
+      last = isGood[g] and now or tonumber(last)
+      -- destroyed: drop it at once; a track lost for a moment is kept for the stand-down time
+      local gone = not here[g] and not StudioGetUnit(id)
+      if armed and not gone and now - last <= (ic.down or 300) then
+        targets[g] = { id = id, last = last }
+        n = n + 1
+      else
+        pcall(ScenEdit_RemoveUnitAsTarget, id, ic.mission)
+      end
+    end
+  end
+  local fresh = 0
+  for _, c in ipairs(good) do
+    if n >= (ic.max or 1) then break end
+    if not targets[c.guid] then
+      local id = addTarget(ic, c)
+      if id then
+        targets[c.guid] = { id = id, last = now }
+        n = n + 1
+        fresh = fresh + 1
+      else
+        StudioLog(ic.mission .. ': CMO would not take ' .. tostring(prop(c, 'name')) .. ' as a target')
+      end
+    end
+  end
+  local t = {}
+  for g, v in pairs(targets) do t[#t + 1] = g .. '=' .. v.id .. '=' .. v.last end
+  table.sort(t)
+  StudioSetKV(key .. 'T', table.concat(t, ' '))
+
+  -- aircraft: the ones already scrambled, then more if there are targets for them
+  local up, isUp = {}, {}
+  for _, g in ipairs(words(StudioGetKV(key .. 'U', ''))) do
+    if StudioGetUnit(g) then up[#up + 1] = g; isUp[g] = true end
+  end
+  if n == 0 then
+    if #up > 0 then standDown(ic, key, up) end
+    return 0
+  end
+  local free = {}
+  for _, name in ipairs(ic.names or {}) do
+    local u = StudioGetUnit({ side = ic.side, name = name })
+    if u and not isUp[u.guid] and ready(u) then free[#free + 1] = u end
+  end
+  local launched = 0
+  local want, spare = n * (ic.per or 2), #free - (ic.reserve or 0)
+  while #up < want and launched < spare do
+    local u = free[launched + 1]
+    launched = launched + 1
+    local ok, err = pcall(ScenEdit_AssignUnitToMission, u.guid, ic.mission)
+    if ok then up[#up + 1] = u.guid
+    else StudioLog(ic.mission .. ': could not assign ' .. u.name .. ': ' .. tostring(err)) end
+  end
+  StudioSetKV(key .. 'U', table.concat(up, ' '))
+  setMission(ic, true)
+  if launched > 0 then
+    if ic.signal then StudioSetFlag(ic.signal, true) end
+    say(ic, ic.mission .. ': scramble! ' .. launched .. ' aircraft launching against ' .. n .. ' contact(s).')
+  elseif fresh > 0 then
+    say(ic, ic.mission .. ': new contact, but no more aircraft are available.')
+  end
+  return launched
+end
+
+-- Returns the number of aircraft scrambled.
+function StudioInterceptTick()
+  local now, total = math.floor(tonumber(ScenEdit_CurrentTime()) or 0), 0
+  for _, ic in ipairs(STUDIO.INTERCEPTS or {}) do
+    local ok, r = pcall(intercept, ic, now)
+    if ok then total = total + (r or 0) else StudioLog('Intercept "' .. ic.mission .. '": ' .. tostring(r)) end
+  end
+  return total
 end
 
 ------------------------------------------------------------------ short aliases (only if free)

@@ -201,6 +201,7 @@ class MainWindow(QMainWindow):
                                                             self.export_page._dry()), "F5")
         self._action(t, "Loadout viewer...", lambda: self.open_loadout_viewer(), "Ctrl+L")
         self._action(t, "Place unit template...", lambda: self.place_template(), "Ctrl+T")
+        self._action(t, "Repair air bases...", lambda: self.repair_airbases())
         self._action(t, "Template library...", self.open_template_library)
         self._action(t, "Add patrol area from library...", lambda: self.add_library_area(), "Ctrl+Shift+A")
         self._action(t, "Area library...", self.open_area_library)
@@ -294,6 +295,32 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "New scenario", msg + "\n\n" + "\n".join(wiz.result_.notes))
         self.statusBar().showMessage(msg + " Check the Issues panel, then edit anything you like.", 8000)
 
+    def repair_airbases(self, ask: bool = False) -> None:
+        """Add the runway access points (and grouping) that bases need before aircraft can taxi and take off."""
+        from ..model.airbase import broken_sites, repair
+        db, p = self.dbm.db, self.doc.project
+        if db is None:
+            if not ask:
+                self.statusBar().showMessage("Open a database first (Settings > CMO folder).", 5000)
+            return
+        bad = broken_sites(p, db)
+        if not bad:
+            if not ask:
+                QMessageBox.information(self, "Air bases", "Every air base has a runway, parking and a way between them.")
+            return
+        names = ", ".join(x.name for x in bad[:8]) + (f" and {len(bad) - 8} more" if len(bad) > 8 else "")
+        if ask and QMessageBox.question(
+                self, "Air bases", f"Aircraft cannot take off from: {names}.\n\nThese bases were built without runway "
+                "access points, so CMO leaves aircraft waiting for a taxiway. Add them now? (One undo takes them "
+                "out again.)") != QMessageBox.StandardButton.Yes:
+            return
+        with self.doc.modify("Repair air bases", "units"):
+            done = repair(p, db, bad)
+        self.statusBar().showMessage("Air bases repaired: " + "; ".join(done) + ". Export and rebuild.", 12000)
+        if not ask:
+            QMessageBox.information(self, "Air bases", "Repaired:\n\n" + "\n".join(done) +
+                                    "\n\nExport and rebuild the scenario in CMO.")
+
     def open_project(self, path: Optional[str] = None):
         if not self._confirm_discard():
             return
@@ -311,6 +338,7 @@ class MainWindow(QMainWindow):
         self._maybe_switch_db(p)
         self.map_page.map.fit_project()
         self.statusBar().showMessage(f"Opened {path}", 5000)
+        self.repair_airbases(ask=True)
 
     def _maybe_switch_db(self, p: Project):
         want = p.meta.db_file

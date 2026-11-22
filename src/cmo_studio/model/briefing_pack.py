@@ -31,6 +31,7 @@ MISSION_TERMS = {
     ("patrol", "land"): "armed reconnaissance over land",
     ("patrol", "mixed"): "mixed patrol",
     ("patrol", "sead"): "suppression of enemy air defences (SEAD)",
+    ("intercept", ""): "quick reaction alert (QRA) / ground alert intercept",
     ("strike", "air"): "offensive counter-air (OCA) sweep",
     ("strike", "land"): "air interdiction / strike",
     ("strike", "sea"): "anti-surface warfare (ASuW) strike",
@@ -402,6 +403,12 @@ def opord_sections(p: Project, sid: str, db=None) -> tuple[list[Section], list[S
     tasks = []
     for m in _missions_of(p, sid):
         units = [p.unit(i) for i in m.units if p.unit(i)]
+        if m.mclass == "intercept":
+            from .intercept import describe
+            tasks.append(f"<li><b>{_e(m.name)}</b> - {_e(_term(m))}. Forces: "
+                         f"{_e(', '.join(f'{u.name} ({max(1, u.count)})' for u in units) or 'none assigned')}. "
+                         f"{_e(describe(p, m))}</li>")
+            continue
         area = p.zone(m.zone).name if m.zone and p.zone(m.zone) else "as directed"
         when = ""
         if m.options.get("starttime") or m.options.get("endtime"):

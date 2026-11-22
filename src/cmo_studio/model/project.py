@@ -268,6 +268,45 @@ class Zone:
 
 
 @dataclass
+class Intercept:
+    """When an intercept mission's aircraft launch, and what they do (see model.intercept)."""
+    logic: str = "all"                  # all | any of the ticked contact conditions
+    in_area: bool = True                # inside the mission's area
+    near: bool = False
+    near_nm: float = 100.0
+    defend: str = ""                    # unit distances are measured from; '' = the aircraft's base
+    posture: bool = True
+    postures: list[str] = field(default_factory=lambda: ["H", "U", "X"])
+    inbound: bool = False
+    inbound_deg: float = 45.0
+    altitude: bool = False
+    alt_min: float = 0.0                # metres
+    alt_max: float = 20000.0
+    speed: bool = False
+    speed_min: float = 300.0            # knots
+    unidentified: bool = False
+    emitting: bool = False
+    tracked: bool = False
+    tracked_min: float = 2.0            # minutes
+    missiles: bool = False              # also react to missiles
+    raid: bool = False
+    raid_min: int = 2
+    window: bool = False
+    window_from: int = 0                # minutes after the start (0: no limit)
+    window_to: int = 0
+    flag: bool = False
+    flag_key: str = ""
+    per_contact: int = 2                # aircraft launched for each contact
+    max_contacts: int = 2               # contacts intercepted at once
+    reserve: int = 0                    # aircraft always kept back
+    roe: str = "identify"               # identify | tight | free
+    radar: bool = True                  # radars on once launched
+    stand_down_min: float = 5.0
+    message: bool = True
+    signal: str = ""                    # flag set when aircraft launch
+
+
+@dataclass
 class Mission:
     id: str = field(default_factory=lambda: new_id("m"))
     side: str = ""
@@ -281,6 +320,7 @@ class Mission:
     targets: list[str] = field(default_factory=list)   # strike target unit ids
     options: dict[str, Any] = field(default_factory=dict)   # ScenEdit_SetMission fields
     notes: str = ""
+    intercept: Optional[Intercept] = None                    # launch conditions ('intercept' missions)
 
 
 @dataclass

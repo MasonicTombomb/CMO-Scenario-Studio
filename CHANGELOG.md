@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.11.0 — 2026-11-22
+
+- **Fixed: aircraft at template air bases never took off** - they waited for a taxiway for ever. CMO needs a *runway
+  access point* (or taxiway) between an aircraft's parking and the runway; all 46 UK air bases, the road base and the
+  expeditionary strip had none. The templates now have them, sized for the largest aircraft the base can park.
+  **Projects made before this**: the studio offers to add them when you open one (or **Tools > Repair air bases...**,
+  one undo), then export and rebuild. The Issues panel and the dry-run name every aircraft that could never take off:
+  no access point, one too small, no runway or too short a one, or a base that is not one CMO group.
+- **Fixed: RAF Trimingham was not built** (CMO's terrain puts its old position underwater); it is now where CMO's own
+  UK radar file has it.
+- **Intercept missions.** A new mission class: aircraft on call at a base that launch when the conditions you tick are
+  met - inside an area, close to the base, hostile / unfriendly / unknown / neutral, inbound, altitude, speed, not
+  identified, emitting, tracked for a time; all or any of them - and, if ticked, a raid size, a time window or a flag.
+  Set how many aircraft go for each contact, how many are kept back, their orders, and when they stand down. Presets
+  for quick reaction alert, base defence and a bomber raid. Shown on the Timeline and in the briefing pack; checked
+  by the Issues panel and played through by the dry-run.
+- The Issues panel explains that a *Strike / Air* mission with no targets launches at any air contact.
+
 ## 1.10.0 — 2026-11-21
 
 - **Select several units on the map.** Ctrl-click, Shift-drag a box, or Ctrl+A; drag one to move them all; right-click

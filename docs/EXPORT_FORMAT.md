@@ -104,9 +104,10 @@ Unit and area references are studio ids; the engine maps them to GUIDs and refer
 | `StudioSpawn(id)` | Spawn a project reinforcement once; returns the units. |
 | `StudioUnderWay(unit)` | True if the unit is airborne or under way (not an aircraft or boat sitting in a base). |
 | `StudioRoutesTick(atBuild)` | The course manager (below). Returns how many courses it gave out. |
+| `StudioInterceptTick()` | The intercept manager (below). Returns how many aircraft it scrambled. |
 
 `STUDIO.TITLE`, `STUDIO.PATH`, `STUDIO.START` (Unix time of the scenario start), `STUDIO.SIDES` and
-`STUDIO.RESERVES` and `STUDIO.ROUTES` are set by `LuaInit.lua`. If not already defined, the short aliases `Log`, `Flag`, `SetFlag`,
+`STUDIO.RESERVES`, `STUDIO.ROUTES` and `STUDIO.INTERCEPTS` are set by `LuaInit.lua`. If not already defined, the short aliases `Log`, `Flag`, `SetFlag`,
 `GetKV`, `SetKV` and `RunScript` point to the studio functions.
 
 ### Courses (`STUDIO.ROUTES`)
@@ -149,6 +150,30 @@ The course is given with `ScenEdit_SetUnit({guid=, course={ {latitude=, longitud
 if CMO refuses the altitude, speed or name fields, the plain waypoints are used. `land` sets `base=` to the landing base's
 GUID, then `rtb=true`; `rtb` sets `rtb=true`. A unit that is not found (destroyed, or a reinforcement not yet
 arrived) is skipped until it appears.
+
+### Intercepts (`STUDIO.INTERCEPTS`)
+
+An intercept mission is built as `ScenEdit_AddMission(side, name, 'strike', {type='air'})`, switched off and with no
+aircraft or targets. Its conditions are in `LuaInit.lua`:
+
+```lua
+STUDIO.INTERCEPTS = {
+  { id = '<mission id>', side = 'UK', mission = 'QRA North', names = { 'QRA 1', 'QRA 2' }, armed = true,
+    home = { 57.7, -3.3 }, area = { {57, -8}, {61, -8}, {61, 3}, {57, 3} }, logic = 'all',
+    c = { area = true, posture = { H = true, X = true }, near = 150, inbound = 45, altitude = { 0, 1000 },
+          speed = 300, unidentified = true, emitting = true, tracked = 120 },        -- only the ticked ones
+    missiles = false, raid = 2, from = 1904530000, to = 1904540000, flag = 'GO',     -- only if ticked
+    per = 2, max = 2, reserve = 0, down = 300, message = true, signal = 'QRA_AIRBORNE' },
+}
+```
+
+A repeatable event **Studio: intercepts** (*Regular time*, every 30 seconds) runs `StudioInterceptTick()`. It reads the
+side's contacts (`ScenEdit_GetContacts`, or `VP_GetSide(...).contacts`), and for one that matches calls
+`ScenEdit_AssignUnitAsTarget`, `ScenEdit_AssignUnitToMission` and `ScenEdit_SetMission(..., {isactive=true})`. Targets
+that stop matching for `down` seconds, or are destroyed, are taken off with `ScenEdit_RemoveUnitAsTarget`; with none
+left the mission is switched off, its aircraft unassigned and those airborne sent home (`rtb=true`). **It is never left
+on without a target**: CMO would then launch at the first contact it detects. Progress is kept in the key values
+`STUDIO_IC_<id>_T`, `_U` and `_SEEN`; `StudioMissionStatus` on an intercept sets `_OFF` instead of touching the mission.
 
 ### Generated event script
 
