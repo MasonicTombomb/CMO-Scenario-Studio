@@ -352,6 +352,10 @@ def _check_intercept(p: Project, ms, label: str, add) -> None:
     for u in aircraft:
         if not u.host:
             add(WARNING, "Missions", f"{label}: {u.name} starts in the air, not at a base.", ms.id)
+        twice = [m.name for m in p.missions if m.id != ms.id and u.id in m.units and m.mclass == "intercept"]
+        if twice:
+            add(ERROR, "Missions", f"{label}: {u.name} is also on call for '{twice[0]}'. An aircraft can be on call for "
+                                   "one intercept only.", ms.id)
         other = [m.name for m in p.missions if m.id != ms.id and u.id in m.units and m.mclass != "intercept"]
         if other:
             add(WARNING, "Missions", f"{label}: {u.name} is also on '{other[0]}', so it may be away when needed.", ms.id)

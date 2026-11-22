@@ -178,7 +178,8 @@ function ScenEdit_SetMission(side, name, opts)
       need(not (opts.isactive and ic.mission == name and #m.targets == 0),
            'SetMission: intercept ' .. name .. ' switched on with no targets (CMO would launch at anything)')
     end
-    m.active = opts.isactive
+    if m.active == opts.isactive and m.built then MOCK.reactivated = (MOCK.reactivated or 0) + 1 end
+    m.active, m.built = opts.isactive, true
   end
   return true
 end
@@ -194,15 +195,36 @@ function ScenEdit_AssignUnitToMission(g, name)
   local u = MOCK.units[g]
   need(u, 'AssignUnitToMission: unknown unit')
   need(u.side == m.side, 'AssignUnitToMission: ' .. u.name .. ' is not on side ' .. m.side)
+  for _, x in ipairs(m.units) do need(x ~= g, 'AssignUnitToMission: ' .. u.name .. ' is already on ' .. name) end
+  for _, o in pairs(MOCK.missions) do                 -- a unit is on one mission at a time
+    for i = #o.units, 1, -1 do if o.units[i] == g then table.remove(o.units, i) end end
+  end
   m.units[#m.units + 1] = g
   return true
 end
 function ScenEdit_AssignUnitAsTarget(g, name)
   local m = findMission(name)
   need(m and m.class == 'strike', 'AssignUnitAsTarget: no strike mission ' .. tostring(name))
-  need(MOCK.units[g], 'AssignUnitAsTarget: unknown unit')
-  m.targets[#m.targets + 1] = g
+  need(MOCK.units[g] or MOCK.contactUnit(g), 'AssignUnitAsTarget: unknown unit')
+  local real = MOCK.units[g] and g or MOCK.contactUnit(g)
+  for _, t in ipairs(m.targets) do
+    need(t ~= real, 'AssignUnitAsTarget: ' .. name .. ' already has that target (An item with the same key has already been added)')
+  end
+  m.targets[#m.targets + 1] = real
+  if MOCK.emptyReply then return {} end               -- some calls answer with an empty table although they worked
   return true
+end
+function MOCK.contactUnit(g)
+  for _, list in pairs(MOCK.contacts or {}) do
+    for _, c in ipairs(list) do if c.guid == g then return c.actualunitid end end
+  end
+end
+function ScenEdit_GetMission(side, name)
+  local m = findMission(name)
+  if m and m.side == side then
+    return { name = name, isactive = m.active, unitlist = m.units,
+             targetlist = not MOCK.noTargetList and m.targets or nil }
+  end
 end
 function ScenEdit_RemoveUnitAsTarget(g, name)
   local m = findMission(name)

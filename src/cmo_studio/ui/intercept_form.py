@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (QCheckBox, QComboBox, QDoubleSpinBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout,
-                             QLabel, QLineEdit, QMenu, QPushButton, QSpinBox, QVBoxLayout, QWidget)
+                             QLabel, QLineEdit, QListWidget, QListWidgetItem, QMenu, QMessageBox, QPushButton, QSpinBox,
+                             QVBoxLayout, QWidget)
 
 from ..model.intercept import (CONTACT_CONDITIONS, GATES, POSTURES, PRESETS, ROE, aircraft_at, apply_preset,
-                               bases_with_aircraft, describe, intercept_of)
+                               bases_with_aircraft, busy_with, describe, intercept_of)
 from .widgets import IdCombo, hint_label
 
 
@@ -15,7 +16,7 @@ class InterceptForm(QWidget):
     """Edits ``mission.intercept``. Emits :attr:`edited` (attribute, value) and lets the page store it."""
     edited = pyqtSignal(str, object)
     presetChosen = pyqtSignal(str)
-    unitsChosen = pyqtSignal(list)
+    baseTicked = pyqtSignal(str, bool, bool)        # base, on call, move its aircraft from other missions
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,14 +29,14 @@ class InterceptForm(QWidget):
         lay.setContentsMargins(0, 0, 0, 0)
 
         top = QGroupBox("Aircraft on call")
-        tl = QHBoxLayout(top)
-        tl.addWidget(QLabel("Air base:"))
-        self.base = IdCombo()
-        tl.addWidget(self.base, 1)
-        self.add_base = QPushButton("Put its aircraft on call")
-        self.add_base.setToolTip("Add every aircraft at this base to the assigned units below")
-        self.add_base.clicked.connect(self._add_base)
-        tl.addWidget(self.add_base)
+        tl = QVBoxLayout(top)
+        self.bases = QListWidget()
+        self.bases.setMaximumHeight(110)
+        self.bases.setToolTip("Tick the air bases whose aircraft are on call for this mission; untick one to take its "
+                              "aircraft off. Choose single aircraft under Assigned units.")
+        self.bases.itemChanged.connect(self._base_changed)
+        tl.addWidget(self.bases)
+        tl.addWidget(hint_label("Give each base its own intercept mission: an aircraft can be on call for one only."))
         lay.addWidget(top)
 
         g = QGroupBox("Launch when a contact...")
@@ -81,6 +82,7 @@ class InterceptForm(QWidget):
         self.roe.currentIndexChanged.connect(lambda *_: self._emit("roe", self.roe.currentData()))
         f.addRow("Orders:", self.roe)
         f.addRow("Stand down after:", self._dspin("stand_down_min", 0.5, 240, " min"))
+        f.addRow("Go home at:", self._spin("bingo_pct", 0, 90, " % fuel", "CMO decides"))
         f.addRow("", self._check("radar", "Radars on once launched"))
         f.addRow("", self._check("message", "Tell the side when aircraft scramble and stand down"))
         f.addRow("Set a flag on launch:", self._line("signal", "optional, e.g. QRA_AIRBORNE"))
@@ -185,10 +187,7 @@ class InterceptForm(QWidget):
         self.project, self.mission = project, mission
         ic = intercept_of(mission)
         self._loading = True
-        bases = bases_with_aircraft(project, mission.side)
-        self.base.set_items([(f"{name}  ({n} aircraft)", key) for key, name, n in bases],
-                            blank=None if bases else "(no aircraft at any base)")
-        self.add_base.setEnabled(bool(bases))
+        self._load_bases()
         self.defend.set_items([(f"{u.name}", u.id) for u in project.units if u.side == mission.side and not u.host
                                and not (u.group and u.type == "Facility")], blank="the aircraft's base", keep=False)
         self.defend.set_current_id(ic.defend)
@@ -223,10 +222,48 @@ class InterceptForm(QWidget):
         for cb in self.postures.values():
             cb.setEnabled(ic.posture)
 
-    def _add_base(self):
-        if self.mission is not None and self.base.current_id():
-            ids = aircraft_at(self.project, self.mission.side, self.base.current_id())
-            self.unitsChosen.emit([i for i in ids if i not in self.mission.units])
+    def _load_bases(self):
+        """One tick box per base of the side: ticked when its aircraft are on call here, half-ticked when only some are."""
+        p, m = self.project, self.mission
+        self.bases.blockSignals(True)
+        self.bases.clear()
+        for key, name, n in bases_with_aircraft(p, m.side):
+            ids = aircraft_at(p, m.side, key)
+            mine = [x for x in ids if x in m.units]
+            other: dict[str, int] = {}
+            for x in ids:
+                for o in busy_with(p, m, x):
+                    other[o.name] = other.get(o.name, 0) + max(1, p.unit(x).count)
+            text = f"{name}  ({n} aircraft" + "".join(f", {c} on {o}" for o, c in other.items()) + ")"
+            it = QListWidgetItem(text)
+            it.setData(Qt.ItemDataRole.UserRole, key)
+            it.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
+            it.setCheckState(Qt.CheckState.Checked if ids and len(mine) == len(ids) else
+                             Qt.CheckState.PartiallyChecked if mine else Qt.CheckState.Unchecked)
+            self.bases.addItem(it)
+        if not self.bases.count():
+            it = QListWidgetItem("(no aircraft of this side are at a base)")
+            it.setFlags(Qt.ItemFlag.NoItemFlags)
+            self.bases.addItem(it)
+        self.bases.blockSignals(False)
+
+    def _base_changed(self, item: QListWidgetItem):
+        key = item.data(Qt.ItemDataRole.UserRole)
+        if self._loading or self.mission is None or not key:
+            return
+        on = item.checkState() != Qt.CheckState.Unchecked
+        move = False
+        if on:
+            p, m = self.project, self.mission
+            busy = {p.unit(x).name: busy_with(p, m, x)[0].name for x in aircraft_at(p, m.side, key)
+                    if busy_with(p, m, x)}
+            if busy:
+                names = ", ".join(busy) if len(busy) < 7 else f"{len(busy)} aircraft"
+                move = QMessageBox.question(
+                    self, "Aircraft on call", f"{names} at {key} are already on {', '.join(dict.fromkeys(busy.values()))}. "
+                    "Move them to this mission?") == QMessageBox.StandardButton.Yes
+        self.baseTicked.emit(key, on, move)
+        self._load_bases()
 
 
 __all__ = ["InterceptForm", "apply_preset"]

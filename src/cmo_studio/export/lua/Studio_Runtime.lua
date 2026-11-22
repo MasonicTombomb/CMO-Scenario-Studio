@@ -466,8 +466,44 @@ local function matches(ic, c, held)
   return ic.logic ~= 'any' or any
 end
 
+local function missionOf(ic)
+  local ok, m = pcall(ScenEdit_GetMission, ic.side, ic.mission)
+  if ok then return m end
+end
+
+-- switch the mission on or off only when that changes it: doing it again makes CMO plan the strike again
 local function setMission(ic, on)
-  pcall(ScenEdit_SetMission, ic.side, ic.mission, { isactive = on })
+  local m = missionOf(ic)
+  local is
+  if m then is = prop(m, 'isactive') end
+  if is == nil then is = StudioGetKV('STUDIO_IC_' .. ic.id .. '_ON', '') == '1' end
+  if is ~= on then pcall(ScenEdit_SetMission, ic.side, ic.mission, { isactive = on }) end
+  StudioSetKV('STUDIO_IC_' .. ic.id .. '_ON', on and '1' or '0')
+end
+
+-- how many targets CMO says the mission has (nil if this build does not say), and whether one is among them
+local function targetsInCMO(ic, id)
+  local m = missionOf(ic)
+  local list = m and prop(m, 'targetlist')
+  if type(list) ~= 'table' then return nil, false end
+  local n, has = 0, false
+  for _, t in pairs(list) do
+    n = n + 1
+    if t == id then has = true end
+  end
+  return n, has
+end
+
+-- share of fuel left (0-1), or nil
+local function fuelLeft(u)
+  local tanks = prop(u, 'fuel')
+  if type(tanks) ~= 'table' then return nil end
+  local cur, max = 0, 0
+  for _, t in pairs(tanks) do
+    cur = cur + (tonumber(prop(t, 'current')) or 0)
+    max = max + (tonumber(prop(t, 'max')) or 0)
+  end
+  if max > 0 then return cur / max end
 end
 
 local function airborne(u) return prop(u, 'condition_v') == 'Airborne' end
@@ -477,18 +513,23 @@ local function ready(u)
   return not t or t <= 0
 end
 
+-- Add one target, once. CMO fails ("an item with the same key has already been added") when a mission holds the same
+-- target twice, so the contact's own id is tried only if CMO raised an error or its target list did not grow.
 local function addTarget(ic, c)
   for _, id in ipairs({ prop(c, 'actualunitid') or false, c.guid }) do
     if id then
+      local before, has = targetsInCMO(ic, id)
+      if has then return id end
       local ok, res = pcall(ScenEdit_AssignUnitAsTarget, id, ic.mission)
-      if ok and res ~= false and not (type(res) == 'table' and next(res) == nil) then return id end
+      local after, hasNow = targetsInCMO(ic, id)
+      if ok and (hasNow or after == nil and res ~= false or after ~= nil and after > (before or 0)) then return id end
     end
   end
 end
 
 local function say(ic, text)
-  if ic.message then StudioMsg(ic.side, '<P>' .. text .. '</P>') end
-  StudioDebug(ic.mission .. ': ' .. text)
+  if ic.message then StudioMsg(ic.side, text) end
+  StudioDebug(text)
 end
 
 local function standDown(ic, key, list)
@@ -504,7 +545,7 @@ local function standDown(ic, key, list)
   say(ic, ic.mission .. ': stand down. Aircraft returning to base.')
 end
 
-local function intercept(ic, now)
+local function intercept(ic, now, claimed)
   local key = 'STUDIO_IC_' .. ic.id .. '_'
   local off = StudioGetKV(key .. 'OFF', '')
   local armed = off == '' and ic.armed or off == '0'
@@ -537,7 +578,7 @@ local function intercept(ic, now)
   for _, c in ipairs(good) do isGood[c.guid] = true end
 
   -- targets: keep those that still match (or matched recently), drop the rest, add new ones
-  local targets, n = {}, 0
+  local targets, n, byId = {}, 0, {}
   for _, w in ipairs(words(StudioGetKV(key .. 'T', ''))) do
     local g, id, last = w:match('^(.-)=(.-)=(%-?%d+)$')
     if g then
@@ -545,8 +586,11 @@ local function intercept(ic, now)
       -- destroyed: drop it at once; a track lost for a moment is kept for the stand-down time
       local gone = not here[g] and not StudioGetUnit(id)
       if armed and not gone and now - last <= (ic.down or 300) then
-        targets[g] = { id = id, last = last }
-        n = n + 1
+        if not byId[id] then
+          targets[g] = { id = id, last = last }
+          byId[id] = g
+          n = n + 1
+        end
       else
         pcall(ScenEdit_RemoveUnitAsTarget, id, ic.mission)
       end
@@ -554,11 +598,16 @@ local function intercept(ic, now)
   end
   local fresh = 0
   for _, c in ipairs(good) do
-    if n >= (ic.max or 1) then break end
-    if not targets[c.guid] then
+    local same = byId[prop(c, 'actualunitid') or c.guid]
+    if same and same ~= c.guid then              -- the same aircraft, tracked again under a new contact
+      targets[c.guid], targets[same] = { id = targets[same].id, last = now }, nil
+      byId[targets[c.guid].id] = c.guid
+    end
+    if n < (ic.max or 1) and not targets[c.guid] then
       local id = addTarget(ic, c)
       if id then
         targets[c.guid] = { id = id, last = now }
+        byId[id] = c.guid
         n = n + 1
         fresh = fresh + 1
       else
@@ -574,7 +623,18 @@ local function intercept(ic, now)
   -- aircraft: the ones already scrambled, then more if there are targets for them
   local up, isUp = {}, {}
   for _, g in ipairs(words(StudioGetKV(key .. 'U', ''))) do
-    if StudioGetUnit(g) then up[#up + 1] = g; isUp[g] = true end
+    local u = StudioGetUnit(g)
+    if u and not isUp[g] and not claimed[g] then
+      local left = airborne(u) and fuelLeft(u)
+      isUp[g], claimed[g] = true, true
+      if left and left <= (ic.bingo or 0) then   -- low on fuel: home, and free its place for another
+        pcall(ScenEdit_AssignUnitToMission, g, 'none')
+        pcall(ScenEdit_SetUnit, { guid = g, rtb = true })
+        StudioDebug(ic.mission .. ': ' .. u.name .. ' low on fuel, returning to base')
+      else
+        up[#up + 1] = g
+      end
+    end
   end
   if n == 0 then
     if #up > 0 then standDown(ic, key, up) end
@@ -583,7 +643,7 @@ local function intercept(ic, now)
   local free = {}
   for _, name in ipairs(ic.names or {}) do
     local u = StudioGetUnit({ side = ic.side, name = name })
-    if u and not isUp[u.guid] and ready(u) then free[#free + 1] = u end
+    if u and not isUp[u.guid] and not claimed[u.guid] and not airborne(u) and ready(u) then free[#free + 1] = u end
   end
   local launched = 0
   local want, spare = n * (ic.per or 2), #free - (ic.reserve or 0)
@@ -591,7 +651,7 @@ local function intercept(ic, now)
     local u = free[launched + 1]
     launched = launched + 1
     local ok, err = pcall(ScenEdit_AssignUnitToMission, u.guid, ic.mission)
-    if ok then up[#up + 1] = u.guid
+    if ok then up[#up + 1] = u.guid; claimed[u.guid] = true
     else StudioLog(ic.mission .. ': could not assign ' .. u.name .. ': ' .. tostring(err)) end
   end
   StudioSetKV(key .. 'U', table.concat(up, ' '))
@@ -605,11 +665,34 @@ local function intercept(ic, now)
   return launched
 end
 
+-- Print what every intercept holds (run StudioInterceptReport() in CMO's Lua console when something looks wrong).
+function StudioInterceptReport()
+  for _, ic in ipairs(STUDIO.INTERCEPTS or {}) do
+    local key, m = 'STUDIO_IC_' .. ic.id .. '_', missionOf(ic)
+    print('INTERCEPT ' .. ic.mission .. ': on call ' .. table.concat(ic.names or {}, ', '))
+    print('  state T=[' .. StudioGetKV(key .. 'T', '') .. '] U=[' .. StudioGetKV(key .. 'U', '') .. '] off='
+          .. StudioGetKV(key .. 'OFF', ''))
+    if m then
+      print('  in CMO active=' .. tostring(prop(m, 'isactive')))
+      for _, k in ipairs({ 'targetlist', 'unitlist' }) do
+        local t, list = {}, prop(m, k)
+        if type(list) == 'table' then
+          for _, g in pairs(list) do
+            local u = StudioGetUnit(tostring(g))
+            t[#t + 1] = tostring(g) .. (u and (' (' .. tostring(u.name) .. ')') or '')
+          end
+        end
+        print('  ' .. k .. ' ' .. #t .. ': ' .. table.concat(t, '; '))
+      end
+    end
+  end
+end
+
 -- Returns the number of aircraft scrambled.
 function StudioInterceptTick()
-  local now, total = math.floor(tonumber(ScenEdit_CurrentTime()) or 0), 0
+  local now, total, claimed = math.floor(tonumber(ScenEdit_CurrentTime()) or 0), 0, {}
   for _, ic in ipairs(STUDIO.INTERCEPTS or {}) do
-    local ok, r = pcall(intercept, ic, now)
+    local ok, r = pcall(intercept, ic, now, claimed)
     if ok then total = total + (r or 0) else StudioLog('Intercept "' .. ic.mission .. '": ' .. tostring(r)) end
   end
   return total

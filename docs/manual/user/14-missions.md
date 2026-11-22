@@ -92,8 +92,10 @@ them only when the conditions you tick are met.
 
 ![An intercept mission](img/mission_intercept.png)
 
-1. **Aircraft on call**: choose an **Air base** and click **Put its aircraft on call**, or add aircraft one by one
-   under **Assigned units**.
+1. **Aircraft on call**: tick the air bases whose aircraft are on call; untick one to take its aircraft off. The list
+   shows how many aircraft each base has and which other missions they are on (it asks before moving them). For single
+   aircraft use **Assigned units**. An aircraft can be on call for one intercept only, so give each base its own
+   mission: QRA North from Lossiemouth, QRA South from Coningsby.
 2. **Launch when a contact...**: tick conditions and fill in their values. Choose whether a contact must meet **ALL**
    the ticked conditions or **ANY** of them. **Presets ▾** ticks a ready-made set to start from.
 3. **...and (always required as well)**: conditions about the situation rather than one contact.
@@ -124,6 +126,7 @@ them only when the conditions you tick are met.
 | Aircraft per contact / Contacts at once | Two aircraft for each of up to two contacts launches four at most |
 | Keep in reserve | Aircraft that never leave, so the base is not emptied |
 | Orders | *Intercept and identify* (weapons hold), *Engage if hostile* (weapons tight) or *Engage* (weapons free) |
+| Go home at | Aircraft return to base at this much fuel, and another takes their place |
 | Stand down after | How long after a contact stops meeting the conditions before the aircraft go home |
 | Radars on once launched | Otherwise they go silent |
 | Tell the side | A message when aircraft scramble and stand down |
@@ -135,8 +138,7 @@ To switch an intercept on or off during the scenario, set **Active** to *No* to 
 !!! example "QRA North from Lossiemouth"
     1. **Patrol areas...** > add *QRA North area (Scottish FIR)* (Chapter 13).
     2. **New mission**, **Class** **Intercept**, **Area** the QRA area.
-    3. **Presets ▾ > Quick reaction alert**. Under **Aircraft on call** choose **Lossiemouth** and click **Put its
-       aircraft on call**.
+    3. **Presets ▾ > Quick reaction alert**. Under **Aircraft on call** tick **Lossiemouth**.
     4. The summary reads *Launches 2 aircraft per contact ... when an aircraft is inside ... and is hostile or
        unfriendly or unknown*.
 

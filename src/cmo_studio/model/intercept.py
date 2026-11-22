@@ -96,6 +96,28 @@ def aircraft_at(p: Project, side: str, base: str) -> list[str]:
     return out
 
 
+def busy_with(p: Project, m: Mission, unit_id: str) -> list[Mission]:
+    """Other missions an aircraft is already on."""
+    return [x for x in p.missions if x.id != m.id and unit_id in x.units]
+
+
+def put_base_on_call(p: Project, m: Mission, base: str, on: bool, move: bool = False) -> None:
+    """Tick or untick a base: its aircraft join or leave the mission. Aircraft on another mission stay there unless
+    ``move``, so each base can have its own intercept. Does not touch undo."""
+    ids = aircraft_at(p, m.side, base)
+    if not on:
+        m.units = [i for i in m.units if i not in ids]
+        return
+    for i in ids:
+        others = busy_with(p, m, i)
+        if others and not move:
+            continue
+        for x in others:
+            x.units = [k for k in x.units if k != i]
+        if i not in m.units:
+            m.units = m.units + [i]
+
+
 def describe(p: Project, m: Mission) -> str:
     """The mission in plain English."""
     ic = intercept_of(m)
@@ -141,5 +163,5 @@ def describe(p: Project, m: Mission) -> str:
             f"{ic.stand_down_min:g} min after that stops being true.")
 
 
-__all__ = ["POSTURES", "ROE", "CONTACT_CONDITIONS", "GATES", "PRESETS", "intercept_of", "apply_preset", "ticked",
+__all__ = ["busy_with", "put_base_on_call", "POSTURES", "ROE", "CONTACT_CONDITIONS", "GATES", "PRESETS", "intercept_of", "apply_preset", "ticked",
            "home", "bases_with_aircraft", "aircraft_at", "describe"]

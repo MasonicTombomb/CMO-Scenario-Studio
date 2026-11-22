@@ -302,6 +302,7 @@ class Intercept:
     roe: str = "identify"               # identify | tight | free
     radar: bool = True                  # radars on once launched
     stand_down_min: float = 5.0
+    bingo_pct: int = 30                 # go home at this much fuel
     message: bool = True
     signal: str = ""                    # flag set when aircraft launch
 

@@ -79,7 +79,7 @@ class MissionsPage(Page):
         self.intercept = InterceptForm()
         self.intercept.edited.connect(self._intercept)
         self.intercept.presetChosen.connect(self._intercept_preset)
-        self.intercept.unitsChosen.connect(self._intercept_units)
+        self.intercept.baseTicked.connect(self._intercept_base)
         v.addWidget(self.intercept)
 
         g = QGroupBox("Options")
@@ -179,11 +179,13 @@ class MissionsPage(Page):
                 apply_preset(m, key)
             self._load()
 
-    def _intercept_units(self, ids):
+    def _intercept_base(self, base, on, move):
+        from ...model.intercept import put_base_on_call
         m = self._m()
-        if m is not None and ids:
-            with self.edit("Put aircraft on call", "missions"):
-                m.units = m.units + list(ids)
+        if m is not None:
+            with self.edit(f"{base} {'on' if on else 'off'} call", "missions"):
+                put_base_on_call(self.project, m, base, on, move)
+            self._refresh_list()
             self._load()
 
     def _opt(self, key, value):

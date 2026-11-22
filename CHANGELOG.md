@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.11.1 — 2026-11-22
+
+- **Fixed: CMO exceptions "An item with the same key has already been added"** during an intercept: the manager could
+  give the mission the same target twice (an unexpected answer from CMO, or a lost track returning as a new contact).
+  Each aircraft is now added once, and the mission is switched on only when it is off, not every half minute.
+- **Fixed: every base's aircraft on one intercept.** The air base box kept the last mission's base and its button only
+  added. *Aircraft on call* is now a list of bases with tick boxes that also takes aircraft off, shows which other
+  missions they are on, and asks before moving them.
+- An aircraft can be on call for one intercept only: reported by the Issues panel, exported once, and never taken by
+  two intercepts in play.
+- *Go home at*: aircraft return at 30 % fuel (or your figure) and another takes their place.
+- Intercept messages no longer show `<P>` tags. `StudioInterceptReport()` prints each intercept's state.
+
 ## 1.11.0 — 2026-11-22
 
 - **Fixed: aircraft at template air bases never took off** - they waited for a taxiway for ever. CMO needs a *runway

@@ -528,13 +528,16 @@ def compile_intercepts(project: Project) -> list[dict]:
     """Launch conditions for the runtime's intercept manager (STUDIO.INTERCEPTS in LuaInit.lua)."""
     from ..model.intercept import home, intercept_of
     out = []
+    taken: set[str] = set()              # an aircraft is on call for one intercept only
     start = project.clock.start_epoch()
     for ms in project.missions:
         if ms.mclass != "intercept" or not project.side(ms.side):
             continue
         ic = intercept_of(ms)
         units = [project.unit(i) for i in ms.units]
-        units = [u for u in units if u is not None and u.type == "Aircraft" and u.side == ms.side]
+        units = [u for u in units if u is not None and u.type == "Aircraft" and u.side == ms.side and u.id not in taken]
+        units = list({u.id: u for u in units}.values())
+        taken.update(u.id for u in units)
         at = home(project, ms)
         zone = project.zone(ms.zone) if ms.zone else None
         cond: dict[str, Any] = {}
@@ -561,6 +564,7 @@ def compile_intercepts(project: Project) -> list[dict]:
             "logic": "any" if ic.logic == "any" else "all", "c": cond, "missiles": bool(ic.missiles),
             "per": max(1, int(ic.per_contact)), "max": max(1, int(ic.max_contacts)), "reserve": max(0, int(ic.reserve)),
             "down": int(60 * max(0.5, float(ic.stand_down_min))), "message": bool(ic.message),
+            "bingo": max(0, min(90, int(ic.bingo_pct))) / 100,
         }
         if at is not None:
             r["home"] = [round(at.lat, 5), round(at.lon, 5)]

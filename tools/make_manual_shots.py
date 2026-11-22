@@ -361,7 +361,7 @@ def main():
     mpg.refresh()
     pump(app, 0.4)
     f_ic = mpg.intercept
-    shot("mission_intercept", f_ic, [(1, f_ic.base), (2, f_ic.logic), (3, f_ic.boxes["raid"]),
+    shot("mission_intercept", f_ic, [(1, f_ic.bases), (2, f_ic.logic), (3, f_ic.boxes["raid"]),
                                      (4, f_ic.values["per_contact"]), (5, f_ic.summary)])
     p.missions.remove(im)
     mpg.mid = ""

@@ -163,7 +163,7 @@ STUDIO.INTERCEPTS = {
     c = { area = true, posture = { H = true, X = true }, near = 150, inbound = 45, altitude = { 0, 1000 },
           speed = 300, unidentified = true, emitting = true, tracked = 120 },        -- only the ticked ones
     missiles = false, raid = 2, from = 1904530000, to = 1904540000, flag = 'GO',     -- only if ticked
-    per = 2, max = 2, reserve = 0, down = 300, message = true, signal = 'QRA_AIRBORNE' },
+    per = 2, max = 2, reserve = 0, down = 300, bingo = 0.3, message = true, signal = 'QRA_AIRBORNE' },
 }
 ```
 
@@ -171,9 +171,11 @@ A repeatable event **Studio: intercepts** (*Regular time*, every 30 seconds) run
 side's contacts (`ScenEdit_GetContacts`, or `VP_GetSide(...).contacts`), and for one that matches calls
 `ScenEdit_AssignUnitAsTarget`, `ScenEdit_AssignUnitToMission` and `ScenEdit_SetMission(..., {isactive=true})`. Targets
 that stop matching for `down` seconds, or are destroyed, are taken off with `ScenEdit_RemoveUnitAsTarget`; with none
-left the mission is switched off, its aircraft unassigned and those airborne sent home (`rtb=true`). **It is never left
-on without a target**: CMO would then launch at the first contact it detects. Progress is kept in the key values
-`STUDIO_IC_<id>_T`, `_U` and `_SEEN`; `StudioMissionStatus` on an intercept sets `_OFF` instead of touching the mission.
+left the mission is switched off (and it is only ever switched when that changes it), its aircraft unassigned and those airborne sent home (`rtb=true`). **It is never left
+on without a target**: CMO would then launch at the first contact it detects. A target is added once: CMO fails with *An item
+with the same key has already been added* when a mission holds one twice, so the mission's `targetlist` is read before
+and after. An aircraft belongs to one intercept at a time, and goes home at `bingo` fuel. `StudioInterceptReport()`
+prints what each intercept holds. Progress is kept in the key values `STUDIO_IC_<id>_T`, `_U`, `_ON` and `_SEEN`; `StudioMissionStatus` on an intercept sets `_OFF` instead of touching the mission.
 
 ### Generated event script
 

@@ -512,7 +512,7 @@ local function buildKeyValues()
   for _, e in ipairs(D.EVENTS) do try(ScenEdit_SetKeyValue, 'STUDIO_EVT_' .. e.key, '') end
   for i = 1, #(D.FORECAST or {}) do try(ScenEdit_SetKeyValue, string.format('STUDIO_WX_%d', i), '') end
   for _, ic in ipairs((STUDIO and STUDIO.INTERCEPTS) or {}) do
-    for _, k in ipairs({ 'T', 'U', 'SEEN', 'OFF' }) do try(ScenEdit_SetKeyValue, 'STUDIO_IC_' .. ic.id .. '_' .. k, '') end
+    for _, k in ipairs({ 'T', 'U', 'SEEN', 'OFF', 'ON' }) do try(ScenEdit_SetKeyValue, 'STUDIO_IC_' .. ic.id .. '_' .. k, '') end
   end
   for _, r in ipairs((STUDIO and STUDIO.ROUTES) or {}) do
     for n = 1, #(r.names or {}) do

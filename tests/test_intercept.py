@@ -23,8 +23,10 @@ def scenario(**conditions):
     hangar = next(u for u in res.units if "Hangar (4x Large)" in u.name)
     jets = [Unit(side=uk.id, type="Aircraft", dbid=TYPHOON, name=f"QRA {i}", host=hangar.id, loadout=METEOR)
             for i in (1, 2, 3, 4)]
-    bear = Unit(side=red.id, type="Aircraft", dbid=TU95, name="BEAR 1", lat=62.0, lon=5.0, altitude=9000)
-    p.units += jets + [bear]
+    bears = [Unit(side=red.id, type="Aircraft", dbid=TU95, name=f"BEAR {i}", lat=62.0, lon=5.0 + i, altitude=9000)
+             for i in (1, 2, 3)]
+    bear = bears[0]
+    p.units += jets + bears
     p.zones.append(Zone(side=uk.id, name="QRA_NORTH", points=[[57, -8], [61, -8], [61, 3], [57, 3]]))
     m = Mission(side=uk.id, name="QRA North", mclass="intercept", subtype="", zone=p.zones[0].id,
                 units=[j.id for j in jets])
@@ -71,8 +73,9 @@ local id = '%(id)s'
 local m; for _, x in pairs(MOCK.missions) do if x.name == 'QRA North' then m = x end end
 local bear = ScenEdit_GetUnit({ name = 'BEAR 1' })
 MOCK.contacts = { Blue = {} }
-local function contact(g, lat, lon, over)
-  local c = { guid = g, actualunitid = bear.guid, name = g, latitude = lat, longitude = lon, altitude = 9000, speed = 400,
+local function contact(g, lat, lon, over)      -- C1, C2, C3 are three different aircraft
+  local who = ScenEdit_GetUnit({ name = 'BEAR ' .. (g:match('^C([123])$') or '1') }) or bear
+  local c = { guid = g, actualunitid = who.guid, name = g, latitude = lat, longitude = lon, altitude = 9000, speed = 400,
               heading = 225, posture = 'X', type_description = 'Air', classificationlevel = 1, emissions = {} }
   for k, v in pairs(over or {}) do c[k] = v end
   return c
@@ -127,8 +130,8 @@ def test_reserve_readiness_destroyed_target_and_switching_off(database, lua_dll)
     out = play(p, m, r"""
 ScenEdit_GetUnit({ name = 'QRA 1' }).readytime_v = 3600
 see(contact('C1', 60, 2), contact('C2', 59, 0)); show('reserve', tick(1))
-ScenEdit_DeleteUnit({ guid = bear.guid }); see(); show('destroyed', tick(2))
-bear = ScenEdit_GetUnit({ name = 'QRA 1' })
+for _, n in ipairs({ 'BEAR 1', 'BEAR 2' }) do ScenEdit_DeleteUnit({ guid = ScenEdit_GetUnit({ name = n }).guid }) end
+see(); show('destroyed', tick(2))
 StudioMissionStatus('Blue', 'QRA North', false)
 see(contact('C3', 60, 2)); show('switched off', tick(3))
 StudioMissionStatus('Blue', 'QRA North', true); show('switched on', tick(4))
@@ -178,6 +181,112 @@ def test_tracked_raid_window_flag_and_any(database, lua_dll):
     assert out[0].startswith("slow launched=0") and out[1].startswith("fast launched=2")
 
 
+# ------------------------------------------------------------------ never the same thing twice (1.11.0: CMO's
+# "An item with the same key has already been added")
+def test_the_same_aircraft_is_never_a_target_twice(database, lua_dll):
+    p, m, jets, bear = scenario()
+    out = play(p, m, r"""
+see(contact('C1', 60, 2)); show('first', tick(1))
+see(contact('NEW', 60, 2)); show('tracked again', tick(2))          -- lost, then found under a new contact id
+see(contact('C1', 60, 2), contact('NEW', 60, 2)); show('both', tick(3))
+print('IC reactivated ' .. tostring(MOCK.reactivated))
+""", database, lua_dll)
+    assert out[0] == "first launched=2 active=true targets=1 units=2"
+    assert out[1] == "tracked again launched=0 active=true targets=1 units=2"
+    assert out[2] == "both launched=0 active=true targets=1 units=2"
+    assert out[3] == "reactivated nil"                       # switched on once, not every half minute
+
+
+@pytest.mark.parametrize("flags", ["MOCK.emptyReply = true", "MOCK.emptyReply, MOCK.noTargetList = true, true", ""])
+def test_whatever_cmo_answers_a_target_is_added_once(database, lua_dll, flags):
+    p, m, jets, bear = scenario()
+    out = play(p, m, flags + r"""
+see(contact('C1', 60, 2)); show('a', tick(1)); show('b', tick(2)); show('c', tick(3))
+""", database, lua_dll)
+    assert out[0] == "a launched=2 active=true targets=1 units=2" and out[2].endswith("targets=1 units=2")
+
+
+def test_contact_without_a_unit_id_uses_its_own(database, lua_dll):
+    p, m, jets, bear = scenario()
+    out = play(p, m, r"""
+local c = contact('C1', 60, 2)
+MOCK.contactUnit = function(g) if g == 'C1' then return bear.guid end end
+c.actualunitid = nil
+see(c); show('a', tick(1)); show('b', tick(2))
+""", database, lua_dll)
+    assert out[0].endswith("targets=1 units=2") and out[1].endswith("targets=1 units=2")
+
+
+def two_bases():
+    """QRA North from Lossiemouth, QRA South from Coningsby."""
+    p, north, jets, bear = scenario()
+    uk = p.sides[0]
+    t = default_library().template("uk_ab_coningsby")
+    res = place_template(p, t, None, uk.id, *t.location)
+    hangar = next(u for u in res.units if "Hangar (4x Large)" in u.name)
+    bats = [Unit(side=uk.id, type="Aircraft", dbid=TYPHOON, name=f"BAT {i}", host=hangar.id, loadout=METEOR)
+            for i in (1, 2, 3, 4)]
+    p.units += bats
+    p.zones.append(Zone(side=uk.id, name="QRA_SOUTH", points=[[50, -6], [55, -6], [55, 3], [50, 3]]))
+    south = Mission(side=uk.id, name="QRA South", mclass="intercept", subtype="", zone=p.zones[-1].id,
+                    units=[b.id for b in bats])
+    intercept_of(south)
+    p.missions.append(south)
+    return p, north, south, jets, bats
+
+
+def test_each_base_answers_only_its_own_intercept(database, lua_dll):
+    p, north, south, jets, bats = two_bases()
+    out = play(p, north, r"""
+local function who(name)
+  local t = {}
+  for _, x in pairs(MOCK.missions) do if x.name == name then
+    for _, g in ipairs(x.units) do t[#t + 1] = ScenEdit_GetUnit({ guid = g }).name end
+  end end
+  table.sort(t)
+  return table.concat(t, ',')
+end
+see(contact('C1', 60, 2)); tick(1); print('IC north ' .. who('QRA North') .. ' south ' .. who('QRA South'))
+see(contact('C1', 60, 2), contact('C2', 53, 0)); tick(2); print('IC north ' .. who('QRA North') .. ' south ' .. who('QRA South'))
+for _, l in ipairs(STUDIO.INTERCEPTS) do print('IC msg ' .. tostring(l.message)) end
+StudioInterceptReport()
+""", database, lua_dll)
+    assert out[0] == "north QRA 1,QRA 2 south "
+    assert out[1] == "north QRA 1,QRA 2 south BAT 1,BAT 2"
+
+
+def test_shared_aircraft_are_claimed_by_one_intercept_only(database, lua_dll):
+    p, north, south, jets, bats = two_bases()
+    south.units = [j.id for j in jets] + south.units              # the mix-up 1.11.0's editor made easy
+    errs = [i.message for i in validate(p) if i.level == ERROR and i.obj_id == south.id]
+    assert any("one intercept only" in e for e in errs)
+    ics = {r["mission"]: r["names"] for r in compile_intercepts(p)}
+    assert ics["QRA North"] == ["QRA 1", "QRA 2", "QRA 3", "QRA 4"]
+    assert ics["QRA South"] == ["BAT 1", "BAT 2", "BAT 3", "BAT 4"]
+    out = play(p, north, r"""
+STUDIO.INTERCEPTS[2].names = STUDIO.INTERCEPTS[1].names            -- even if an old export shares them
+see(contact('C1', 60, 2), contact('C2', 53, 0)); show('north', tick(1))
+""", database, lua_dll)
+    assert out[0].endswith("active=true targets=1 units=2")
+
+
+def test_low_fuel_sends_an_aircraft_home_and_messages_are_plain(database, lua_dll):
+    p, m, jets, bear = scenario()
+    out = play(p, m, r"""
+local said
+local old = ScenEdit_SpecialMessage
+ScenEdit_SpecialMessage = function(side, text) said = text; return old(side, text) end
+see(contact('C1', 60, 2)); show('up', tick(1))
+print('IC said ' .. tostring(said))
+local u = ScenEdit_GetUnit({ name = 'QRA 1' })
+u.condition_v, u.fuel = 'Airborne', { [2001] = { current = 900, max = 4000 } }
+show('low', tick(2)); print('IC rtb ' .. tostring(u.rtb) .. ' ' .. tostring(ScenEdit_GetUnit({ name = 'QRA 2' }).rtb))
+""", database, lua_dll)
+    assert out[1].startswith("said QRA North: scramble! 2 aircraft") and "<" not in out[1]
+    assert out[2] == "low launched=1 active=true targets=1 units=2"                 # another takes its place
+    assert out[3] == "rtb true nil"
+
+
 # ------------------------------------------------------------------ checks
 def test_validation():
     p, m, jets, bear = scenario()
@@ -215,7 +324,7 @@ def test_timeline_and_briefing():
 # ------------------------------------------------------------------ the editor
 def test_editor(tmp_path, monkeypatch):
     QtWidgets = pytest.importorskip("PyQt6.QtWidgets")
-    from PyQt6.QtCore import QSettings
+    from PyQt6.QtCore import QSettings, Qt
 
     from cmo_studio.settings import AppSettings
     from cmo_studio.ui.main_window import MainWindow
@@ -238,8 +347,8 @@ def test_editor(tmp_path, monkeypatch):
     pg.mclass.setCurrentIndex(pg.mclass.findData("intercept"))
     app.processEvents()
     f = pg.intercept
-    assert f.isVisible() and not pg.tgt_box.isVisible() and f.base.currentText().startswith("Lossiemouth")
-    f.add_base.click()
+    assert f.isVisible() and not pg.tgt_box.isVisible() and f.bases.item(0).text().startswith("Lossiemouth")
+    f.bases.item(0).setCheckState(Qt.CheckState.Checked)
 
     def ms():
         return w.doc.project.mission(m.id)
@@ -261,5 +370,71 @@ def test_editor(tmp_path, monkeypatch):
     assert all(u.type == "Aircraft" for u in (w.doc.project.unit(i) for _l, i in pg._unit_choices()))
     for k in PRESETS:
         apply_preset(ms(), k)
+    w.doc.set_dirty(False)
+    w.close()
+
+
+def test_editor_keeps_each_base_on_its_own_mission(tmp_path, monkeypatch):
+    """1.11.0: the base box kept the last mission's base and the button only added, so QRA South got all eight."""
+    QtWidgets = pytest.importorskip("PyQt6.QtWidgets")
+    from PyQt6.QtCore import QSettings, Qt
+
+    from cmo_studio.settings import AppSettings
+    from cmo_studio.ui.main_window import MainWindow
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    monkeypatch.setattr(AppSettings, "data_dir", staticmethod(lambda: tmp_path))
+    s = AppSettings()
+    s.q = QSettings(str(tmp_path / "s.ini"), QSettings.Format.IniFormat)
+    w = MainWindow(s)
+    w.show()
+    p, north, south, jets, bats = two_bases()
+    north.units, south.units = [], []
+    w.doc.load(p)
+    pg = w.missions_page
+    w.tabs.setCurrentWidget(pg)
+    Box = QtWidgets.QMessageBox
+    asked = []
+
+    def answer(yes):
+        monkeypatch.setattr(Box, "question", staticmethod(
+            lambda *a, **k: (asked.append(a[2]), Box.StandardButton.Yes if yes else Box.StandardButton.No)[1]))
+
+    def open_(m):
+        pg.mid = m.id
+        pg.refresh()
+        app.processEvents()
+
+    def tick(base, on=True):
+        lst = pg.intercept.bases
+        it = next(lst.item(i) for i in range(lst.count()) if lst.item(i).text().startswith(base))
+        it.setCheckState(Qt.CheckState.Checked if on else Qt.CheckState.Unchecked)
+
+    def names(m):
+        pr = w.doc.project
+        return [pr.unit(i).name.split()[0] for i in pr.mission(m.id).units]
+
+    def state(base):
+        lst = pg.intercept.bases
+        return next(lst.item(i) for i in range(lst.count()) if lst.item(i).text().startswith(base)).checkState()
+    answer(False)
+    open_(north)
+    tick("Lossiemouth")
+    assert names(north) == ["QRA"] * 4 and names(south) == [] and not asked
+    open_(south)
+    assert state("Lossiemouth") == Qt.CheckState.Unchecked             # nothing carried over from North
+    assert "4 on QRA North" in pg.intercept.bases.item(1).text()
+    tick("Coningsby")
+    assert names(south) == ["BAT"] * 4 and names(north) == ["QRA"] * 4
+    tick("Lossiemouth")                                                  # already on North: asks; No leaves it alone
+    assert asked and names(south) == ["BAT"] * 4 and names(north) == ["QRA"] * 4
+    assert state("Lossiemouth") == Qt.CheckState.Unchecked
+    answer(True)
+    tick("Lossiemouth")
+    assert sorted(set(names(south))) == ["BAT", "QRA"] and names(north) == []
+    w.doc.undo()                                                         # moving them is one undo
+    assert names(south) == ["BAT"] * 4 and names(north) == ["QRA"] * 4
+    open_(south)
+    tick("Coningsby", False)
+    assert names(south) == [] and names(north) == ["QRA"] * 4
     w.doc.set_dirty(False)
     w.close()
